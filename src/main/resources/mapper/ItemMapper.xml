@@ -1,0 +1,38 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ItemMapper">
+
+    <select id="findAll" resultType="com.example.shoppingmall.item.domain.Item">
+        SELECT * FROM item
+    </select>
+
+    <select id="findById" parameterType="long" resultType="com.example.shoppingmall.item.domain.Item">
+        SELECT * FROM item WHERE item_id = #{id}
+    </select>
+
+    <insert id="insert" parameterType="com.example.shoppingmall.item.domain.Item">
+        INSERT INTO item (category_id, name, image, description, price, status, grade, manufacture_country, is_best_seller, created_at, updated_at)
+        VALUES (#{categoryId}, #{name}, #{image}, #{description}, #{price}, #{status}, #{grade}, #{manufactureCountry}, #{isBestSeller}, #{createdAt}, #{updatedAt})
+    </insert>
+
+    <update id="update" parameterType="com.example.shoppingmall.item.domain.Item">
+        UPDATE item
+        SET category_id = #{categoryId},
+            name = #{name},
+            image = #{image},
+            description = #{description},
+            price = #{price},
+            status = #{status},
+            grade = #{grade},
+            manufacture_country = #{manufactureCountry},
+            is_best_seller = #{isBestSeller},
+            updated_at = #{updatedAt}
+        WHERE item_id = #{itemId}
+    </update>
+
+    <delete id="delete" parameterType="long">
+        DELETE FROM item WHERE item_id = #{id}
+    </delete>
+
+</mapper>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<head>
+    <meta charset="UTF-8">
+    <title>상품 상세</title>
+    <link rel="stylesheet" th:href="@{/resources/css/style.css}">
+</head>
+
+<body>
+
+<div layout:fragment="content">
+<h1>상품 상세 정보</h1>
+<table border="1">
+    <tr><th>이름</th><td th:text="${item.name}">상품명</td></tr>
+    <tr><th>설명</th><td th:text="${item.description}">설명</td></tr>
+    <tr><th>가격</th><td th:text="${item.price}">0</td></tr>
+    <tr><th>상태</th><td th:text="${item.status}">SALE</td></tr>
+    <tr><th>등급</th><td th:text="${item.grade}">A</td></tr>
+    <tr><th>국가</th><td th:text="${item.manufactureCountry}">Korea</td></tr>
+    <tr><th>베스트셀러</th><td th:text="${item.isBestSeller} ? 'Yes' : 'No'">Yes</td></tr>
+    <tr><th>등록일</th><td th:text="${#temporals.format(item.createdAt, 'yyyy-MM-dd')}">2025-06-17</td></tr>
+</table>
+
+<form th:action="@{/item/delete/{id}(id=${item.itemId})}" method="post">
+    <button type="submit">삭제</button>
+</form>
+
+<a th:href="@{/item}">목록으로</a>
+</div>
+
+</body>
+</html>
