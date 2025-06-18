@@ -1,4 +1,4 @@
-INSERT INTO `User` (`user_id`, `email`, `password`, `pre_password`, `name`, `resident_registration_number`,
+INSERT INTO `user` (`user_id`, `email`, `password`, `pre_password`, `name`, `resident_registration_number`,
                     `phone_number`, `gender`, `registration_at`, `user_id_creation_at`, `sms_marketing_status`,
                     `email_marketing_status`, `customer_status`, `is_withdrawal`, `withdrawal_at`, `withdrawal_reason`,
                     `role`, `created_at`, `updated_at`)
@@ -115,25 +115,25 @@ VALUES (1, 'COLOR', '블랙', NOW(), NOW()),
 
 INSERT INTO item (item_id, category_id, name, image, description, price, status, grade,
                   manufacture_country, is_best_seller, is_new, created_at, updated_at)
-VALUES (1, 9, '오리지널 화이트 [1.5CM]', 'image/item1.jpg', '오리지널 시리즈 화이트 색상 1.5CM 굽 샌들입니다.', 59000.00, 'ON_SALE', 'A',
+VALUES (1, 9, '오리지널 화이트 [1.5CM]', 'https://image.sivillage.com/upload/C00001/goods/org/532/230421004781532.jpg?RS=750&SP=1', '오리지널 시리즈 화이트 색상 1.5CM 굽 샌들입니다.', 59000.00, 'ON_SALE', 'A',
         'KOREA', true, true, NOW(), NOW()),
-       (2, 10, '오리지널 블랙 [5CM]', 'image/item2.jpg', '오리지널 시리즈 블랙 색상 5CM 굽 샌들입니다.', 65000.00, 'ON_SALE', 'B', 'KOREA',
+       (2, 10, '오리지널 블랙 [5CM]', 'https://cafe24.poxo.com/ec01/ts3176/65uN764GExGfUPmYExKJkk3HjySn3TFJ3wGy406Vl/Nyjb/Ye84QUpnZR4d3lmYtr5cN6YWftVHDV6C8vAjeAA==/_/web/product/big/202406/39904a80716a4e3bf1ec271aad0cc5a3.jpg', '오리지널 시리즈 블랙 색상 5CM 굽 샌들입니다.', 65000.00, 'ON_SALE', 'B', 'KOREA',
         false, true, NOW(), NOW()),
-       (3, 14, '크로스 화이트 [7CM]', 'image/item3.jpg', '크로스 시리즈 화이트 색상 7CM 굽 샌들입니다.', 67000.00, 'OUT_OF_STOCK', 'A',
+       (3, 14, '크로스 화이트 [7CM]', 'https://www.sodamall.com/web/product/small/202502/676f7c0ad2fceb109dc35a680df4e477.jpg', '크로스 시리즈 화이트 색상 7CM 굽 샌들입니다.', 67000.00, 'OUT_OF_STOCK', 'A',
         'VIETNAM', false, false, NOW(), NOW()),
-       (4, 15, '미라마 블랙 [1.5CM]', 'image/item4.jpg', '미라마 시리즈 블랙 색상 1.5CM 굽 샌들입니다.', 58000.00, 'ON_SALE', 'B', 'CHINA',
+       (4, 15, '미라마 블랙 [1.5CM]', 'https://img.29cm.co.kr/item/202504/11f010eebf22e078b131ab4141fd6a52.jpg?width=700&format=webp', '미라마 시리즈 블랙 색상 1.5CM 굽 샌들입니다.', 58000.00, 'ON_SALE', 'B', 'CHINA',
         true, false, NOW(), NOW()),
-       (5, 19, '듄 화이트 [5CM]', 'image/item5.jpg', '듄 시리즈 화이트 색상 5CM 굽 샌들입니다.', 64000.00, 'QUALITY_CHECK', 'B', 'KOREA',
+       (5, 19, '듄 화이트 [5CM]', 'https://m.babaraflat.kr/web/product/big/202506/c1af1e36d16f7fc2f999a4c0faf4bba8.jpg', '듄 시리즈 화이트 색상 5CM 굽 샌들입니다.', 64000.00, 'QUALITY_CHECK', 'B', 'KOREA',
         false, true, NOW(), NOW()),
-       (6, 22, '레이아 블랙 [5CM]', 'image/item6.jpg', '레이아 시리즈 블랙 색상 5CM 굽 샌들입니다.', 62000.00, 'ON_SALE', 'C', 'INDONESIA',
+       (6, 22, '레이아 블랙 [5CM]', 'https://mblogthumb-phinf.pstatic.net/MjAyNDA0MDhfMTQ4/MDAxNzEyNTYyNDU0OTM2.tlnKBBpROw9v_9ra4U6AlVwCZkE_V04EgXJqtIAy1bgg.JOQHwOtn7mW2oXzM0aSLasnPHP3tJOEo4D_5Cvd5WWQg.PNG/%EC%8A%88%EC%BD%A4%EB%A7%88%EB%B3%B4%EB%8B%88_(1).png?type=w400', '레이아 시리즈 블랙 색상 5CM 굽 샌들입니다.', 62000.00, 'ON_SALE', 'C', 'INDONESIA',
         false, false, NOW(), NOW()),
-       (7, 27, '노이 화이트 [1.5CM]', 'image/item7.jpg', '노이 시리즈 화이트 색상 1.5CM 굽 샌들입니다.', 56000.00, 'ON_SALE', 'B', 'KOREA',
+       (7, 27, '노이 화이트 [1.5CM]', 'https://img.ssfshop.com/cmd/LB_750x1000/src/https://img.ssfshop.com/goods/ORBR/24/02/29/GQK224022925731_0_ORGINL_20240229103523044.jpg', '노이 시리즈 화이트 색상 1.5CM 굽 샌들입니다.', 56000.00, 'ON_SALE', 'B', 'KOREA',
         false, false, NOW(), NOW()),
-       (8, 11, '오리지널 블랙 [7CM]', 'image/item8.jpg', '오리지널 시리즈 블랙 색상 7CM 굽 샌들입니다.', 67000.00, 'ADDRESS_ISSUE', 'A',
+       (8, 11, '오리지널 블랙 [7CM]', 'https://cafe24.poxo.com/ec01/ts3176/65uN764GExGfUPmYExKJkk3HjySn3TFJ3wGy406Vl/Nyjb/Ye84QUpnZR4d3lmYtr5cN6YWftVHDV6C8vAjeAA==/_/web/product/big/202406/8a8f6aea130fa8a6cd56fa3af5997909.jpg', '오리지널 시리즈 블랙 색상 7CM 굽 샌들입니다.', 67000.00, 'ADDRESS_ISSUE', 'A',
         'KOREA', true, false, NOW(), NOW()),
-       (9, 25, '스파이더 화이트 [5CM]', 'image/item9.jpg', '스파이더 시리즈 화이트 색상 5CM 굽 샌들입니다.', 63000.00, 'WAREHOUSE_OVERLOAD', 'A',
+       (9, 25, '스파이더 화이트 [5CM]', 'https://product-image.wconcept.co.kr/productimg/image/img0/12/306833212_JH11536.jpg', '스파이더 시리즈 화이트 색상 5CM 굽 샌들입니다.', 63000.00, 'WAREHOUSE_OVERLOAD', 'A',
         'VIETNAM', false, true, NOW(), NOW()),
-       (10, 29, '노이 블랙 [7CM]', 'image/item10.jpg', '노이 시리즈 블랙 색상 7CM 굽 샌들입니다.', 68000.00, 'ETC', 'C', 'CHINA', false,
+       (10, 29, '노이 블랙 [7CM]', 'https://www.rogervivier.com/fashion/rogervivier/RVW76942250D90B999/RVW76942250D90B999-03.jpg?imwidth=650', '노이 시리즈 블랙 색상 7CM 굽 샌들입니다.', 68000.00, 'ETC', 'C', 'CHINA', false,
         false, NOW(), NOW());
 
 
@@ -151,50 +151,39 @@ VALUES (1, 1, 'BRONZE', 1, '2023-01-15 10:00:00', '2023-01-15 10:00:00'),
 
 
 
-INSERT INTO delivery_address (delivery_address_id, user_id, recipient_name, recipient_phone_number, postal_code,
-                              main_address, detailed_addres, is_default, is_active, created_at, updated_at)
-VALUES (1, 1, '김민준', '010-1111-1111', '04524', '서울특별시 중구 세종대로 110', '15층 1501호', true, true, '2023-01-15 10:05:00',
-        '2023-01-15 10:05:00'),
-       (2, 1, '김민준', '010-1111-1111', '06236', '서울특별시 강남구 테헤란로 212', '센트럴타워 12층', false, true, '2023-02-01 09:00:00',
-        '2023-02-01 09:00:00'),
-
-       (3, 2, '박서연', '010-2222-2222', '04174', '서울특별시 마포구 월드컵북로 396', '2동 201호', true, true, '2023-02-20 11:35:00',
-        '2023-02-20 11:35:00'),
-
-       (4, 3, '이도윤', '010-3333-3333', '02841', '서울특별시 성북구 안암로 145', '제1기숙사 302호', true, true, '2023-03-10 14:10:00',
-        '2023-03-10 14:10:00'),
-
-       (5, 5, '최준우', '010-5555-5555', '08376', '서울특별시 구로구 디지털로26길 72', '702호', true, true, '2023-05-18 17:00:00',
-        '2023-05-18 17:00:00'),
-
-       (6, 6, '김지유', '010-6666-6666', '03127', '서울특별시 종로구 종로 1', '종로타워 8층', true, true, '2023-06-25 10:10:00',
-        '2023-06-25 10:10:00'),
-
-       (7, 7, '박서준', '010-7777-7777', '03722', '서울특별시 서대문구 연세로 50', '공학원 301호', true, true, '2023-07-12 13:10:00',
-        '2023-07-12 13:10:00'),
-
-       (8, 8, '이시우', '010-8888-8888', '06130', '서울특별시 강남구 영동대로 513', '삼성동 무역센터 25층', true, true, '2023-08-01 15:35:00',
-        '2023-08-01 15:35:00'),
-       (9, 8, '이시우', '010-8888-8888', '06675', '서울특별시 서초구 서초대로 396', '서초역 인근 101호', false, true, '2023-09-01 09:00:00',
-        '2023-09-01 09:00:00'),
-
-       (10, 10, '최예나', '010-1010-1010', '03974', '서울특별시 은평구 통일로 1010', '삼익APT 301동 1502호', true, true,
-        '2023-10-11 17:10:00', '2023-10-11 17:10:00'),
-
-       (11, 13, '김태희', '010-1313-1313', '06578', '서울특별시 서초구 반포대로 222', '래미안 101동 1004호', true, true,
-        '2024-01-05 10:05:00', '2024-01-05 10:05:00'),
-
-       (12, 14, '박지훈', '010-1414-1414', '07212', '서울특별시 영등포구 선유로 200', '우리타워 3층', true, true, '2024-02-14 14:10:00',
-        '2024-02-14 14:10:00'),
-
-       (13, 15, '이서연', '010-1515-1515', '08504', '서울특별시 금천구 가산디지털1로 168', '우림라이온스밸리 B동 707호', true, true,
-        '2024-03-21 11:10:00', '2024-03-21 11:10:00'),
-
-       (14, 16, '정우진', '010-1616-1616', '04991', '서울특별시 광진구 능동로 209', '건대입구역 5번출구 앞 203호', true, true,
-        '2024-04-01 09:40:00', '2024-04-01 09:40:00'),
-
-       (15, 18, '김도현', '010-1818-1818', '04790', '서울특별시 성동구 아차산로 17', '성수IT밸리 902호', true, true, '2024-06-18 10:10:00',
-        '2024-06-18 10:10:00');
+INSERT INTO delivery_address
+(delivery_address_id, user_id, recipient_name, recipient_phone_number, recipient_email, postal_code, main_address,
+ detailed_addres, is_default, is_active, created_at, updated_at)
+VALUES (1, 1, '김민준', '010-1111-1111', 'minjun@example.com', '04524', '서울특별시 중구 세종대로 110', '15층 1501호', true, true,
+        '2023-01-15 10:05:00', '2023-01-15 10:05:00'),
+       (2, 1, '김민준', '010-1111-1111', 'minjun@example.com', '06236', '서울특별시 강남구 테헤란로 212', '센트럴타워 12층', false, true,
+        '2023-02-01 09:00:00', '2023-02-01 09:00:00'),
+       (3, 2, '박서연', '010-2222-2222', 'seoyeon@example.com', '04174', '서울특별시 마포구 월드컵북로 396', '2동 201호', true, true,
+        '2023-02-20 11:35:00', '2023-02-20 11:35:00'),
+       (4, 3, '이도윤', '010-3333-3333', 'doyoon@example.com', '02841', '서울특별시 성북구 안암로 145', '제1기숙사 302호', true, true,
+        '2023-03-10 14:10:00', '2023-03-10 14:10:00'),
+       (5, 5, '최준우', '010-5555-5555', 'junwoo@example.com', '08376', '서울특별시 구로구 디지털로26길 72', '702호', true, true,
+        '2023-05-18 17:00:00', '2023-05-18 17:00:00'),
+       (6, 6, '김지유', '010-6666-6666', 'jiyoo@example.com', '03127', '서울특별시 종로구 종로 1', '종로타워 8층', true, true,
+        '2023-06-25 10:10:00', '2023-06-25 10:10:00'),
+       (7, 7, '박서준', '010-7777-7777', 'seojun@example.com', '03722', '서울특별시 서대문구 연세로 50', '공학원 301호', true, true,
+        '2023-07-12 13:10:00', '2023-07-12 13:10:00'),
+       (8, 8, '이시우', '010-8888-8888', 'siwoo@example.com', '06130', '서울특별시 강남구 영동대로 513', '삼성동 무역센터 25층', true, true,
+        '2023-08-01 15:35:00', '2023-08-01 15:35:00'),
+       (9, 8, '이시우', '010-8888-8888', 'siwoo@example.com', '06675', '서울특별시 서초구 서초대로 396', '서초역 인근 101호', false, true,
+        '2023-09-01 09:00:00', '2023-09-01 09:00:00'),
+       (10, 10, '최예나', '010-1010-1010', 'yena@example.com', '03974', '서울특별시 은평구 통일로 1010', '삼익APT 301동 1502호', true,
+        true, '2023-10-11 17:10:00', '2023-10-11 17:10:00'),
+       (11, 13, '김태희', '010-1313-1313', 'taehee@example.com', '06578', '서울특별시 서초구 반포대로 222', '래미안 101동 1004호', true,
+        true, '2024-01-05 10:05:00', '2024-01-05 10:05:00'),
+       (12, 14, '박지훈', '010-1414-1414', 'jihoon@example.com', '07212', '서울특별시 영등포구 선유로 200', '우리타워 3층', true, true,
+        '2024-02-14 14:10:00', '2024-02-14 14:10:00'),
+       (13, 15, '이서연', '010-1515-1515', 'seoyeon2@example.com', '08504', '서울특별시 금천구 가산디지털1로 168', '우림라이온스밸리 B동 707호',
+        true, true, '2024-03-21 11:10:00', '2024-03-21 11:10:00'),
+       (14, 16, '정우진', '010-1616-1616', 'woojin@example.com', '04991', '서울특별시 광진구 능동로 209', '건대입구역 5번출구 앞 203호', true,
+        true, '2024-04-01 09:40:00', '2024-04-01 09:40:00'),
+       (15, 18, '김도현', '010-1818-1818', 'dohyun@example.com', '04790', '서울특별시 성동구 아차산로 17', '성수IT밸리 902호', true, true,
+        '2024-06-18 10:10:00', '2024-06-18 10:10:00');
 
 
 

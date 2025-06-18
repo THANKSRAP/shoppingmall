@@ -1,5 +1,5 @@
--- 1. User 테이블
-CREATE TABLE User
+-- 1. user 테이블
+CREATE TABLE user
 (
     user_id                      BIGINT      NOT NULL,
     email                        VARCHAR(60) NOT NULL,
@@ -126,7 +126,7 @@ CREATE TABLE notice
     updated_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT FK_admin_TO_notice FOREIGN KEY (admin_id) REFERENCES admin (admin_id) ON DELETE CASCADE
 );
--- 10. User 관련 하위 테이블들
+-- 10. user 관련 하위 테이블들
 -- user_grade
 CREATE TABLE user_grade
 (
@@ -136,7 +136,7 @@ CREATE TABLE user_grade
     grade_benefit TEXT,
     created_at    TIMESTAMP NOT NULL,
     updated_at    TIMESTAMP NOT NULL,
-    CONSTRAINT FK_User_TO_user_grade FOREIGN KEY (user_id) REFERENCES User (user_id)
+    CONSTRAINT FK_User_TO_user_grade FOREIGN KEY (user_id) REFERENCES user (user_id)
 );
 -- grade_change_history
 CREATE TABLE grade_change_history
@@ -155,6 +155,7 @@ CREATE TABLE delivery_address
     user_id                BIGINT       NOT NULL,
     recipient_name         VARCHAR(30)  NOT NULL,
     recipient_phone_number VARCHAR(30)  NOT NULL,
+    recipient_email varchar(255) NOT NULL,
     postal_code            VARCHAR(10)  NOT NULL,
     main_address           VARCHAR(100) NOT NULL,
     detailed_addres        VARCHAR(100),
@@ -162,7 +163,7 @@ CREATE TABLE delivery_address
     is_active              BOOLEAN      NOT NULL DEFAULT true,
     created_at             TIMESTAMP    NOT NULL,
     updated_at             TIMESTAMP,
-    CONSTRAINT FK_User_TO_delivery_address FOREIGN KEY (user_id) REFERENCES User (user_id)
+    CONSTRAINT FK_User_TO_delivery_address FOREIGN KEY (user_id) REFERENCES user (user_id)
 );
 -- wish_list
 CREATE TABLE wish_list
@@ -173,7 +174,7 @@ CREATE TABLE wish_list
     added_at     TIMESTAMP NOT NULL,
     created_at   TIMESTAMP NOT NULL,
     updated_at   TIMESTAMP NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES User (user_id),
+    FOREIGN KEY (user_id) REFERENCES user (user_id),
     FOREIGN KEY (item_id) REFERENCES item (item_id)
 );
 -- cart
@@ -187,7 +188,7 @@ CREATE TABLE cart
     added_at       TIMESTAMP,
     created_at     TIMESTAMP,
     updated_at     TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES User (user_id),
+    FOREIGN KEY (user_id) REFERENCES user (user_id),
     FOREIGN KEY (item_id) REFERENCES item (item_id),
     FOREIGN KEY (item_option_id) REFERENCES item_option (item_option_id)
 );
@@ -274,5 +275,5 @@ CREATE TABLE payment_method
     payment_owner_type                  ENUM('INDIVIDUAL', 'CORPORATE') NOT NULL DEFAULT 'INDIVIDUAL',
     created_at                          TIMESTAMP,
     updated_at                          TIMESTAMP,
-    CONSTRAINT FK_User_TO_payment_method FOREIGN KEY (user_id) REFERENCES User (user_id)
+    CONSTRAINT FK_User_TO_payment_method FOREIGN KEY (user_id) REFERENCES user (user_id)
 );

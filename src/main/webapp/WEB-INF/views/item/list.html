@@ -1,16 +1,23 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
 <head>
     <meta charset="UTF-8">
     <title>상품 목록</title>
     <link rel="stylesheet" th:href="@{/resources/css/style.css}">
 </head>
+
 <body>
+
+<div layout:fragment="content">
 <h1>상품 목록</h1>
 <a th:href="@{/item/new}">신규 상품 등록</a>
 <table border="1">
     <thead>
     <tr>
+        <th>ID</th>
         <th>이름</th>
         <th>가격</th>
         <th>상태</th>
@@ -22,6 +29,7 @@
     </thead>
     <tbody>
     <tr th:each="item : ${items}">
+        <td th:text="${item.itemId}">ID</td>
         <td th:text="${item.name}">상품명</td>
         <td th:text="${item.price}">0</td>
         <td th:text="${item.status}">SALE</td>
@@ -32,5 +40,7 @@
     </tr>
     </tbody>
 </table>
+</div>
+
 </body>
 </html>

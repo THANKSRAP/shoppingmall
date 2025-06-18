@@ -30,6 +30,13 @@
         <property name="mapperLocations" value="classpath:/mapper/**/*.xml"/>
         <property name="typeAliasesPackage" value="com.example.shoppingmall"/>
         <!-- <property name="typeAliasesPackage" value="com.example.shoppingmall.item.domain"/>-->
+
+        <!-- MyBatis 설정에서 camelCase 활성화 -->
+        <property name="configuration">
+            <bean class="org.apache.ibatis.session.Configuration">
+                <property name="mapUnderscoreToCamelCase" value="true"/>
+            </bean>
+        </property>
     </bean>
 
     <!-- MyBatis SqlSessionTemplate (선택) -->
