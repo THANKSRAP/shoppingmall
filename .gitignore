@@ -45,3 +45,9 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+### MySQL Docker 데이터 볼륨 ###
+shoppingmall/db/data/
+
+### MySQL 초기화 스크립트 디렉토리는 제외하지 않음 ###
+!shoppingmall/db/initdb.d/

@@ -11,4 +11,6 @@ public interface ItemDao {
     void insert(Item item);
     void update(Item item);
     void delete(Long id);
+    List<Item> findBestSellers();
+    List<Item> findNewItems();
 }

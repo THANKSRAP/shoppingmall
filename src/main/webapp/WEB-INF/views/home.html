@@ -4,76 +4,66 @@
       layout:decorate="~{layout}">
 
 <head>
-    <title>홈</title> <!-- 자동으로 layout의 $CONTENT_TITLE에 치환됨 -->
+    <title>홈</title>
     <link rel="stylesheet" th:href="@{/resources/css/style.css}" />
 </head>
 
 <body>
 <div layout:fragment="content">
-    <!-- 여기부터 본문 내용 -->
     <div class="container-fluid">
         <div class="row justify-content-center">
 
             <!-- Hero Banner -->
-            <div class="bg-primary text-white p-5">
+            <div class="bg-black text-white p-5">
                 <div class="row align-items-center">
                     <div class="col-md-8">
-                        <h1 class="display-5 fw-bold">새로운 책과의 만남</h1>
-                        <p class="lead">매일 업데이트되는 신간과 베스트셀러를 만나보세요</p>
-                        <a class="btn btn-light btn-lg" th:href="@{/books}">
-                            신간 보러가기 <i class="fas fa-arrow-right"></i>
+                        <h1 class="display-5 fw-bold">새로운 상품과의 만남</h1>
+                        <p class="lead">매일 업데이트되는 새로운 상품과 만나보세요</p>
+                        <a class="btn btn-light btn-lg" th:href="@{/item}">
+                            상품 보러가기 <i class="fas fa-arrow-right"></i>
                         </a>
                     </div>
                     <div class="col-md-4 text-center">
-                        <i class="fas fa-book-open fa-5x opacity-75"></i>
+                        <i class="fas fa-gift fa-5x opacity-75"></i>
                     </div>
                 </div>
             </div>
 
-
             <!-- Search Bar -->
             <div class="search-bar p-2">
-                <!--            /books?title="책제목" 으로 이동-->
-                <form th:action="@{/books}" method="get" class="d-flex">
-                    <input class="form-control" type="search" name="title" placeholder="책 제목, 저자, 출판사를 검색하세요"
-                           th:value="${param.title}">
+                <form th:action="@{/item}" method="get" class="d-flex">
+                    <input class="form-control" type="search" name="name" placeholder="상품을 검색하세요"
+                           th:value="${param.name}">
                     <button class="btn btn-outline-primary" type="submit">
                         <i class="fas fa-search"></i>
                     </button>
                 </form>
             </div>
 
-
             <!-- Monthly Bestsellers -->
             <section class="mb-5 px-5">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h2 class="h3">
                         <i class="fas fa-trophy text-warning me-2"></i>
-                        이달의 베스트셀러
+                        이달의 베스트 상품
                     </h2>
-                    <a th:href="@{/books(sortBy='salesIndex', sortDir='desc')}" class="btn btn-outline-primary btn-sm">
+                    <a th:href="@{/item}" class="btn btn-outline-primary btn-sm">
                         더보기 <i class="fas fa-arrow-right"></i>
                     </a>
                 </div>
 
                 <div class="row">
-                    <div class="col-md-2 col-sm-4 col-6 mb-4" th:each="book, iterStat : ${bestSellers}"
+                    <div class="col-md-2 col-sm-4 col-6 mb-4"
+                         th:each="item, iterStat : ${bestSellers}"
                          th:if="${iterStat.index < 5}">
                         <div class="card book-card h-100 position-relative">
                             <span class="bestseller-badge" th:text="${iterStat.index + 1}"></span>
-                            <img th:src="${book.imageUrl != null ? book.imageUrl : '/images/book-placeholder.jpg'}"
-                                 class="card-img-top book-image" th:alt="${book.title}">
+                            <img th:src="${item.image != null ? item.image : '/images/item-placeholder.jpg'}"
+                                 class="card-img-top book-image" th:alt="${item.name}">
                             <div class="card-body p-2">
-                                <h6 class="card-title text-truncate" th:text="${book.title}">책 제목</h6>
-                                <p class="card-text text-muted small mb-1" th:text="${book.author}">저자</p>
-                                <div class="rating mb-1" th:if="${book.rating != null}">
-                                            <span th:each="i : ${#numbers.sequence(1, 5)}">
-                                                <i class="fas fa-star" th:if="${i <= book.rating}"></i>
-                                                <i class="far fa-star" th:unless="${i <= book.rating}"></i>
-                                            </span>
-                                    <small th:text="${book.rating}">4.5</small>
-                                </div>
-                                <p class="price mb-0" th:text="${#numbers.formatInteger(book.price, 0, 'COMMA')} + '원'">
+                                <h6 class="card-title text-truncate" th:text="${item.name}">상품 이름</h6>
+                                <p class="card-text text-muted small mb-1" th:text="${item.description}">상품 설명</p>
+                                <p class="price mb-0" th:text="${#numbers.formatInteger(item.price, 0, 'COMMA')} + '원'">
                                     15,000원</p>
                             </div>
                         </div>
@@ -86,27 +76,29 @@
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h2 class="h3">
                         <i class="fas fa-star text-success me-2"></i>
-                        신간 도서
+                        신상품
                     </h2>
-                    <a th:href="@{/books(sortBy='registeredAt', sortDir='desc')}"
+                    <a th:href="@{/item(sortBy='createdAt', sortDir='desc')}"
                        class="btn btn-outline-primary btn-sm">
                         더보기 <i class="fas fa-arrow-right"></i>
                     </a>
                 </div>
 
                 <div class="row">
-                    <div class="col-md-2 col-sm-6 mb-4" th:each="book : ${newReleases}" th:if="${bookStat.index < 5}">
+                    <div class="col-md-2 col-sm-6 mb-4"
+                         th:each="item, itemStat : ${newReleases}"
+                         th:if="${itemStat.index < 5}">
                         <div class="card book-card h-100">
-                            <img th:src="${book.imageUrl != null ? book.imageUrl : '/images/book-placeholder.jpg'}"
-                                 class="card-img-top book-image" th:alt="${book.title}">
+                            <img th:src="${item.image != null ? item.image : '/images/item-placeholder.jpg'}"
+                                 class="card-img-top book-image" th:alt="${item.name}">
                             <div class="card-body">
-                                <h6 class="card-title" th:text="${book.title}">책 제목</h6>
-                                <p class="card-text text-muted small mb-2" th:text="${book.author}">저자</p>
-                                <p class="card-text text-muted small mb-2" th:text="${book.publisher}">출판사</p>
-                                <p class="price" th:text="${#numbers.formatInteger(book.price, 0, 'COMMA')} + '원'">
+                                <h6 class="card-title" th:text="${item.name}">상품 이름</h6>
+                                <p class="card-text text-muted small mb-2" th:text="${item.description}">상품 설명</p>
+                                <p class="card-text text-muted small mb-2" th:text="${item.manufactureCountry}">제조국</p>
+                                <p class="price" th:text="${#numbers.formatInteger(item.price, 0, 'COMMA')} + '원'">
                                     15,000원</p>
                                 <div class="d-grid gap-2">
-                                    <a th:href="@{/books/{id}(id=${book.id})}" class="btn btn-outline-primary btn-sm">상세보기</a>
+                                    <a th:href="@{/item/{id}(id=${item.itemId})}" class="btn btn-outline-primary btn-sm">상세보기</a>
                                 </div>
                             </div>
                         </div>
@@ -114,8 +106,6 @@
                 </div>
             </section>
         </div>
-
-
     </div>
 </div>
 </body>

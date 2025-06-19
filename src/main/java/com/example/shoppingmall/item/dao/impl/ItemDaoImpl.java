@@ -41,4 +41,16 @@ public class ItemDaoImpl implements ItemDao {
     public void delete(Long id) {
         sqlSession.delete(NAMESPACE + "delete", id);
     }
+
+    @Override
+    public List<Item> findBestSellers() {
+        return sqlSession.selectList(NAMESPACE + "findBestSellers");
+    }
+
+    @Override
+    public List<Item> findNewItems() {
+        return sqlSession.selectList(NAMESPACE + "findNewItems");
+    }
+
+
 }

@@ -34,4 +34,12 @@ public class ItemService {
     public void deleteItem(Long id) {
         itemDao.delete(id);
     }
+
+    public List<Item> findBestSellers() {
+        return itemDao.findBestSellers(); // isBestSeller = true
+    }
+
+    public List<Item> findNewItems() {
+        return itemDao.findNewItems(); // isNew = true
+    }
 }

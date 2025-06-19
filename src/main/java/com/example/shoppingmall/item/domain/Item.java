@@ -16,6 +16,7 @@ public class Item {
     private String grade;  // enum: A, B, C
     private String manufactureCountry;
     private Boolean isBestSeller;
+    private Boolean isNew;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }
