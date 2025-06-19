@@ -1,7 +1,7 @@
 -- 1. user 테이블
 CREATE TABLE user
 (
-    user_id                      BIGINT      NOT NULL,
+    user_id                      BIGINT      NOT NULL AUTO_INCREMENT,
     email                        VARCHAR(60) NOT NULL,
     password                     VARCHAR(60) NOT NULL,
     pre_password                 VARCHAR(60),
@@ -25,7 +25,7 @@ CREATE TABLE user
 -- 2. Admin 테이블
 CREATE TABLE admin
 (
-    admin_id   BIGINT      NOT NULL PRIMARY KEY,
+    admin_id   BIGINT      NOT NULL AUTO_INCREMENT PRIMARY KEY,
     role       ENUM('ADMINISTRATOR', 'SHIPMENT_MANAGER', 'CS_MANAGER') NOT NULL,
     email      VARCHAR(30) NOT NULL,
     status     ENUM('ACTIVE', 'INACTIVE', 'ON_LEAVE') DEFAULT 'ACTIVE',
@@ -35,7 +35,7 @@ CREATE TABLE admin
 -- 3. Category 테이블
 CREATE TABLE category
 (
-    category_id        BIGINT      NOT NULL PRIMARY KEY,
+    category_id        BIGINT      NOT NULL AUTO_INCREMENT PRIMARY KEY,
     parent_category_id BIGINT,
     name               VARCHAR(50) NOT NULL,
     depth              INT         NOT NULL,
@@ -47,7 +47,7 @@ CREATE TABLE category
 -- 4. Item 테이블
 CREATE TABLE item
 (
-    item_id             BIGINT NOT NULL PRIMARY KEY,
+    item_id             BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     category_id         BIGINT NOT NULL,
     name                VARCHAR(255),
     image               VARCHAR(255),
@@ -64,7 +64,7 @@ CREATE TABLE item
 -- 5. Option 테이블
 CREATE TABLE `option`
 (
-    option_id  BIGINT      NOT NULL PRIMARY KEY,
+    option_id  BIGINT      NOT NULL AUTO_INCREMENT PRIMARY KEY,
     type       ENUM('COLOR', 'SIZE') NOT NULL,
     value      VARCHAR(50) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -73,7 +73,7 @@ CREATE TABLE `option`
 -- 6. Item_Option 테이블
 CREATE TABLE item_option
 (
-    item_option_id   BIGINT NOT NULL,
+    item_option_id   BIGINT NOT NULL AUTO_INCREMENT,
     item_id          BIGINT NOT NULL,
     color_option_id  BIGINT NOT NULL,
     size_option_id   BIGINT NOT NULL,
@@ -100,7 +100,7 @@ CREATE TABLE inventory
 -- 8. StockTransaction_History 테이블
 CREATE TABLE stocktransaction_history
 (
-    stocktransaction_history_id BIGINT NOT NULL PRIMARY KEY,
+    stocktransaction_history_id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     item_id                     BIGINT NOT NULL,
     item_option_id              BIGINT NOT NULL,
     admin_id                    BIGINT NOT NULL,
@@ -115,7 +115,7 @@ CREATE TABLE stocktransaction_history
 -- 9. Notice 테이블
 CREATE TABLE notice
 (
-    notice_id  BIGINT       NOT NULL PRIMARY KEY,
+    notice_id  BIGINT       NOT NULL AUTO_INCREMENT PRIMARY KEY,
     admin_id   BIGINT       NOT NULL,
     title      VARCHAR(100) NOT NULL,
     content    TEXT         NOT NULL,
@@ -130,7 +130,7 @@ CREATE TABLE notice
 -- user_grade
 CREATE TABLE user_grade
 (
-    user_grade_id BIGINT    NOT NULL PRIMARY KEY,
+    user_grade_id BIGINT    NOT NULL AUTO_INCREMENT PRIMARY KEY,
     user_id       BIGINT    NOT NULL,
     grade         ENUM('BRONZE', 'SILVER', 'GOLD', 'VIP') NOT NULL DEFAULT 'BRONZE',
     grade_benefit TEXT,
@@ -141,7 +141,7 @@ CREATE TABLE user_grade
 -- grade_change_history
 CREATE TABLE grade_change_history
 (
-    grade_history_id BIGINT    NOT NULL PRIMARY KEY,
+    grade_history_id BIGINT    NOT NULL AUTO_INCREMENT PRIMARY KEY,
     user_grade_id    BIGINT    NOT NULL,
     grade_change_at  TIMESTAMP NOT NULL,
     created_at       TIMESTAMP NOT NULL,
@@ -151,7 +151,7 @@ CREATE TABLE grade_change_history
 -- delivery_address
 CREATE TABLE delivery_address
 (
-    delivery_address_id    BIGINT       NOT NULL PRIMARY KEY,
+    delivery_address_id    BIGINT       NOT NULL AUTO_INCREMENT PRIMARY KEY,
     user_id                BIGINT       NOT NULL,
     recipient_name         VARCHAR(30)  NOT NULL,
     recipient_phone_number VARCHAR(30)  NOT NULL,
@@ -168,7 +168,7 @@ CREATE TABLE delivery_address
 -- wish_list
 CREATE TABLE wish_list
 (
-    wish_list_id BIGINT    NOT NULL PRIMARY KEY,
+    wish_list_id BIGINT    NOT NULL AUTO_INCREMENT PRIMARY KEY,
     user_id      BIGINT    NOT NULL,
     item_id      BIGINT    NOT NULL,
     added_at     TIMESTAMP NOT NULL,
@@ -180,7 +180,7 @@ CREATE TABLE wish_list
 -- cart
 CREATE TABLE cart
 (
-    cart_id        BIGINT NOT NULL PRIMARY KEY,
+    cart_id        BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     user_id        BIGINT NOT NULL,
     item_id        BIGINT NOT NULL,
     item_option_id BIGINT NOT NULL,
@@ -259,7 +259,7 @@ CREATE TABLE order_item
 -- payment_method
 CREATE TABLE payment_method
 (
-    payment_method_id                   BIGINT  NOT NULL PRIMARY KEY,
+    payment_method_id                   BIGINT  NOT NULL AUTO_INCREMENT PRIMARY KEY,
     user_id                             BIGINT  NOT NULL,
     payment_method                      ENUM('CREDIT_CARD', 'BANK_TRANSFER') NOT NULL DEFAULT 'CREDIT_CARD',
     card_company_code                   ENUM('CC010', 'CC020', 'CC030', 'CC040', 'CC050', 'CC060', 'CC070', 'CC080', 'CC090', 'CC100'),

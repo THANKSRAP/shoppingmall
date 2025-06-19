@@ -56,10 +56,10 @@
                     <div class="col-md-2 col-sm-4 col-6 mb-4"
                          th:each="item, iterStat : ${bestSellers}"
                          th:if="${iterStat.index < 5}">
-                        <div class="card book-card h-100 position-relative">
+                        <div class="card item-card h-100 position-relative">
                             <span class="bestseller-badge" th:text="${iterStat.index + 1}"></span>
                             <img th:src="${item.image != null ? item.image : '/images/item-placeholder.jpg'}"
-                                 class="card-img-top book-image" th:alt="${item.name}">
+                                 class="card-img-top item-image" th:alt="${item.name}">
                             <div class="card-body p-2">
                                 <h6 class="card-title text-truncate" th:text="${item.name}">상품 이름</h6>
                                 <p class="card-text text-muted small mb-1" th:text="${item.description}">상품 설명</p>
@@ -88,9 +88,9 @@
                     <div class="col-md-2 col-sm-6 mb-4"
                          th:each="item, itemStat : ${newReleases}"
                          th:if="${itemStat.index < 5}">
-                        <div class="card book-card h-100">
+                        <div class="card item-card h-100">
                             <img th:src="${item.image != null ? item.image : '/images/item-placeholder.jpg'}"
-                                 class="card-img-top book-image" th:alt="${item.name}">
+                                 class="card-img-top item-image" th:alt="${item.name}">
                             <div class="card-body">
                                 <h6 class="card-title" th:text="${item.name}">상품 이름</h6>
                                 <p class="card-text text-muted small mb-2" th:text="${item.description}">상품 설명</p>

@@ -34,7 +34,7 @@ body {
 /* ===================== */
 /* 📚 Book Cards          */
 /* ===================== */
-.book-card {
+.item-card {
   height: 100%;
   border: 1px solid #e9ecef;
   border-radius: 8px;
@@ -42,19 +42,19 @@ body {
   overflow: hidden;
 }
 
-.book-card:hover {
+.item-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
   border-color: var(--primary-color);
 }
 
-.book-image {
+.item-image {
   height: 200px;
   width: 100%;
   object-fit: cover;
 }
 
-.book-title {
+.item-title {
   font-size: 0.9rem;
   font-weight: 600;
   color: #333;
@@ -66,19 +66,19 @@ body {
   -webkit-box-orient: vertical;
 }
 
-.book-author {
+.item-author {
   font-size: 0.8rem;
   color: #6c757d;
   margin-bottom: 0.5rem;
 }
 
-.book-price {
+.item-price {
   font-weight: bold;
   font-size: 1rem;
   color: var(--primary-color);
 }
 
-.book-original-price {
+.item-original-price {
   font-size: 0.8rem;
   color: #6c757d;
   margin-right: 0.5rem;
@@ -344,7 +344,7 @@ footer a:hover {
     text-align: center;
   }
 
-  .book-card {
+  .item-card {
     margin-bottom: 1rem;
   }
 
@@ -362,11 +362,11 @@ footer a:hover {
 }
 
 @media (max-width: 576px) {
-  .book-image {
+  .item-image {
     height: 150px;
   }
 
-  .book-title {
+  .item-title {
     font-size: 0.8rem;
     height: 2.4rem;
   }
@@ -472,7 +472,7 @@ footer a:hover {
     padding: 0 !important;
   }
 
-  .book-card {
+  .item-card {
     break-inside: avoid;
     margin-bottom: 1rem;
   }
