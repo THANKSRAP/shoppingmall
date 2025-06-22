@@ -29,17 +29,6 @@
                 </div>
             </div>
 
-            <!-- Search Bar -->
-            <div class="search-bar p-2">
-                <form th:action="@{/item}" method="get" class="d-flex">
-                    <input class="form-control" type="search" name="name" placeholder="상품을 검색하세요"
-                           th:value="${param.name}">
-                    <button class="btn btn-outline-primary" type="submit">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </form>
-            </div>
-
             <!-- Monthly Bestsellers -->
             <section class="mb-5 px-5">
                 <div class="d-flex justify-content-between align-items-center mb-3">
@@ -56,17 +45,19 @@
                     <div class="col-md-2 col-sm-4 col-6 mb-4"
                          th:each="item, iterStat : ${bestSellers}"
                          th:if="${iterStat.index < 5}">
-                        <div class="card item-card h-100 position-relative">
-                            <span class="bestseller-badge" th:text="${iterStat.index + 1}"></span>
-                            <img th:src="${item.image != null ? item.image : '/images/item-placeholder.jpg'}"
-                                 class="card-img-top item-image" th:alt="${item.name}">
-                            <div class="card-body p-2">
-                                <h6 class="card-title text-truncate" th:text="${item.name}">상품 이름</h6>
-                                <p class="card-text text-muted small mb-1" th:text="${item.description}">상품 설명</p>
-                                <p class="price mb-0" th:text="${#numbers.formatInteger(item.price, 0, 'COMMA')} + '원'">
-                                    15,000원</p>
+                        <a th:href="@{/item/{id}(id=${item.itemId})}" class="item-card-link">
+                            <div class="card item-card h-100 position-relative">
+                                <span class="bestseller-badge" th:text="${iterStat.index + 1}"></span>
+                                <img th:src="${item.image != null ? item.image : '/images/item-placeholder.jpg'}"
+                                     class="card-img-top item-image" th:alt="${item.name}">
+                                <div class="card-body p-2">
+                                    <h6 class="card-title text-truncate" th:text="${item.name}">상품 이름</h6>
+                                    <p class="card-text text-muted small mb-1" th:text="${item.description}">상품 설명</p>
+                                    <p class="price mb-0" th:text="${#numbers.formatInteger(item.price, 0, 'COMMA')} + '원'">
+                                        15,000원</p>
+                                </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
                 </div>
             </section>
@@ -75,33 +66,30 @@
             <section class="mb-5 px-5">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h2 class="h3">
-                        <i class="fas fa-star text-success me-2"></i>
+                        <i class="fas fa-trophy text-warning me-2"></i>
                         신상품
                     </h2>
-                    <a th:href="@{/item(sortBy='createdAt', sortDir='desc')}"
-                       class="btn btn-outline-primary btn-sm">
+                    <a th:href="@{/item}" class="btn btn-outline-primary btn-sm">
                         더보기 <i class="fas fa-arrow-right"></i>
                     </a>
                 </div>
 
                 <div class="row">
-                    <div class="col-md-2 col-sm-6 mb-4"
-                         th:each="item, itemStat : ${newReleases}"
-                         th:if="${itemStat.index < 5}">
-                        <div class="card item-card h-100">
-                            <img th:src="${item.image != null ? item.image : '/images/item-placeholder.jpg'}"
-                                 class="card-img-top item-image" th:alt="${item.name}">
-                            <div class="card-body">
-                                <h6 class="card-title" th:text="${item.name}">상품 이름</h6>
-                                <p class="card-text text-muted small mb-2" th:text="${item.description}">상품 설명</p>
-                                <p class="card-text text-muted small mb-2" th:text="${item.manufactureCountry}">제조국</p>
-                                <p class="price" th:text="${#numbers.formatInteger(item.price, 0, 'COMMA')} + '원'">
-                                    15,000원</p>
-                                <div class="d-grid gap-2">
-                                    <a th:href="@{/item/{id}(id=${item.itemId})}" class="btn btn-outline-primary btn-sm">상세보기</a>
+                    <div class="col-md-2 col-sm-4 col-6 mb-4"
+                         th:each="item, iterStat : ${newReleases}"
+                         th:if="${iterStat.index < 5}">
+                        <a th:href="@{/item/{id}(id=${item.itemId})}" class="item-card-link">
+                            <div class="card item-card h-100 position-relative">
+                                <img th:src="${item.image != null ? item.image : '/images/item-placeholder.jpg'}"
+                                     class="card-img-top item-image" th:alt="${item.name}">
+                                <div class="card-body p-2">
+                                    <h6 class="card-title text-truncate" th:text="${item.name}">상품 이름</h6>
+                                    <p class="card-text text-muted small mb-1" th:text="${item.description}">상품 설명</p>
+                                    <p class="price mb-0" th:text="${#numbers.formatInteger(item.price, 0, 'COMMA')} + '원'">
+                                        15,000원</p>
                                 </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
                 </div>
             </section>

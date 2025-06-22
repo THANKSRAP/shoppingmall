@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
+//@Repository
 public class NoticeDaoImpl implements NoticeDao {
     private final SqlSession sqlSession;
     private static final String namespace = "NoticeMapper.";
