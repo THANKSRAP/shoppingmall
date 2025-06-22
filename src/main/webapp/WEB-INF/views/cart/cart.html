@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<head>
+  <meta charset="UTF-8">
+  <title>장바구니</title>
+  <link rel="stylesheet" th:href="@{/resources/css/cart.css}" />
+</head>
+<body>
+<div layout:fragment="content">
+  <div class="container">
+    <header class="header">
+      <h1>장바구니</h1>
+      <div class="breadcrumb">
+        <div class="breadcrumb-item active">
+          <div class="breadcrumb-number">1</div>
+          <span>장바구니</span>
+        </div>
+        <div class="breadcrumb-item">
+          <div class="breadcrumb-number">2</div>
+          <span>주문서작성</span>
+        </div>
+        <div class="breadcrumb-item">
+          <div class="breadcrumb-number">3</div>
+          <span>주문완료</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="main-content">
+      <div class="cart-section">
+        <div class="tabs">
+          <button class="tab active">국내배송상품 (1)</button>
+          <button class="tab">해외배송상품 (0)</button>
+        </div>
+
+        <div class="cart-header">
+          <h3>장바구니 상품</h3>
+          <div class="cart-notice">장바구니에 담긴 상품은 14일간 보관됩니다.</div>
+        </div>
+
+        <div th:each="cartItem : ${cartList}">
+          <div class="product-item" th:data-cart-id="${cartItem.cartId}" th:data-price="${cartItem.price}">
+            <input type="checkbox" class="select-item"
+                   th:id="'chk_' + ${cartItem.cartId}" th:value="${cartItem.cartId}" />
+
+            <div class="product-image">
+              <img th:src="${cartItem.itemImage}" th:alt="${cartItem.itemName}" width="80" height="80">
+            </div>
+
+            <div class="product-details">
+              <div class="product-name">
+                <span th:text="${cartItem.itemName}">상품명</span>
+                <!--            <span class="new-badge" th:if="${cartItem.isNew}">신상</span>-->
+              </div>
+
+              <div class="product-price"
+                   th:text="${#numbers.formatDecimal(cartItem.price, 0, 0)} + '원'">0원</div>
+
+              <div class="product-size" th:text="${cartItem.sizeOptionName}">사이즈</div>
+
+              <div class="product-options"
+                   th:text="'사이즈: ' + ${cartItem.sizeOptionName} + ' / 수량: ' + ${cartItem.quantity} + '개'">
+                옵션정보
+              </div>
+            </div>
+
+            <div class="product-actions">
+              <button class="remove-btn"
+                      th:onclick="'removeFromCart(' + ${cartItem.cartId} + ')'">×</button>
+
+              <div class="quantity-controls">
+                <button class="quantity-btn"
+                        th:onclick="'changeQuantity(' + ${cartItem.cartId} + ', -1)'">-</button>
+
+                <input type="number" class="quantity-input" min="1"
+                       th:id="'qty_' + ${cartItem.cartId}" th:value="${cartItem.quantity}" />
+
+                <button class="quantity-btn"
+                        th:onclick="'changeQuantity(' + ${cartItem.cartId} + ', 1)'">+</button>
+              </div>
+
+              <!--          <button class="update-btn"-->
+              <!--                  th:onclick="'changeQuantity(' + ${cartItem.cartId} + ', document.getElementById(\'qty_'+${cartItem.cartId}+'\').value)'">-->
+              <!--            변경-->
+              <!--          </button>-->
+              <!-- 주문 금액 영역 -->
+              <div class="product-order-box">
+                <!-- 윗줄: 주문금액 표시 -->
+                <div class="order-price-row">
+                  <span class="order-label">주문금액</span>
+                  <div class="product-price"
+                       th:id="'price_' + ${cartItem.cartId}"
+                       th:data-price="${cartItem.price}"
+                       th:text="${#numbers.formatDecimal(cartItem.price * cartItem.quantity, 0, 0)} + '원'">
+                    0원
+                  </div>
+                </div>
+
+                <!-- 아랫줄: 버튼 두 개 -->
+                <div class="order-buttons-row">
+                  <button class="wishlist-btn">관심상품</button>
+                  <button class="order-now-btn">주문하기</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="order-summary">
+        <div class="summary-row">
+          <span>총 상품금액</span>
+          <span id="total">0원</span> <!-- ✅ 합계 -->
+        </div>
+        <div class="summary-row">
+          <span>총 배송비</span>
+          <span id="shippingFee">0원</span> <!-- ✅ 배송비 -->
+        </div>
+        <div class="summary-row total">
+          <span>결제예정금액</span>
+          <span id="totalAmount">0원</span> <!-- ✅ 총합 -->
+        </div>
+        <button class="order-btn order-all-btn">전체상품주문</button>
+        <button class="order-btn order-selected-btn">선택상품주문</button>
+      </div>
+
+    </div>
+
+    <div class="bottom-links">
+      <a href="#" id="select-all-link">전체선택</a>
+      <a href="#" id="delete-selected-link">선택삭제</a>
+      <a href="#" id="delete-all-link">전체상품삭제</a>
+    </div>
+  </div>
+</div>
+<th:block layout:fragment="script">
+  <script th:src="@{/resources/js/cart.js}"></script>
+</th:block>
+</body>
+</html>
