@@ -33,7 +33,7 @@ function updateCartQuantity(cartId, quantity, optionDetail) {
         optionDetail
     });
 
-    fetch('/cart/api/item/' + cartId, {
+    fetch('/cart/item/' + cartId, {
         method: 'PATCH',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({quantity: quantity})
@@ -117,7 +117,7 @@ function deleteSelected() {
     if (!confirm('선택한 상품을 삭제하시겠습니까?')) return;
 
 
-    fetch('/cart/api/items', {
+    fetch('/cart/items', {
         method: 'DELETE',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({cartItemIds: ids})
@@ -141,7 +141,7 @@ function removeFromCart(cartId) {
     if (!confirm('정말 삭제하시겠습니까?')) return;
 
 
-    fetch('/cart/api/item/' + cartId, {
+    fetch('/cart/item/' + cartId, {
         method: 'DELETE'
     })
         .then(res => {
@@ -288,7 +288,7 @@ document.getElementById('delete-selected-link').addEventListener('click', functi
 
     if (!confirm('선택한 상품을 삭제하시겠습니까?')) return;
 
-    fetch('/cart/api/items', {
+    fetch('/cart/items', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ cartItemIds: ids })
@@ -310,7 +310,7 @@ document.getElementById('delete-all-link').addEventListener('click', function (e
 
     if (!confirm('정말 전체 상품을 삭제하시겠습니까?')) return;
 
-    fetch('/cart/api/all', {
+    fetch('/cart/all', {
         method: 'DELETE'
     })
         .then(res => {
