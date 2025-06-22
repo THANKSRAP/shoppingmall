@@ -1,6 +1,5 @@
 package com.example.shoppingmall;
 
-import com.example.shoppingmall.item.domain.Item;
 import com.example.shoppingmall.item.domain.dto.ItemDto;
 import com.example.shoppingmall.item.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;

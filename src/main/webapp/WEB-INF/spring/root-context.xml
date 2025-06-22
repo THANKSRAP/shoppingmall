@@ -43,10 +43,11 @@
     <!-- 루트 경로로 설정했을 때 service를 mapper로 인식하는 오류 발생 -->
     <!-- Controller가 Mapper로 인식되어서 Binding Exception이 발생함 -> 정확한 Mapper(dao) 설정 필요-->
     <!-- MapperScannerConfigurer로 직접 등록하는 경우, dao에 @Repository 어노테이션 제거하기 (중복 등록 됨) -->
-    <context:component-scan base-package="com.example.shoppingmall" />
+    <context:component-scan base-package="com.example.shoppingmall"/>
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         <!-- <property name="basePackage" value="com.example.shoppingmall"/> -->
-        <property name="basePackage" value="com.example.shoppingmall.item.dao, com.example.shoppingmall.notice.dao"/>
+        <property name="basePackage"
+                  value="com.example.shoppingmall.item.dao, com.example.shoppingmall.notice.dao, com.example.shoppingmall.cart.dao"/>
     </bean>
 
     <!-- 트랜잭션 매니저 설정 -->

@@ -5,7 +5,7 @@
 
 <head>
     <title>홈</title>
-    <link rel="stylesheet" th:href="@{/resources/css/style.css}" />
+    <link rel="stylesheet" th:href="@{/resources/css/style.css}"/>
 </head>
 
 <body>
@@ -53,7 +53,8 @@
                                 <div class="card-body p-2">
                                     <h6 class="card-title text-truncate" th:text="${item.name}">상품 이름</h6>
                                     <p class="card-text text-muted small mb-1" th:text="${item.description}">상품 설명</p>
-                                    <p class="price mb-0" th:text="${#numbers.formatInteger(item.price, 0, 'COMMA')} + '원'">
+                                    <p class="price mb-0"
+                                       th:text="${#numbers.formatInteger(item.price, 0, 'COMMA')} + '원'">
                                         15,000원</p>
                                 </div>
                             </div>
@@ -85,7 +86,8 @@
                                 <div class="card-body p-2">
                                     <h6 class="card-title text-truncate" th:text="${item.name}">상품 이름</h6>
                                     <p class="card-text text-muted small mb-1" th:text="${item.description}">상품 설명</p>
-                                    <p class="price mb-0" th:text="${#numbers.formatInteger(item.price, 0, 'COMMA')} + '원'">
+                                    <p class="price mb-0"
+                                       th:text="${#numbers.formatInteger(item.price, 0, 'COMMA')} + '원'">
                                         15,000원</p>
                                 </div>
                             </div>

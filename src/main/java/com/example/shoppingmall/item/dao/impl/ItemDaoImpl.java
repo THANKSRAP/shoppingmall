@@ -2,6 +2,7 @@ package com.example.shoppingmall.item.dao.impl;
 
 import com.example.shoppingmall.item.dao.ItemDao;
 import com.example.shoppingmall.item.domain.Item;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
@@ -9,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-//@Repository
+@Repository
 public class ItemDaoImpl implements ItemDao {
 
     private final SqlSession sqlSession;
@@ -60,8 +61,10 @@ public class ItemDaoImpl implements ItemDao {
     }
 
     @Override
-    public List<Item> findItemsByCategory(Long majorId, Long middleId, Long minorId) {
-        Map<String, Object> paramMap = new HashMap<>();
+    public List<Item> findItemsByCategory(@Param("majorId") Long majorId,
+                                          @Param("middleId") Long middleId,
+                                          @Param("minorId") Long minorId) {
+        Map<String, Long> paramMap = new HashMap<>();
         paramMap.put("majorId", majorId);
         paramMap.put("middleId", middleId);
         paramMap.put("minorId", minorId);

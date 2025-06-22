@@ -1,10 +1,8 @@
 package com.example.shoppingmall.item.domain.dto;
 
-import com.example.shoppingmall.item.domain.Item;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @Data
 public class ItemDto {

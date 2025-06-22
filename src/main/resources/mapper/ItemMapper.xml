@@ -50,18 +50,18 @@
         WHERE name LIKE CONCAT('%', #{name}, '%')
     </select>
 
-    <select id="findItemsByCategory" parameterType="map" resultType="com.example.shoppingmall.item.domain.Item">
+    <select id="findItemsByCategory" parameterType="java.util.Map" resultType="com.example.shoppingmall.item.domain.Item">
         SELECT * FROM item
         WHERE 1=1
         <if test="majorId != null">
             AND category_id IN (
-            SELECT category_id FROM category WHERE parent_id = #{majorId}
-            OR parent_id IN (SELECT category_id FROM category WHERE parent_id = #{majorId})
+            SELECT category_id FROM category WHERE parent_category_id = #{majorId}
+            OR parent_category_id IN (SELECT category_id FROM category WHERE parent_category_id = #{majorId})
             )
         </if>
         <if test="middleId != null">
             AND category_id IN (
-            SELECT category_id FROM category WHERE parent_id = #{middleId}
+            SELECT category_id FROM category WHERE parent_category_id = #{middleId}
             OR category_id = #{middleId}
             )
         </if>

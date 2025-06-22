@@ -2,6 +2,7 @@ package com.example.shoppingmall.item.dao;
 
 
 import com.example.shoppingmall.item.domain.Item;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -16,5 +17,7 @@ public interface ItemDao {
     List<Item> findNewItems();
     List<Item> searchItemsByName(String name);
 
-    List<Item> findItemsByCategory(Long majorId, Long middleId, Long minorId);
+    List<Item> findItemsByCategory(@Param("majorId") Long majorId,
+                                   @Param("middleId") Long middleId,
+                                   @Param("minorId") Long minorId);
 }

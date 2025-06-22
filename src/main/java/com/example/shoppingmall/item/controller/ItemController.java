@@ -1,10 +1,10 @@
 package com.example.shoppingmall.item.controller;
 
-import com.example.shoppingmall.item.domain.Category;
-import com.example.shoppingmall.item.domain.Item;
 import com.example.shoppingmall.item.domain.dto.CategoryDto;
 import com.example.shoppingmall.item.domain.dto.ItemDto;
+import com.example.shoppingmall.item.domain.dto.ItemOptionDto;
 import com.example.shoppingmall.item.service.CategoryService;
+import com.example.shoppingmall.item.service.ItemOptionService;
 import com.example.shoppingmall.item.service.ItemService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,53 +18,47 @@ public class ItemController {
 
     private final ItemService itemService;
     private final CategoryService categoryService;
+    private final ItemOptionService itemOptionService;
 
-    public ItemController(ItemService itemService, CategoryService categoryService) {
+    public ItemController(ItemService itemService, CategoryService categoryService, ItemOptionService itemOptionService) {
         this.itemService = itemService;
         this.categoryService = categoryService;
+        this.itemOptionService = itemOptionService;
     }
 
     @GetMapping
-    public String list(Model model) {
-        List<ItemDto> items = itemService.getAllItems();
-        model.addAttribute("items", items);
-
-        List<CategoryDto> majorCategories = categoryService.getCategoriesByDepth(1);
-        List<CategoryDto> middleCategories = categoryService.getCategoriesByDepth(2);
-        List<CategoryDto> minorCategories = categoryService.getCategoriesByDepth(3);
-
-        model.addAttribute("majorCategories", majorCategories);
-        model.addAttribute("middleCategories", middleCategories);
-        model.addAttribute("minorCategories", minorCategories);
-
-        return "item/list";
-    }
-
-    @GetMapping("/filter")
-    public String filterItemsByCategory(
+    public String list(
             @RequestParam(required = false) Long majorId,
             @RequestParam(required = false) Long middleId,
             @RequestParam(required = false) Long minorId,
-            Model model) {
-
-        List<ItemDto> items = itemService.getItemsByCategory(majorId, middleId, minorId);
+            Model model
+    ) {
+        List<ItemDto> items = (majorId == null && middleId == null && minorId == null)
+                ? itemService.getAllItems()
+                : itemService.getItemsByCategory(majorId, middleId, minorId);
         model.addAttribute("items", items);
 
-        // 카테고리 리스트도 다시 전달
-        model.addAttribute("majorCategories", categoryService.getCategoriesByDepth(1));
-        model.addAttribute("middleCategories", categoryService.getCategoriesByDepth(2));
-        model.addAttribute("minorCategories", categoryService.getCategoriesByDepth(3));
+        // [추가] 대분류 카테고리 리스트를 Model에 담아 전달
+        List<CategoryDto> majorCategories = categoryService.getCategoriesByDepth(1);
+        model.addAttribute("majorCategories", majorCategories);
+
+        // 선택값 유지
+        model.addAttribute("majorId", majorId);
+        model.addAttribute("middleId", middleId);
+        model.addAttribute("minorId", minorId);
 
         return "item/list";
     }
 
     @GetMapping("/{id}")
     public String detail(@PathVariable Long id, Model model) {
-        ItemDto itemDto = itemService.getItemById(id);
-        CategoryDto categoryDto = categoryService.getCategoryByItemId(id);
+        ItemDto item = itemService.getItemById(id);
+        CategoryDto category = categoryService.getCategoryByItemId(id);
+        List<ItemOptionDto> options = itemOptionService.getItemOptionsWithInventory(id); // 서비스 계층에서 옵션+재고 조회
 
-        model.addAttribute("item", itemDto);
-        model.addAttribute("category", categoryDto);
+        model.addAttribute("item", item);
+        model.addAttribute("category", category);
+        model.addAttribute("options", options);
 
         return "item/detail";
     }

@@ -5,65 +5,110 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>상품 상세</title>
+    <title th:text="${item.name} + ' - 상세정보'">상품 상세</title>
     <link rel="stylesheet" th:href="@{/resources/css/style.css}">
 </head>
 
 <body>
+<div layout:fragment="content" class="container">
 
-<div layout:fragment="content">
-    <h1>상품 상세 정보</h1>
-    <table border="1">
-        <tr>
-            <th>카테고리 대분류</th>
-            <td th:text="${category.parent != null && category.parent.parent != null ? category.parent.parent.name : '-'}">
-                대분류
-            </td>
-        </tr>
-        <tr>
-            <th>카테고리 중분류</th>
-            <td th:text="${category.parent != null ? category.parent.name : '-'}">중분류</td>
-        </tr>
-        <tr>
-            <th>카테고리 소분류</th>
-            <td th:text="${category.name}">소분류</td>
-        </tr>
-        <tr>
-            <th>이름</th>
-            <td th:text="${item.name}">상품명</td>
-        </tr>
-        <tr>
-            <th>설명</th>
-            <td th:text="${item.description}">설명</td>
-        </tr>
-        <tr>
-            <th>가격</th>
-            <td th:text="${item.price}">0</td>
-        </tr>
-        <tr>
-            <th>상태</th>
-            <td th:text="${item.status}">SALE</td>
-        </tr>
-        <tr>
-            <th>등급</th>
-            <td th:text="${item.grade}">A</td>
-        </tr>
-        <tr>
-            <th>국가</th>
-            <td th:text="${item.manufactureCountry}">Korea</td>
-        </tr>
-        <tr>
-            <th>베스트셀러</th>
-            <td th:text="${item.isBestSeller} ? 'Yes' : 'No'">Yes</td>
-        </tr>
-    </table>
+    <h1 th:text="${item.name}">상품명</h1>
 
-    <form th:action="@{/item/delete/{id}(id=${item.itemId})}" method="post">
+    <div class="item-detail-box">
+        <img th:src="@{${item.image}}" alt="상품 이미지" style="width:300px; height:auto;"/>
+        <div class="item-info">
+            <p><strong>설명:</strong> <span th:text="${item.description}"></span></p>
+            <p><strong>가격:</strong> <span th:text="${item.price}"></span> 원</p>
+            <p><strong>등급:</strong> <span th:text="${item.grade}"></span></p>
+            <p><strong>제조국:</strong> <span th:text="${item.manufactureCountry}"></span></p>
+            <p><strong>상태:</strong> <span th:text="${item.status}"></span></p>
+            <p><strong>베스트셀러:</strong> <span th:text="${item.isBestSeller} ? 'Yes' : 'No'"></span></p>
+        </div>
+    </div>
+
+    <form th:action="@{/cart/add}" method="post">
+        <input type="hidden" name="itemId" th:value="${item.itemId}"/>
+
+        <!-- 숨겨진 itemOptionId (JS로 설정됨) -->
+        <input type="hidden" id="itemOptionId" name="itemOptionId"/>
+
+        <!-- 색상 선택 -->
+        <label for="colorSelect">색상:</label>
+        <select id="colorSelect" required>
+            <option disabled selected>색상을 선택하세요</option>
+            <th:block th:each="opt : ${options}">
+                <option th:if="${opt.colorName != null}"
+                        th:value="${opt.colorOptionId}"
+                        th:text="${opt.colorName}"
+                        th:data-sizeid="${opt.sizeOptionId}"
+                        th:data-itemoptionid="${opt.itemOptionId}"
+                        th:data-colorid="${opt.colorOptionId}">
+                </option>
+            </th:block>
+        </select>
+
+        <!-- 사이즈 선택 -->
+        <label for="sizeSelect">사이즈:</label>
+        <select id="sizeSelect" required>
+            <option disabled selected>사이즈를 선택하세요</option>
+            <th:block th:each="opt : ${options}">
+                <option th:if="${opt.sizeName != null}"
+                        th:value="${opt.sizeOptionId}"
+                        th:text="${opt.sizeName}"
+                        th:data-colorid="${opt.colorOptionId}"
+                        th:data-itemoptionid="${opt.itemOptionId}"
+                        th:data-sizeid="${opt.sizeOptionId}">
+                </option>
+            </th:block>
+        </select>
+
+        <p id="inventoryInfo" style="margin-top: 10px; color: green;"></p>
+
+        <label for="quantity">수량:</label>
+        <input type="number" name="quantity" id="quantity" value="1" min="1" required/>
+
+        <div class="action-buttons">
+            <button type="submit" formaction="/cart/add">장바구니</button>
+            <button type="submit" formaction="/order/create">주문하기</button>
+        </div>
+    </form>
+
+    <form th:action="@{/item/delete/{id}(id=${item.itemId})}" method="post" style="margin-top: 20px;">
         <button type="submit">삭제</button>
     </form>
 
     <a th:href="@{/item}">목록으로</a>
 </div>
 
+<script>
+    const options = /*[[${options}]]*/ [];
+    const colorSelect = document.getElementById('colorSelect');
+    const sizeSelect = document.getElementById('sizeSelect');
+    const itemOptionIdInput = document.getElementById('itemOptionId');
+    const inventoryInfo = document.getElementById('inventoryInfo');
+
+    function findItemOptionId(colorId, sizeId) {
+        return options.find(opt =>
+            opt.colorOptionId === colorId && opt.sizeOptionId === sizeId
+        );
+    }
+
+    function updateSelection() {
+        const colorId = Number(colorSelect.value);
+        const sizeId = Number(sizeSelect.value);
+        const match = options.find(o => o.colorOptionId === colorId && o.sizeOptionId === sizeId);
+
+        if (match) {
+            itemOptionIdInput.value = match.itemOptionId;
+            inventoryInfo.textContent = `재고: ${match.quantity}개 / 추가금액: ${match.additionalPrice}원`;
+        } else {
+            itemOptionIdInput.value = '';
+            inventoryInfo.textContent = '해당 조합의 옵션이 없습니다.';
+        }
+    }
+
+    colorSelect.addEventListener('change', updateSelection);
+    sizeSelect.addEventListener('change', updateSelection);
+</script>
 </body>
 </html>

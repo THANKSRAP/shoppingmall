@@ -13,9 +13,15 @@
 
 <div layout:fragment="content">
 
-    <form th:action="@{/item/filter}" method="get">
-        <!-- 대분류 -->
-        <select name="majorId">
+    <!-- 선택값을 안전하게 전달 -->
+    <div id="categoryData"
+         th:data-major-id="${majorId}"
+         th:data-middle-id="${middleId}"
+         th:data-minor-id="${minorId}"></div>
+
+    <form id="categoryFilterForm" th:action="@{/item}" method="get"
+          style="display: flex; gap: 10px; align-items: center;">
+        <select name="majorId" id="majorSelect">
             <option value="">대분류 선택</option>
             <th:block th:each="cat : ${majorCategories}">
                 <option th:value="${cat.categoryId}"
@@ -23,27 +29,12 @@
                         th:selected="${cat.categoryId == majorId}"></option>
             </th:block>
         </select>
-
-        <!-- 중분류 -->
-        <select name="middleId">
+        <select name="middleId" id="middleSelect">
             <option value="">중분류 선택</option>
-            <th:block th:each="cat : ${middleCategories}">
-                <option th:value="${cat.categoryId}"
-                        th:text="${cat.name}"
-                        th:selected="${cat.categoryId == middleId}"></option>
-            </th:block>
         </select>
-
-        <!-- 소분류 -->
-        <select name="minorId">
+        <select name="minorId" id="minorSelect">
             <option value="">소분류 선택</option>
-            <th:block th:each="cat : ${minorCategories}">
-                <option th:value="${cat.categoryId}"
-                        th:text="${cat.name}"
-                        th:selected="${cat.categoryId == minorId}"></option>
-            </th:block>
         </select>
-
         <button type="submit">필터</button>
     </form>
 
@@ -74,6 +65,10 @@
         </tbody>
     </table>
 </div>
+
+<th:block layout:fragment="script">
+    <script th:src="@{/resources/js/category.js}"></script>
+</th:block>
 
 </body>
 </html>
