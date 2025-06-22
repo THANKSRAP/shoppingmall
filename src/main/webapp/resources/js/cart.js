@@ -107,20 +107,22 @@ function selectAll(checked) {
 
 
 // 선택 삭제
-function deleteSelected() {
+function deleteSelected(e) {
+    if (e) e.preventDefault();
+
     const checkedItems = Array.from(document.querySelectorAll('.select-item:checked'));
     if (checkedItems.length === 0) {
         alert('삭제할 상품을 선택하세요.');
         return;
     }
-    const ids = checkedItems.map(chk => chk.closest('.cart-item').dataset.cartId);
-    if (!confirm('선택한 상품을 삭제하시겠습니까?')) return;
 
+    const ids = checkedItems.map(chk => chk.closest('.product-item').dataset.cartId);
+    if (!confirm('선택한 상품을 삭제하시겠습니까?')) return;
 
     fetch('/cart/items', {
         method: 'DELETE',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({cartItemIds: ids})
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cartItemIds: ids })
     })
         .then(res => {
             if (res.ok) {
@@ -132,8 +134,6 @@ function deleteSelected() {
         })
         .catch(() => alert('서버 오류'));
 }
-
-
 
 
 // 장바구니에서 상품 제거
@@ -275,34 +275,7 @@ document.getElementById('select-all-link').addEventListener('click', function (e
 });
 
 // ✅ 선택삭제
-document.getElementById('delete-selected-link').addEventListener('click', function (e) {
-    e.preventDefault();
-
-    const checkedItems = Array.from(document.querySelectorAll('.select-item:checked'));
-    if (checkedItems.length === 0) {
-        alert('삭제할 상품을 선택하세요.');
-        return;
-    }
-
-    const ids = checkedItems.map(chk => chk.closest('.product-item').dataset.cartId);
-
-    if (!confirm('선택한 상품을 삭제하시겠습니까?')) return;
-
-    fetch('/cart/items', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ cartItemIds: ids })
-    })
-        .then(res => {
-            if (res.ok) {
-                alert('선택한 상품이 삭제되었습니다.');
-                location.reload();
-            } else {
-                alert('삭제 실패');
-            }
-        })
-        .catch(() => alert('서버 오류'));
-});
+document.getElementById('delete-selected-link').addEventListener('click', deleteSelected);
 
 // ✅ 전체상품삭제
 document.getElementById('delete-all-link').addEventListener('click', function (e) {
