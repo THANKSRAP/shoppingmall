@@ -55,10 +55,14 @@ public class ItemController {
         ItemDto item = itemService.getItemById(id);
         CategoryDto category = categoryService.getCategoryByItemId(id);
         List<ItemOptionDto> options = itemOptionService.getItemOptionsWithInventory(id); // 서비스 계층에서 옵션+재고 조회
+        List<ItemOptionDto> sizeOptions = itemOptionService.getSizeOptions(id);
+        List<ItemOptionDto> colorOptions = itemOptionService.getColorOptions(id);
 
         model.addAttribute("item", item);
         model.addAttribute("category", category);
         model.addAttribute("options", options);
+        model.addAttribute("colorOptions", colorOptions);
+        model.addAttribute("sizeOptions", sizeOptions);
 
         return "item/detail";
     }

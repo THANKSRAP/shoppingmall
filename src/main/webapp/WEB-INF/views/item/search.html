@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<head>
+    <meta charset="UTF-8">
+    <title>상품 검색 페이지</title>
+    <link rel="stylesheet" th:href="@{/resources/css/style.css}">
+</head>
+
+<body>
+
+<div layout:fragment="content">
+
+    <!-- Search Bar -->
+    <div class="search-bar p-2">
+        <form th:action="@{/item/search}" method="get" class="d-flex">
+            <input class="form-control" type="search" name="name" placeholder="상품을 검색하세요"
+                   th:value="${searchName}">
+            <button class="btn btn-outline-primary" type="submit">
+                <i class="fas fa-search"></i>
+            </button>
+        </form>
+    </div>
+
+    <table border="1">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>이름</th>
+            <th>가격</th>
+            <th>상태</th>
+            <th>등급</th>
+            <th>국가</th>
+            <th>상세</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="item : ${items}">
+            <td th:text="${item.itemId}">ID</td>
+            <td th:text="${item.name}">상품명</td>
+            <td th:text="${item.price}">0</td>
+            <td th:text="${item.status}">SALE</td>
+            <td th:text="${item.grade}">A</td>
+            <td th:text="${item.manufactureCountry}">Korea</td>
+            <td><a th:href="@{/item/{id}(id=${item.itemId})}">상세보기</a></td>
+        </tr>
+        </tbody>
+    </table>
+
+
+</div>
+
+</body>
+</html>

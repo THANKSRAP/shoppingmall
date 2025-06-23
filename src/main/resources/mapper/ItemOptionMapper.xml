@@ -1,0 +1,46 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.shoppingmall.item.dao.ItemOptionDao">
+
+    <!-- 전체 옵션 + 재고 조회 -->
+    <select id="findItemOptionsWithInventory" parameterType="long"
+            resultType="com.example.shoppingmall.item.domain.dto.ItemOptionDto">
+        SELECT
+            io.item_option_id AS itemOptionId,
+            io.item_id AS itemId,
+            io.color_option_id AS colorOptionId,
+            color_opt.value AS colorName,
+            io.size_option_id AS sizeOptionId,
+            size_opt.value AS sizeName,
+            io.additional_price AS additionalPrice,
+            inv.quantity AS quantity
+        FROM item_option io
+                 LEFT JOIN `option` color_opt ON io.color_option_id = color_opt.option_id
+                 LEFT JOIN `option` size_opt ON io.size_option_id = size_opt.option_id
+                 LEFT JOIN inventory inv ON io.item_option_id = inv.item_option_id
+        WHERE io.item_id = #{itemId}
+    </select>
+
+    <!-- 색상 옵션만 -->
+    <select id="findColorOptions" resultType="com.example.shoppingmall.item.domain.dto.ItemOptionDto">
+        SELECT DISTINCT
+            o.option_id AS colorOptionId,
+            o.value AS colorName
+        FROM item_option io
+                 JOIN `option` o ON io.color_option_id = o.option_id
+        WHERE io.item_id = #{itemId}
+    </select>
+
+    <!-- 사이즈 옵션만 -->
+    <select id="findSizeOptions" resultType="com.example.shoppingmall.item.domain.dto.ItemOptionDto">
+        SELECT DISTINCT
+            o.option_id AS sizeOptionId,
+            o.value AS sizeName
+        FROM item_option io
+                 JOIN `option` o ON io.size_option_id = o.option_id
+        WHERE io.item_id = #{itemId}
+    </select>
+
+</mapper>
