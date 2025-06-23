@@ -36,15 +36,16 @@
         VALUES (#{userId}, #{itemId}, #{itemOptionId}, #{itemQuantity}, NOW(), NOW(), NOW())
     </insert>
 
-    <delete  id="deleteByCartId" parameterType="int">
+    <delete id="deleteByCartId" parameterType="int">
         DELETE FROM cart WHERE cart_id = #{cartId}
     </delete>
 
-    <update id="updateItemQuantity" parameterType="com.example.shoppingmall.cart.domain.CartDto">
-        UPDATE cart
-        SET quantity = #{itemQuantity}, updated_at = NOW()
-        WHERE cart_id = #{cartId}
-    </update>
+    <delete id="deleteByCartIds" parameterType="list">
+        DELETE FROM cart WHERE cart_id IN
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
 
     <delete id="deleteAllByUserId" parameterType="int">
         DELETE FROM cart WHERE user_id = #{userId}
@@ -59,11 +60,27 @@
         SELECT COUNT(*) FROM cart WHERE user_id = #{userId}
     </select>
 
+    <update id="updateItemQuantity" parameterType="com.example.shoppingmall.cart.domain.CartDto">
+        UPDATE cart
+        SET quantity = #{itemQuantity}, updated_at = NOW()
+        WHERE cart_id = #{cartId}
+    </update>
+
     <update id="updateQuantity">
         UPDATE cart
-        SET quantity = #{quantity}
-        WHERE id = #{cartId}
+        SET quantity = #{quantity}, updated_at = NOW()
+        WHERE cart_id = #{cartId}
     </update>
+
+    <insert id="insertToWishList">
+        INSERT INTO wish_list (user_id, item_id, added_at, created_at, updated_at)
+        VALUES (#{userId}, #{itemId}, NOW(), NOW(), NOW())
+    </insert>
+
+    <insert id="addToWishlist" parameterType="map">
+        INSERT INTO wish_list (user_id, item_id, added_at, created_at, updated_at)
+        VALUES (#{userId}, #{itemId}, NOW(), NOW(), NOW())
+    </insert>
 
 
 </mapper>

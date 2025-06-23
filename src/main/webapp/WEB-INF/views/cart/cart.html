@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <title>장바구니</title>
-    <link rel="stylesheet" th:href="@{/resources/css/cart.css}"/>
+    <link rel="stylesheet" th:href="@{/resources/css/cart.css}" />
 </head>
 <body>
 <div layout:fragment="content">
@@ -42,9 +42,9 @@
                 </div>
 
                 <div th:each="cartItem : ${cartList}">
-                    <div class="product-item" th:data-cart-id="${cartItem.cartId}" th:data-price="${cartItem.price}">
+                    <div class="cart-item product-item" th:data-cart-id="${cartItem.cartId}" th:data-price="${cartItem.price}">
                         <input type="checkbox" class="select-item"
-                               th:id="'chk_' + ${cartItem.cartId}" th:value="${cartItem.cartId}"/>
+                               th:id="'chk_' + ${cartItem.cartId}" th:value="${cartItem.cartId}" />
 
                         <div class="product-image">
                             <img th:src="${cartItem.itemImage}" th:alt="${cartItem.itemName}" width="80" height="80">
@@ -57,8 +57,7 @@
                             </div>
 
                             <div class="product-price"
-                                 th:text="${#numbers.formatDecimal(cartItem.price, 0, 0)} + '원'">0원
-                            </div>
+                                 th:text="${#numbers.formatDecimal(cartItem.price, 0, 0)} + '원'">0원</div>
 
                             <div class="product-size" th:text="${cartItem.sizeOptionName}">사이즈</div>
 
@@ -70,20 +69,17 @@
 
                         <div class="product-actions">
                             <button class="remove-btn"
-                                    th:onclick="'removeFromCart(' + ${cartItem.cartId} + ')'">×
-                            </button>
+                                    th:onclick="'removeFromCart(' + ${cartItem.cartId} + ')'">×</button>
 
                             <div class="quantity-controls">
                                 <button class="quantity-btn"
-                                        th:onclick="'changeQuantity(' + ${cartItem.cartId} + ', -1)'">-
-                                </button>
+                                        th:onclick="'changeQuantity(' + ${cartItem.cartId} + ', -1)'">-</button>
 
                                 <input type="number" class="quantity-input" min="1"
-                                       th:id="'qty_' + ${cartItem.cartId}" th:value="${cartItem.quantity}"/>
+                                       th:id="'qty_' + ${cartItem.cartId}" th:value="${cartItem.quantity}" />
 
                                 <button class="quantity-btn"
-                                        th:onclick="'changeQuantity(' + ${cartItem.cartId} + ', 1)'">+
-                                </button>
+                                        th:onclick="'changeQuantity(' + ${cartItem.cartId} + ', 1)'">+</button>
                             </div>
 
                             <!--          <button class="update-btn"-->
@@ -105,7 +101,7 @@
 
                                 <!-- 아랫줄: 버튼 두 개 -->
                                 <div class="order-buttons-row">
-                                    <button class="wishlist-btn">관심상품</button>
+                                    <button class="wishlist-btn" th:data-item-id="${cartItem.itemId}">관심상품</button>
                                     <button class="order-now-btn">주문하기</button>
                                 </div>
                             </div>
@@ -140,10 +136,8 @@
         </div>
     </div>
 </div>
-
 <th:block layout:fragment="script">
     <script th:src="@{/resources/js/cart.js}"></script>
 </th:block>
-
 </body>
 </html>
