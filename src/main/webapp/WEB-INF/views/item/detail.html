@@ -36,14 +36,8 @@
         <label for="colorSelect">색상:</label>
         <select id="colorSelect" required>
             <option disabled selected>색상을 선택하세요</option>
-            <th:block th:each="opt : ${options}">
-                <option th:if="${opt.colorName != null}"
-                        th:value="${opt.colorOptionId}"
-                        th:text="${opt.colorName}"
-                        th:data-sizeid="${opt.sizeOptionId}"
-                        th:data-itemoptionid="${opt.itemOptionId}"
-                        th:data-colorid="${opt.colorOptionId}">
-                </option>
+            <th:block th:each="color : ${colorOptions}">
+                <option th:value="${color.colorOptionId}" th:text="${color.colorName}"></option>
             </th:block>
         </select>
 
@@ -51,13 +45,9 @@
         <label for="sizeSelect">사이즈:</label>
         <select id="sizeSelect" required>
             <option disabled selected>사이즈를 선택하세요</option>
-            <th:block th:each="opt : ${options}">
-                <option th:if="${opt.sizeName != null}"
-                        th:value="${opt.sizeOptionId}"
-                        th:text="${opt.sizeName}"
-                        th:data-colorid="${opt.colorOptionId}"
-                        th:data-itemoptionid="${opt.itemOptionId}"
-                        th:data-sizeid="${opt.sizeOptionId}">
+            <th:block th:each="size : ${sizeOptions}">
+                <option th:value="${size.sizeOptionId}"
+                        th:text="${size.sizeName + ' (' + size.quantity + '개 재고)'}">
                 </option>
             </th:block>
         </select>
@@ -80,30 +70,44 @@
     <a th:href="@{/item}">목록으로</a>
 </div>
 
-<script>
+<script th:inline="javascript">
     const options = /*[[${options}]]*/ [];
     const colorSelect = document.getElementById('colorSelect');
     const sizeSelect = document.getElementById('sizeSelect');
     const itemOptionIdInput = document.getElementById('itemOptionId');
     const inventoryInfo = document.getElementById('inventoryInfo');
+    const quantityInput = document.getElementById('quantity');
 
-    function findItemOptionId(colorId, sizeId) {
-        return options.find(opt =>
-            opt.colorOptionId === colorId && opt.sizeOptionId === sizeId
-        );
-    }
+    const cartBtn = document.querySelector('button[formaction="/cart/add"]');
+    const orderBtn = document.querySelector('button[formaction="/order/create"]');
 
     function updateSelection() {
         const colorId = Number(colorSelect.value);
         const sizeId = Number(sizeSelect.value);
-        const match = options.find(o => o.colorOptionId === colorId && o.sizeOptionId === sizeId);
+
+        const match = options.find(o =>
+            o.colorOptionId === colorId && o.sizeOptionId === sizeId
+        );
 
         if (match) {
             itemOptionIdInput.value = match.itemOptionId;
             inventoryInfo.textContent = `재고: ${match.quantity}개 / 추가금액: ${match.additionalPrice}원`;
+
+            quantityInput.max = match.quantity;
+            if (Number(quantityInput.value) > match.quantity) {
+                quantityInput.value = match.quantity;
+            }
+
+            const isSoldOut = match.quantity === 0;
+            cartBtn.disabled = isSoldOut;
+            orderBtn.disabled = isSoldOut;
+
         } else {
             itemOptionIdInput.value = '';
             inventoryInfo.textContent = '해당 조합의 옵션이 없습니다.';
+            quantityInput.removeAttribute('max');
+            cartBtn.disabled = true;
+            orderBtn.disabled = true;
         }
     }
 
