@@ -13,7 +13,7 @@ const indicatorProgress = document.querySelector(".indicator-progress")
 
 // 상세 리뷰 모달 열기 (Version 3)
 function openReviewDetail(reviewId) {
-    fetch(`/shoppingmall/review/detail?reviewId=${reviewId}`)
+    fetch(`/review/detail?reviewId=${reviewId}`)
         .then(res => {
             if (!res.ok) {
                 throw new Error(`HTTP 상태 코드 ${res.status}`);
@@ -112,7 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     console.log("📡 /review/list fetch 요청 시작");
 
-    fetch("/shoppingmall/review/list")
+    fetch("/review/list")
         .then(res => {
             if (!res.ok) {
                 throw new Error(`서버 응답 오류: ${res.status}`);
