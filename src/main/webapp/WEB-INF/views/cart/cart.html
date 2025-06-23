@@ -42,7 +42,7 @@
         </div>
 
         <div th:each="cartItem : ${cartList}">
-          <div class="product-item" th:data-cart-id="${cartItem.cartId}" th:data-price="${cartItem.price}">
+          <div class="cart-item product-item" th:data-cart-id="${cartItem.cartId}" th:data-price="${cartItem.price}">
             <input type="checkbox" class="select-item"
                    th:id="'chk_' + ${cartItem.cartId}" th:value="${cartItem.cartId}" />
 

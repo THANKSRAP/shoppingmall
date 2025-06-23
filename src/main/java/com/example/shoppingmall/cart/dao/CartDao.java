@@ -19,6 +19,8 @@ public interface CartDao {
     int updateItemQuantity(CartDto cart) throws Exception;
     //특정 장바구니 항목 제거
     int deleteByCartId(int cartId) throws Exception;
+    //여러 항목 일괄 삭제
+    void deleteByCartIds(List<Integer> cartIds) throws Exception;
     //장바구니 전체 비우기
     int deleteAllByUserId(int userId) throws Exception;
     //해당 유저의 장바구니 상품 수 집계

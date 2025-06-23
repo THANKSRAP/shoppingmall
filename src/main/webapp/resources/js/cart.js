@@ -33,7 +33,7 @@ function updateCartQuantity(cartId, quantity, optionDetail) {
         optionDetail
     });
 
-    fetch('/cart/item/' + cartId, {
+    fetch('/shoppingmall/cart/item/' + cartId, {
         method: 'PATCH',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({quantity: quantity})

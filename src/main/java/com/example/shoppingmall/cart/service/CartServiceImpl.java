@@ -34,9 +34,7 @@ public class CartServiceImpl implements CartService {
     @Override
     public void deleteByCartIds(List<Integer> cartItemIds) {
         try {
-            for (int id : cartItemIds) {
-                cartdao.deleteByCartId(id);
-            }
+            cartdao.deleteByCartIds(cartItemIds);  // ✅ 한 번에 삭제
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

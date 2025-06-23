@@ -33,17 +33,18 @@ public class CartController {
     }
 
     // ✅ [2] 수량 변경 API (PATCH)
-    @PatchMapping("/api/item/{id}")
+    @PatchMapping("/item/{id}")
     @ResponseBody
     public ResponseEntity<String> updateQuantity(@PathVariable("id") int cartId,
                                                  @RequestBody Map<String, Object> payload) {
+        System.out.println("✅ PATCH 요청 받음: cartId=" + cartId);
         int quantity = (int) payload.get("quantity");
         cartService.updateQuantity(cartId, quantity);
         return ResponseEntity.ok("업데이트 성공");
     }
 
     // ✅ [3] 선택 삭제 API (DELETE)
-    @DeleteMapping("/api/items")
+    @DeleteMapping("/items")
     @ResponseBody
     public ResponseEntity<Void> deleteSelectedItems(@RequestBody Map<String, List<Integer>> body) {
         List<Integer> cartItemIds = body.get("cartItemIds");
@@ -52,7 +53,7 @@ public class CartController {
     }
 
     // ✅ [4] 전체 삭제 API (DELETE)
-    @DeleteMapping("/api/all")
+    @DeleteMapping("/all")
     @ResponseBody
     public ResponseEntity<Void> deleteAllItems(HttpSession session) {
         int userId = 1; // 로그인 미적용 상태
