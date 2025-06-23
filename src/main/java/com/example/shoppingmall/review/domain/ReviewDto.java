@@ -2,11 +2,13 @@ package com.example.shoppingmall.review.domain;
 
 public class ReviewDto {
     private Long reviewId;
+    private Long itemId;
     private String title;
     private String content;
     private String image;
     private int rating;
     private int view;
+    private String username;
     private String productName;
     private String productImage;
     private String productPrice;
@@ -17,6 +19,14 @@ public class ReviewDto {
 
     public void setReviewId(Long reviewId) {
         this.reviewId = reviewId;
+    }
+
+    public Long getItemId() {
+        return itemId;
+    }
+
+    public void setItemId(Long itemId) {
+        this.itemId = itemId;
     }
 
     public String getTitle() {
@@ -58,7 +68,13 @@ public class ReviewDto {
     public void setView(int view) {
         this.view = view;
     }
+    public String getUsername() {
+        return username;
+    }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
     public String getProductName() {
         return productName;
     }

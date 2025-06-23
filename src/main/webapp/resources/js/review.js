@@ -5,8 +5,8 @@ const mainReviewImage = document.getElementById("mainReviewImage")
 const imageCounter = document.getElementById("imageCounter")
 const indicatorProgress = document.querySelector(".indicator-progress")
 
-let currentImageIndex = 0
-let currentReviewImages = []
+// let currentImageIndex = 0
+// let currentReviewImages = []
 
 // Version 2 → Version 3 연결: 리뷰 카드 클릭 이벤트
 
@@ -22,6 +22,7 @@ function openReviewDetail(reviewId) {
         })
         .then(review => {
             console.log("📦 불러온 리뷰 데이터:", review);
+            console.log("상품 아이디 출력!!!!!!!!!!!!", review.itemId);
             console.log("🖼️ 상품 이미지 URL:", review.productImage);
 
             // 이미지 관련 변수
@@ -42,19 +43,28 @@ function openReviewDetail(reviewId) {
             document.getElementById("detailViewCount").textContent = `조회 ${review.view}`;
 
             // 이미지가 있다면 설정
-            document.getElementById("mainReviewImage").src = review.image ? `/shoppingmall/${review.image}` : "/placeholder.svg?height=400&width=400";
+            document.getElementById("mainReviewImage").src =
+                review.image ? review.image : "/placeholder.svg?height=400&width=400";
+
             const productImageUrl = review.productImage?.startsWith("http")
                 ? review.productImage
-                : review.productImage
-                    ? `/shoppingmall/${review.productImage}`
-                    : "/placeholder.svg?height=80&width=80";
+                : "/placeholder.svg?height=80&width=80";
 
             document.getElementById("detailProductImage").src = productImageUrl;
+            // ✅ 버튼이 이제 DOM에 생겼으므로, 이벤트 연결 가능
+            document.querySelector(".product-detail-btn").addEventListener("click", () => {
+                if (review.itemId) {
+                    window.location.href = `/shoppingmall/item/${review.itemId}`;
+                } else {
+                    alert("상품 정보가 없습니다.");
+                }
+            });
 
-            // 이미지 관련 갤러리 업데이트 함수 (선택 사항)
-            if (typeof updateGalleryImage === "function") {
-                updateGalleryImage();
-            }
+
+            // // 이미지 관련 갤러리 업데이트 함수 (선택 사항)
+            // if (typeof updateGalleryImage === "function") {
+            //     updateGalleryImage();
+            // }
 
             // 모달 열기
             document.getElementById("reviewDetailModal").style.display = "block";
@@ -66,17 +76,17 @@ function openReviewDetail(reviewId) {
         });
 }
 
-// 갤러리 이미지 및 카운터 업데이트
-function updateGalleryImage() {
-    if (currentReviewImages.length > 0) {
-        mainReviewImage.src = currentReviewImages[currentImageIndex]
-        imageCounter.textContent = `${currentImageIndex + 1} / ${currentReviewImages.length}`
-
-        // 진행 표시기 업데이트
-        const progressPercent = ((currentImageIndex + 1) / currentReviewImages.length) * 100
-        indicatorProgress.style.width = `${progressPercent}%`
-    }
-}
+// // 갤러리 이미지 및 카운터 업데이트
+// function updateGalleryImage() {
+//     if (currentReviewImages.length > 0) {
+//         mainReviewImage.src = currentReviewImages[currentImageIndex]
+//         imageCounter.textContent = `${currentImageIndex + 1} / ${currentReviewImages.length}`
+//
+//         // 진행 표시기 업데이트
+//         const progressPercent = ((currentImageIndex + 1) / currentReviewImages.length) * 100
+//         indicatorProgress.style.width = `${progressPercent}%`
+//     }
+// }
 
 
 // 상세 리뷰 모달 닫기
@@ -121,6 +131,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 totalRating += review.rating;
 
+                const obfuscatedUsername = review.username
+                    ? review.username[0] + "*".repeat(review.username.length - 1)
+                    : "익명";
+
                 const card = document.createElement("div");
                 card.className = "review-card";
                 card.dataset.reviewId = review.reviewId;
@@ -137,7 +151,7 @@ document.addEventListener("DOMContentLoaded", () => {
                       <p class="review-text">${review.content.length > 80 ? review.content.substring(0, 80) + "..." : review.content}</p>
                       <div class="review-footer">
                         <div class="user-info">
-                          <span class="username">익명</span>
+                          <span class="username">${obfuscatedUsername}</span>
                           <div class="rating">${"⭐".repeat(review.rating)}</div>
                         </div>
                         <div class="product-info">
@@ -212,10 +226,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.querySelector(".share-btn").addEventListener("click", () => {
         alert("리뷰를 공유합니다!")
-    })
-
-    document.querySelector(".product-detail-btn").addEventListener("click", () => {
-        alert("상품 상세 페이지로 이동합니다!")
     })
 
 // 페이지네이션 기능

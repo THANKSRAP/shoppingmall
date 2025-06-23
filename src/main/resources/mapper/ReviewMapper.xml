@@ -5,10 +5,12 @@
 
 <mapper namespace="com.example.shoppingmall.review.dao.ReviewDao">
     <select id="findById" parameterType="long" resultType="com.example.shoppingmall.review.domain.ReviewDto">
-        SELECT r.review_id, r.title, r.content, r.image, r.rating, r.view,
+        SELECT r.review_id, r.item_id AS itemId, r.title, r.content, r.image, r.rating, r.view,
+               u.name AS username,
                i.name AS productName, i.image AS productImage, i.price AS productPrice
         FROM review r
-                 JOIN item i ON r.item_id = i.item_id
+        JOIN item i ON r.item_id = i.item_id
+        JOIN user u ON r.user_id = u.user_id
         WHERE r.review_id = #{reviewId}
     </select>
 
@@ -21,6 +23,7 @@
             r.review_id AS reviewId,
             r.item_id AS itemId,
             r.user_id AS userId,
+            u.name AS username,
             r.rating,
             r.title,
             r.content,
@@ -33,7 +36,8 @@
             i.image AS productImage,
             i.price AS productPrice
         FROM review r
-                 JOIN item i ON r.item_id = i.item_id
+        JOIN item i ON r.item_id = i.item_id
+        JOIN user u ON r.user_id = u.user_id
         WHERE r.is_hidden = FALSE
         ORDER BY r.created_at DESC
     </select>
