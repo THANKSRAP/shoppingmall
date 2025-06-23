@@ -7,7 +7,7 @@ public interface CartService {
     List<CartDto> getCartByUserId(int userId);
     void updateQuantity(int cartId, int quantity);
     void deleteByCartIds(List<Integer> cartItemIds);
+
     void deleteAllByUserId(int userId);
-    void addToWishlist(int userId, int itemId);
 
 }

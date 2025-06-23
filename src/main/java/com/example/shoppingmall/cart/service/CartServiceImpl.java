@@ -34,7 +34,9 @@ public class CartServiceImpl implements CartService {
     @Override
     public void deleteByCartIds(List<Integer> cartItemIds) {
         try {
-            cartdao.deleteByCartIds(cartItemIds);  // ✅ 한 번에 삭제
+            for (int id : cartItemIds) {
+                cartdao.deleteByCartId(id);
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -44,15 +46,6 @@ public class CartServiceImpl implements CartService {
     public void deleteAllByUserId(int userId) {
         try {
             cartdao.deleteAllByUserId(userId);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public void addToWishlist(int userId, int itemId)  {
-        try {
-            cartdao.addToWishlist(userId, itemId);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
