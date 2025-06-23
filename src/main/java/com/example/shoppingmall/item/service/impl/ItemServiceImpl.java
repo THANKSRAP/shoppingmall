@@ -62,6 +62,9 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDto getItemById(Long id) {
         Item item = itemDao.findById(id);
+        if (item == null) {
+            throw new IllegalArgumentException("해당 ID의 상품을 찾을 수 없습니다: " + id);
+        }
         return this.toDto(item);
     }
 

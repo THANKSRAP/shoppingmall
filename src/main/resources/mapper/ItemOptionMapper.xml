@@ -4,19 +4,18 @@
 
 <mapper namespace="com.example.shoppingmall.item.dao.ItemOptionDao">
 
+    <!-- 전체 옵션 + 재고 조회 -->
     <select id="findItemOptionsWithInventory" parameterType="long"
             resultType="com.example.shoppingmall.item.domain.dto.ItemOptionDto">
         SELECT
-            io.item_option_id,
-            io.item_id,
-            io.color_option_id,
-            color_opt.value AS color_name,
-            io.size_option_id,
-            size_opt.value AS size_name,
-            io.additional_price,
-            io.created_at,
-            io.updated_at,
-            inv.quantity
+            io.item_option_id AS itemOptionId,
+            io.item_id AS itemId,
+            io.color_option_id AS colorOptionId,
+            color_opt.value AS colorName,
+            io.size_option_id AS sizeOptionId,
+            size_opt.value AS sizeName,
+            io.additional_price AS additionalPrice,
+            inv.quantity AS quantity
         FROM item_option io
                  LEFT JOIN `option` color_opt ON io.color_option_id = color_opt.option_id
                  LEFT JOIN `option` size_opt ON io.size_option_id = size_opt.option_id
@@ -43,6 +42,5 @@
                  JOIN `option` o ON io.size_option_id = o.option_id
         WHERE io.item_id = #{itemId}
     </select>
-
 
 </mapper>

@@ -14,7 +14,7 @@ public class CategoryDaoImpl implements CategoryDao {
     private final SqlSession sqlSession;
     private static final String NAMESPACE = "CategoryMapper.";
 
-    private CategoryDaoImpl(SqlSession sqlSession) {
+    public CategoryDaoImpl(SqlSession sqlSession) {
         this.sqlSession = sqlSession;
     }
 

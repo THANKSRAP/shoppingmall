@@ -2,6 +2,7 @@ package com.example.shoppingmall.item.controller;
 
 import com.example.shoppingmall.item.domain.dto.ItemOptionDto;
 import com.example.shoppingmall.item.service.ItemOptionService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,8 +20,10 @@ public class ItemOptionController {
 
     // 특정 상품의 옵션들 조회
     @GetMapping("/{itemId}")
-    public List<ItemOptionDto> getItemOptions(@PathVariable Long itemId) {
-        return itemOptionService.getItemOptionsWithInventory(itemId);
+    public ResponseEntity<List<ItemOptionDto>> getItemOptions(@PathVariable Long itemId) {
+        List<ItemOptionDto> options = itemOptionService.getItemOptionsWithInventory(itemId);
+
+        return ResponseEntity.ok(options); // 200 OK + JSON Body
     }
 
     // 특정 상품의 색생 옵션 조회
