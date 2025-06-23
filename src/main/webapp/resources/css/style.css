@@ -12,6 +12,18 @@
   --dark-color: #343a40;
 }
 
+/* 모든 a 태그의 밑줄 제거 */
+a {
+  text-decoration: none !important;
+  color: inherit;
+}
+
+/* a 태그에 포커스(클릭, 탭 등) 시 파란색 아웃라인 제거 */
+a:focus, a:active {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
 /* ===================== */
 /* 🌐 Global Styles       */
 /* ===================== */

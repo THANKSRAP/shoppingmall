@@ -1,6 +1,6 @@
 package com.example.shoppingmall;
 
-import com.example.shoppingmall.item.domain.Item;
+import com.example.shoppingmall.item.domain.dto.ItemDto;
 import com.example.shoppingmall.item.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,8 +17,8 @@ public class HomeController {
 
     @GetMapping("/")
     public String home(Model model) {
-        List<Item> bestSellers = itemService.findBestSellers();
-        List<Item> newReleases = itemService.findNewItems();
+        List<ItemDto> bestSellers = itemService.getBestSellers();
+        List<ItemDto> newReleases = itemService.getNewItems();
 
         model.addAttribute("bestSellers", bestSellers);
         model.addAttribute("newReleases", newReleases);

@@ -3,52 +3,47 @@
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xmlns:beans="http://www.springframework.org/schema/beans"
              xmlns:context="http://www.springframework.org/schema/context"
-             xmlns:tx="http://www.springframework.org/schema/tx"
-             xmlns:util="http://www.springframework.org/schema/util"
-             xsi:schemaLocation="
-                 http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd
+             xsi:schemaLocation="http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd
                  http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
-                 http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd
-                 http://www.springframework.org/schema/tx https://www.springframework.org/schema/tx/spring-tx.xsd
-                 http://www.springframework.org/schema/util https://www.springframework.org/schema/util/spring-util.xsd">
+                 http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
 
 
     <!-- Enables @Controller, @RequestMapping, etc -->
-    <annotation-driven />
+    <annotation-driven/>
 
     <!-- Static resource handling -->
-    <resources mapping="/resources/**" location="/resources/" />
+    <resources mapping="/resources/**" location="/resources/"/>
 
     <!-- Thymeleaf 템플릿 리졸버 -->
     <beans:bean id="templateResolver" class="org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver">
-        <beans:property name="prefix" value="/WEB-INF/views/" />
-        <beans:property name="suffix" value=".html" />
-        <beans:property name="templateMode" value="HTML" />
-        <beans:property name="characterEncoding" value="UTF-8" />
-        <beans:property name="cacheable" value="false" />
+        <beans:property name="prefix" value="/WEB-INF/views/"/>
+        <beans:property name="suffix" value=".html"/>
+        <beans:property name="templateMode" value="HTML"/>
+        <beans:property name="characterEncoding" value="UTF-8"/>
+        <beans:property name="cacheable" value="false"/>
     </beans:bean>
 
     <!-- Thymeleaf Layout Dialect 설정 -->
-    <beans:bean id="layoutDialect" class="nz.net.ultraq.thymeleaf.layoutdialect.LayoutDialect" />
+    <beans:bean id="layoutDialect" class="nz.net.ultraq.thymeleaf.layoutdialect.LayoutDialect"/>
 
     <!-- 템플릿 엔진 설정 -->
     <beans:bean id="templateEngine" class="org.thymeleaf.spring5.SpringTemplateEngine">
-        <beans:property name="templateResolver" ref="templateResolver" />
-        <beans:property name="enableSpringELCompiler" value="true" />
+        <beans:property name="templateResolver" ref="templateResolver"/>
+        <beans:property name="enableSpringELCompiler" value="true"/>
         <beans:property name="additionalDialects">
             <beans:set>
-                <beans:ref bean="layoutDialect" />
+                <beans:ref bean="layoutDialect"/>
             </beans:set>
         </beans:property>
     </beans:bean>
 
     <!-- Thymeleaf ViewResolver 설정 -->
     <beans:bean class="org.thymeleaf.spring5.view.ThymeleafViewResolver">
-        <beans:property name="templateEngine" ref="templateEngine" />
-        <beans:property name="characterEncoding" value="UTF-8" />
+        <beans:property name="templateEngine" ref="templateEngine"/>
+        <beans:property name="characterEncoding" value="UTF-8"/>
     </beans:bean>
 
     <!-- Component Scan -->
-    <context:component-scan base-package="com.example.shoppingmall" />
+    <context:component-scan base-package="com.example.shoppingmall"/>
 
 </beans:beans>
