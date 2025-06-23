@@ -1,6 +1,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="com.example.shoppingmall.item.dao.ItemDao">
 
     <select id="findAll" resultType="com.example.shoppingmall.item.domain.Item">
@@ -42,6 +43,31 @@
 
     <select id="findNewItems" resultType="com.example.shoppingmall.item.domain.Item">
         SELECT * FROM item WHERE is_new = true
+    </select>
+    
+    <select id="searchItemsByName" parameterType="string" resultType="com.example.shoppingmall.item.domain.Item">
+        SELECT * FROM item
+        WHERE name LIKE CONCAT('%', #{name}, '%')
+    </select>
+
+    <select id="findItemsByCategory" parameterType="java.util.Map" resultType="com.example.shoppingmall.item.domain.Item">
+        SELECT * FROM item
+        WHERE 1=1
+        <if test="majorId != null">
+            AND category_id IN (
+            SELECT category_id FROM category WHERE parent_category_id = #{majorId}
+            OR parent_category_id IN (SELECT category_id FROM category WHERE parent_category_id = #{majorId})
+            )
+        </if>
+        <if test="middleId != null">
+            AND category_id IN (
+            SELECT category_id FROM category WHERE parent_category_id = #{middleId}
+            OR category_id = #{middleId}
+            )
+        </if>
+        <if test="minorId != null">
+            AND category_id = #{minorId}
+        </if>
     </select>
 
 </mapper>

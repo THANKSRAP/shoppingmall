@@ -5,31 +5,69 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>상품 상세</title>
+    <title th:text="${item.name} + ' - 상세정보'">상품 상세</title>
     <link rel="stylesheet" th:href="@{/resources/css/style.css}">
 </head>
 
 <body>
+<div layout:fragment="content" class="container">
 
-<div layout:fragment="content">
-<h1>상품 상세 정보</h1>
-<table border="1">
-    <tr><th>이름</th><td th:text="${item.name}">상품명</td></tr>
-    <tr><th>설명</th><td th:text="${item.description}">설명</td></tr>
-    <tr><th>가격</th><td th:text="${item.price}">0</td></tr>
-    <tr><th>상태</th><td th:text="${item.status}">SALE</td></tr>
-    <tr><th>등급</th><td th:text="${item.grade}">A</td></tr>
-    <tr><th>국가</th><td th:text="${item.manufactureCountry}">Korea</td></tr>
-    <tr><th>베스트셀러</th><td th:text="${item.isBestSeller} ? 'Yes' : 'No'">Yes</td></tr>
-    <tr><th>등록일</th><td th:text="${#temporals.format(item.createdAt, 'yyyy-MM-dd')}">2025-06-17</td></tr>
-</table>
+    <h1 th:text="${item.name}">상품명</h1>
 
-<form th:action="@{/item/delete/{id}(id=${item.itemId})}" method="post">
-    <button type="submit">삭제</button>
-</form>
+    <div class="item-detail-box">
+        <img th:src="@{${item.image}}" alt="상품 이미지" style="width:300px; height:auto;"/>
+        <div class="item-info">
+            <p><strong>설명:</strong> <span th:text="${item.description}"></span></p>
+            <p><strong>가격:</strong> <span th:text="${item.price}"></span> 원</p>
+            <p><strong>등급:</strong> <span th:text="${item.grade}"></span></p>
+            <p><strong>제조국:</strong> <span th:text="${item.manufactureCountry}"></span></p>
+            <p><strong>상태:</strong> <span th:text="${item.status}"></span></p>
+            <p><strong>베스트셀러:</strong> <span th:text="${item.isBestSeller} ? 'Yes' : 'No'"></span></p>
+        </div>
+    </div>
 
-<a th:href="@{/item}">목록으로</a>
+    <form th:action="@{/cart/add}" method="post">
+        <input type="hidden" name="itemId" th:value="${item.itemId}"/>
+        <input type="hidden" id="itemOptionId" name="itemOptionId"/>
+
+        <label for="colorSelect">색상:</label>
+        <select id="colorSelect" required
+                th:disabled="${#lists.size(colorOptions) == 1}">
+            <option disabled th:if="${#lists.size(colorOptions) > 1}" selected>색상을 선택하세요</option>
+            <th:block th:each="color : ${colorOptions}">
+                <option th:value="${color.colorOptionId}"
+                        th:text="${color.colorName}"
+                        th:selected="${#lists.size(colorOptions) == 1}"></option>
+            </th:block>
+        </select>
+
+        <label for="sizeSelect">사이즈:</label>
+        <select id="sizeSelect" required
+                th:disabled="${#lists.size(sizeOptions) == 1}">
+            <option disabled th:if="${#lists.size(sizeOptions) > 1}" selected>사이즈를 선택하세요</option>
+            <th:block th:each="size : ${sizeOptions}">
+                <option th:value="${size.sizeOptionId}"
+                        th:text="${size.sizeName}"
+                        th:selected="${#lists.size(sizeOptions) == 1}"></option>
+            </th:block>
+        </select>
+
+        <p id="inventoryInfo" style="margin-top: 10px; color: green;"></p>
+        <label for="quantity">수량:</label>
+        <input type="number" name="quantity" id="quantity" value="1" min="1" required/>
+
+        <div>
+            <button type="submit" formaction="/cart/add">장바구니</button>
+            <button type="submit" formaction="/order/create">주문하기</button>
+        </div>
+    </form>
+
+    <a th:href="@{/item}">목록으로</a>
 </div>
+
+<th:block layout:fragment="script">
+    <script th:src="@{/resources/js/item.js}"></script>
+</th:block>
 
 </body>
 </html>

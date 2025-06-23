@@ -1,45 +1,25 @@
 package com.example.shoppingmall.item.service;
 
-import com.example.shoppingmall.item.dao.ItemDao;
-import com.example.shoppingmall.item.domain.Item;
-import org.springframework.stereotype.Service;
+import com.example.shoppingmall.item.domain.dto.ItemDto;
 
 import java.util.List;
 
-@Service
-public class ItemService {
+public interface ItemService {
+    List<ItemDto> getAllItems();
 
-    private final ItemDao itemDao;
+    ItemDto getItemById(Long id);
 
-    public ItemService(ItemDao itemDao) {
-        this.itemDao = itemDao;
-    }
+    void createItem(ItemDto itemDto);
 
-    public List<Item> getAllItems() {
-        return itemDao.findAll();
-    }
+    void updateItem(ItemDto itemDto);
 
-    public Item getItemById(Long id) {
-        return itemDao.findById(id);
-    }
+    void deleteItemById(Long id);
 
-    public void createItem(Item item) {
-        itemDao.insert(item);
-    }
+    List<ItemDto> getBestSellers();
 
-    public void updateItem(Item item) {
-        itemDao.update(item);
-    }
+    List<ItemDto> getNewItems();
 
-    public void deleteItem(Long id) {
-        itemDao.delete(id);
-    }
+    List<ItemDto> searchItemsByName(String name);
 
-    public List<Item> findBestSellers() {
-        return itemDao.findBestSellers(); // isBestSeller = true
-    }
-
-    public List<Item> findNewItems() {
-        return itemDao.findNewItems(); // isNew = true
-    }
+    List<ItemDto> getItemsByCategory(Long majorId, Long middleId, Long minorId);
 }
