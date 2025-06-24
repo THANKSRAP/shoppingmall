@@ -24,4 +24,10 @@ public class ReviewServiceImpl implements ReviewService {
     }
     @Override
     public List<ReviewDto> getAllReviews() {return reviewDao.selectAllReviews();}
+
+    @Override
+    public List<ReviewDto> getReviewsByItemId(Long itemId) {
+        return reviewDao.selectReviewsByItemId(itemId);
+    }
+
 }

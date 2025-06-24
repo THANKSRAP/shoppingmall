@@ -42,4 +42,30 @@
         ORDER BY r.created_at DESC
     </select>
 
+    <select id="selectReviewsByItemId" resultType="com.example.shoppingmall.review.domain.ReviewDto" parameterType="long">
+        SELECT
+            r.review_id AS reviewId,
+            r.item_id AS itemId,
+            r.user_id AS userId,
+            r.rating,
+            r.title,
+            r.content,
+            r.image,
+            r.view,
+            r.is_hidden AS isHidden,
+            r.created_at AS createdAt,
+            r.updated_at AS updatedAt,
+            u.username AS username,
+            i.name AS productName,
+            i.image AS productImage,
+            i.price AS productPrice
+        FROM review r
+                 JOIN item i ON r.item_id = i.item_id
+                 JOIN user u ON r.user_id = u.user_id
+        WHERE r.item_id = #{itemId}
+          AND r.is_hidden = FALSE
+        ORDER BY r.created_at DESC
+    </select>
+
+
 </mapper>

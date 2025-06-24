@@ -4,10 +4,7 @@ import com.example.shoppingmall.review.domain.ReviewDto;
 import com.example.shoppingmall.review.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -34,5 +31,11 @@ public class ReviewController {
     public ReviewDto getReviewDetail(@RequestParam("reviewId") Long reviewId) {
         reviewService.incrementViewCount(reviewId);
         return reviewService.getReviewDetail(reviewId);
+    }
+
+    @GetMapping("/item/{itemId}")
+    @ResponseBody
+    public List<ReviewDto> getReviewsByItemId(@PathVariable Long itemId) {
+        return reviewService.getReviewsByItemId(itemId);
     }
 }

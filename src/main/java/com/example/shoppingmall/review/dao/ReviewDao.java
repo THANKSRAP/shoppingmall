@@ -12,4 +12,6 @@ public interface ReviewDao {
     ReviewDto findById(Long reviewId);
     void incrementView(Long reviewId);
     List<ReviewDto> selectAllReviews();
+    List<ReviewDto> selectReviewsByItemId(Long itemId);
+
 }

@@ -8,4 +8,6 @@ public interface ReviewService {
     ReviewDto getReviewDetail(Long reviewId);
     void incrementViewCount(Long reviewId);
     List<ReviewDto> getAllReviews();
+    List<ReviewDto> getReviewsByItemId(Long itemId);
+
 }
