@@ -33,7 +33,7 @@ function updateCartQuantity(cartId, quantity, optionDetail) {
         optionDetail
     });
 
-    fetch('/shoppingmall/cart/item/' + cartId, {
+    fetch('api/cart/item/' + cartId, {
         method: 'PATCH',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({quantity: quantity})
@@ -94,6 +94,9 @@ function updateSummary() {
 }
 
 
+
+
+
 // 전체 선택 / 해제
 function selectAll(checked) {
     document.querySelectorAll('.select-item').forEach(chk => {
@@ -101,6 +104,57 @@ function selectAll(checked) {
     });
     updateSummary();
 }
+
+
+// 선택 삭제
+function deleteSelected(e) {
+    if (e) e.preventDefault();
+
+    const checkedItems = Array.from(document.querySelectorAll('.select-item:checked'));
+    if (checkedItems.length === 0) {
+        alert('삭제할 상품을 선택하세요.');
+        return;
+    }
+
+    const ids = checkedItems.map(chk => chk.closest('.product-item').dataset.cartId);
+    if (!confirm('선택한 상품을 삭제하시겠습니까?')) return;
+
+    fetch('/cart/items', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cartItemIds: ids })
+    })
+        .then(res => {
+            if (res.ok) {
+                alert('선택한 상품이 삭제되었습니다.');
+                location.reload();
+            } else {
+                alert('삭제 실패');
+            }
+        })
+        .catch(() => alert('서버 오류'));
+}
+
+
+// 장바구니에서 상품 제거
+function removeFromCart(cartId) {
+    if (!confirm('정말 삭제하시겠습니까?')) return;
+
+
+    fetch('/cart/api/items/' + cartId, {
+        method: 'DELETE'
+    })
+        .then(res => {
+            if (res.ok) {
+                alert('상품이 삭제되었습니다.');
+                location.reload();
+            } else {
+                alert('삭제 실패');
+            }
+        })
+        .catch(() => alert('서버 오류'));
+}
+
 
 // 전체 상품 주문
 function orderAll() {
@@ -131,7 +185,7 @@ function orderAll() {
     };
 
     // 주문 데이터 서버에 전송
-    fetch('/order', {
+    fetch('cart/order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -188,7 +242,7 @@ function orderSelected() {
         delivery_fee: deliveryFee
     };
 
-    fetch('/order', {
+    fetch('cart/order', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(orderData)
@@ -203,6 +257,8 @@ function orderSelected() {
         .catch(() => alert('서버 오류'));
 }
 
+
+
 // 초기 계산 + 체크박스나 수량 변경 시 자동 계산
 window.addEventListener('DOMContentLoaded', updateSummary);
 document.addEventListener('change', function (e) {
@@ -211,55 +267,6 @@ document.addEventListener('change', function (e) {
         updateSummary();
     }
 });
-
-// 선택 삭제
-function deleteSelected() {
-    const checkedItems = Array.from(document.querySelectorAll('.select-item:checked'));
-    if (checkedItems.length === 0) {
-        alert('삭제할 상품을 선택하세요.');
-        return;
-    }
-    const ids = checkedItems.map(chk => chk.closest('.cart-item').dataset.cartId);
-    if (!confirm('선택한 상품을 삭제하시겠습니까?')) return;
-
-
-    fetch('/cart/items', {
-        method: 'DELETE',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({cartItemIds: ids})
-    })
-        .then(res => {
-            if (res.ok) {
-                alert('선택한 상품이 삭제되었습니다.');
-                location.reload();
-            } else {
-                alert('삭제 실패');
-            }
-        })
-        .catch(() => alert('서버 오류'));
-}
-
-
-// 장바구니에서 상품 제거
-function removeFromCart(cartId) {
-    if (!confirm('정말 삭제하시겠습니까?')) return;
-
-
-    fetch('/cart/item/' + cartId, {
-        method: 'DELETE'
-    })
-        .then(res => {
-            if (res.ok) {
-                alert('상품이 삭제되었습니다.');
-                location.reload();
-            } else {
-                alert('삭제 실패');
-            }
-        })
-        .catch(() => alert('서버 오류'));
-}
-
-
 // ✅ 전체선택
 document.getElementById('select-all-link').addEventListener('click', function (e) {
     e.preventDefault();
@@ -268,68 +275,18 @@ document.getElementById('select-all-link').addEventListener('click', function (e
 });
 
 // ✅ 선택삭제
-document.getElementById('delete-selected-link').addEventListener('click', function (e) {
-    e.preventDefault();
-    console.log('[선택삭제] 버튼 클릭됨');
-
-    const checkedItems = Array.from(document.querySelectorAll('.select-item:checked'));
-    console.log('[선택삭제] 체크된 항목 수:', checkedItems.length);
-
-    if (checkedItems.length === 0) {
-        alert('삭제할 상품을 선택하세요.');
-        return;
-    }
-
-    const ids = checkedItems.map(chk => chk.closest('.product-item').dataset.cartId);
-    console.log('[선택삭제] 삭제할 cartId 목록:', ids);
-
-    if (!confirm('선택한 상품을 삭제하시겠습니까?')) {
-        console.log('[선택삭제] 사용자가 삭제를 취소했습니다.');
-        return;
-    }
-
-    fetch('/shoppingmall/cart/items', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ cartItemIds: ids })
-    })
-        .then(async res => {
-            const text = await res.text();
-            console.log('[선택삭제] 서버 응답 상태:', res.status);
-            console.log('[선택삭제] 서버 응답 본문:', text);
-
-            if (res.ok) {
-                alert('선택한 상품이 삭제되었습니다.');
-                location.reload();
-            } else {
-                alert('삭제 실패');
-            }
-        })
-        .catch(err => {
-            console.error('[선택삭제] 서버 오류:', err);
-            alert('서버 오류');
-        });
-});
-
+document.getElementById('delete-selected-link').addEventListener('click', deleteSelected);
 
 // ✅ 전체상품삭제
 document.getElementById('delete-all-link').addEventListener('click', function (e) {
     e.preventDefault();
-    console.log('[전체삭제] 버튼 클릭됨');
 
-    if (!confirm('정말 전체 상품을 삭제하시겠습니까?')) {
-        console.log('[전체삭제] 사용자가 삭제를 취소했습니다.');
-        return;
-    }
+    if (!confirm('정말 전체 상품을 삭제하시겠습니까?')) return;
 
-    fetch('/shoppingmall/cart/all', {
+    fetch('/cart/api/all', {
         method: 'DELETE'
     })
-        .then(async res => {
-            const text = await res.text();
-            console.log('[전체삭제] 서버 응답 상태:', res.status);
-            console.log('[전체삭제] 서버 응답 본문:', text);
-
+        .then(res => {
             if (res.ok) {
                 alert('전체 상품이 삭제되었습니다.');
                 location.reload();
@@ -337,40 +294,8 @@ document.getElementById('delete-all-link').addEventListener('click', function (e
                 alert('삭제 실패');
             }
         })
-        .catch(err => {
-            console.error('[전체삭제] 서버 오류:', err);
-            alert('서버 오류');
-        });
+        .catch(() => alert('서버 오류'));
 });
-
-document.querySelectorAll('.wishlist-btn').forEach(btn => {
-    btn.addEventListener('click', function () {
-        console.log("아자아자아자자자자자자");
-        const itemId = this.dataset.itemId;
-        console.log('itemId: ' + itemId);
-        const userId = 1; // 로그인 구현 전이니 일단 고정
-
-        const payload = {
-            userId: userId,
-            itemId: parseInt(itemId)
-        };
-
-        console.log('[찜하기] 전송 데이터:', payload);
-
-        fetch('/shoppingmall/cart/wishlist', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ itemId: parseInt(itemId) })
-        })
-            .then(res => res.text())
-            .then(text => alert(text))
-            .catch(err => {
-                console.error('찜 실패:', err);
-                alert('서버 오류');
-            });
-    });
-});
-
 
 document.querySelector('.order-all-btn').addEventListener('click', e => {
     e.preventDefault();
