@@ -1,6 +1,8 @@
 package com.example.shoppingmall.notice.dao;
 
 import com.example.shoppingmall.notice.domain.Notice;
+import com.example.shoppingmall.notice.domain.dto.PageRequest;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
@@ -17,24 +19,43 @@ public class NoticeDaoImpl implements NoticeDao {
         @Override
         public List<Notice> findAll(){
             return sqlSession.selectList("NoticeMapper.findAll");
-    };
+    }
         @Override
-        public Notice findAllById(long id){
-            return sqlSession.selectOne("NoticeMapper.findAllById",id);
-    };
+        public Notice findById(Long id){
+            return sqlSession.selectOne("NoticeMapper.findById",id);
+    }
 
     @Override
     public void insert(Notice notice){
             sqlSession.insert("NoticeMapper.insert",notice);
-    };
+    }
 
     @Override
-    public void update(Notice notice){
-            sqlSession.update("NoticeMapper.update",notice);
-    };
+    public int update(Notice notice){
+        return sqlSession.update("NoticeMapper.update",notice);
+
+    }
 
     @Override
-    public void delete(long id){
+    public Notice delete(Long id){
             sqlSession.delete("NoticeMapper.delete",id);
-    };
+        return null;
+    }
+    @Override
+    public int increaseViewCount(Integer noticeId){
+        return sqlSession.update("NoticeMapper.increaseViewCount",noticeId);
+    }
+
+    @Override
+    public List<Notice> findPage(PageRequest pageRequest){
+        var params = new java.util.HashMap<String, Object>();
+        params.put("offset", pageRequest.getoffset());
+        params.put("limit", pageRequest.getLimit());
+        return sqlSession.selectList("NoticeMapper.findPage");
+    }
+
+    @Override
+    public int count(){
+        return sqlSession.selectOne(namespace + "count");
+    }
 }
