@@ -59,7 +59,7 @@
             r.is_hidden AS isHidden,
             r.created_at AS createdAt,
             r.updated_at AS updatedAt,
-            u.username AS username,
+            u.name AS username,
             i.name AS productName,
             i.image AS productImage,
             i.price AS productPrice
