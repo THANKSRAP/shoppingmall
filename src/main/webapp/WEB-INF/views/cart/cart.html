@@ -42,7 +42,7 @@
                 </div>
 
                 <div th:each="cartItem : ${cartList}">
-                    <div class="product-item" th:data-cart-id="${cartItem.cartId}" th:data-price="${cartItem.price}">
+                    <div class="cart-item product-item" th:data-cart-id="${cartItem.cartId}" th:data-price="${cartItem.price}">
                         <input type="checkbox" class="select-item"
                                th:id="'chk_' + ${cartItem.cartId}" th:value="${cartItem.cartId}"/>
 
@@ -105,7 +105,7 @@
 
                                 <!-- 아랫줄: 버튼 두 개 -->
                                 <div class="order-buttons-row">
-                                    <button class="wishlist-btn">관심상품</button>
+                                    <button class="wishlist-btn" th:data-item-id="${cartItem.itemId}" th:data-item-option-id="${cartItem.itemOptionId}">관심상품</button>
                                     <button class="order-now-btn">주문하기</button>
                                 </div>
                             </div>
