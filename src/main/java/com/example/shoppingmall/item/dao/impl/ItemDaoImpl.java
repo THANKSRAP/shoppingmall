@@ -2,10 +2,13 @@ package com.example.shoppingmall.item.dao.impl;
 
 import com.example.shoppingmall.item.dao.ItemDao;
 import com.example.shoppingmall.item.domain.Item;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class ItemDaoImpl implements ItemDao {
@@ -38,7 +41,7 @@ public class ItemDaoImpl implements ItemDao {
     }
 
     @Override
-    public void delete(Long id) {
+    public void deleteById(Long id) {
         sqlSession.delete(NAMESPACE + "delete", id);
     }
 
@@ -52,5 +55,20 @@ public class ItemDaoImpl implements ItemDao {
         return sqlSession.selectList(NAMESPACE + "findNewItems");
     }
 
+    @Override
+    public List<Item> searchItemsByName(String name) {
+        return sqlSession.selectList(NAMESPACE + "searchItemsByName", name);
+    }
 
+    @Override
+    public List<Item> findItemsByCategory(@Param("majorId") Long majorId,
+                                          @Param("middleId") Long middleId,
+                                          @Param("minorId") Long minorId) {
+        Map<String, Long> paramMap = new HashMap<>();
+        paramMap.put("majorId", majorId);
+        paramMap.put("middleId", middleId);
+        paramMap.put("minorId", minorId);
+
+        return sqlSession.selectList(NAMESPACE + "findItemsByCategory", paramMap);
+    }
 }
