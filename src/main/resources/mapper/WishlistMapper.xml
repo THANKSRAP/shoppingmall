@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.shoppingmall.user.dao.WishlistDao">
+
+    <select id="selectWishlist" parameterType="com.example.shoppingmall.user.domain.dto.WishlistSearchDto"
+            resultType="com.example.shoppingmall.user.domain.dto.WishlistDto">
+        SELECT
+            w.wish_list_id as id,
+            w.user_id as userId,
+            w.item_id as productId,
+            COALESCE(i.name, '상품명') as productName,
+            COALESCE(i.image, '/images/no-image.jpg') as productImage,
+            COALESCE(i.description, '상품 설명이 없습니다.') as productDescription,
+            COALESCE(i.price, 0) as productPrice
+        FROM wish_list w
+                 LEFT JOIN item i ON w.item_id = i.item_id
+        WHERE w.user_id = #{userId}
+        ORDER BY w.created_at DESC
+            LIMIT #{pageSize} OFFSET #{offset}
+    </select>
+
+    <select id="countWishlist" parameterType="long" resultType="int">
+        SELECT COUNT(*)
+        FROM wish_list
+        WHERE user_id = #{userId}
+    </select>
+
+    <delete id="deleteWishlistItem">
+        DELETE FROM wish_list
+        WHERE wish_list_id = #{id} AND user_id = #{userId}
+    </delete>
+
+    <delete id="deleteAllWishlist" parameterType="long">
+        DELETE FROM wish_list
+        WHERE user_id = #{userId}
+    </delete>
+
+</mapper>

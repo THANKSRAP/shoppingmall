@@ -3,6 +3,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout}">
 
+
 <head>
     <meta charset="UTF-8">
     <title>리뷰</title>
@@ -11,86 +12,97 @@
 <body>
 <div layout:fragment="content">
     <div class="container">
-    <header class="review-header">
-        <h1>상품 리뷰</h1>
-        <div class="review-stats">
-            <span>총 리뷰 <strong id="reviewCount">0</strong>개</span>
-            <span>평점 <strong id="averageRating">0.0</strong>/5</span>
-        </div>
-    </header>
-
-    <div class="review-grid" id="reviewGrid">
-        <!-- JS로 리뷰 카드 동적으로 추가됨 -->
-    </div>
-
-    <div class="pagination">
-        <!-- 페이지네이션 구현 시 여기에 버튼 추가 -->
-    </div>
-
-
-<!-- 리뷰 상세 모달 -->
-<div id="reviewDetailModal" class="review-detail-modal" style="display: none;">
-    <div class="review-detail-content">
-        <button class="review-close-btn">&times;</button>
-
-        <div class="review-detail-layout">
-            <!-- 좌측 이미지 -->
-            <div class="review-gallery">
-                <div class="gallery-main">
-                    <img id="mainReviewImage" src="/placeholder.svg?height=400&width=400" alt="리뷰 이미지" />
-<!--                    <button class="gallery-nav prev-btn">‹</button>-->
-<!--                    <button class="gallery-nav next-btn">›</button>-->
-                </div>
-<!--                <div class="gallery-counter">-->
-<!--                    <span id="imageCounter">1 / 1</span>-->
-<!--                    <span id="imageCounter">1 / 1</span>-->
-<!--                </div>-->
-<!--                <div class="gallery-indicator">-->
-<!--                    <div class="indicator-bar">-->
-<!--                        <div class="indicator-progress"></div>-->
-<!--                    </div>-->
-<!--                </div>-->
+        <header class="review-header">
+            <h1>상품 리뷰</h1>
+            <div class="review-stats">
+                <span>총 리뷰 <strong id="reviewCount">0</strong>개</span>
+                <span>평점 <strong id="averageRating">0.0</strong>/5</span>
             </div>
+        </header>
 
-            <!-- 우측 상세정보 -->
-            <div class="review-details">
-                <div class="product-summary">
-                    <img id="detailProductImage" src="/placeholder.svg?height=80&width=80" alt="상품 이미지" class="detail-product-thumb" />
-                    <div class="product-summary-info">
-                        <h3 id="detailProductName">상품명</h3>
-                        <div class="product-price-info">
-                            <span id="detailProductPrice">0원</span>
-                            <button class="product-detail-btn">상품 상세 보기</button>
+
+        <div class="review-grid" id="reviewGrid">
+            <!-- JS로 리뷰 카드 동적으로 추가됨 -->
+        </div>
+
+
+        <div class="pagination">
+            <!-- 페이지네이션 구현 시 여기에 버튼 추가 -->
+        </div>
+
+
+
+
+        <!-- 리뷰 상세 모달 -->
+        <div id="reviewDetailModal" class="review-detail-modal" style="display: none;">
+            <div class="review-detail-content">
+                <button class="review-close-btn">&times;</button>
+
+
+                <div class="review-detail-layout">
+                    <!-- 좌측 이미지 -->
+                    <div class="review-gallery">
+                        <div class="gallery-main">
+                            <img id="mainReviewImage" src="/placeholder.svg?height=400&width=400" alt="리뷰 이미지" />
+                            <!--                    <button class="gallery-nav prev-btn">‹</button>-->
+                            <!--                    <button class="gallery-nav next-btn">›</button>-->
+                        </div>
+                        <!--                <div class="gallery-counter">-->
+                        <!--                    <span id="imageCounter">1 / 1</span>-->
+                        <!--                    <span id="imageCounter">1 / 1</span>-->
+                        <!--                </div>-->
+                        <!--                <div class="gallery-indicator">-->
+                        <!--                    <div class="indicator-bar">-->
+                        <!--                        <div class="indicator-progress"></div>-->
+                        <!--                    </div>-->
+                        <!--                </div>-->
+                    </div>
+
+
+                    <!-- 우측 상세정보 -->
+                    <div class="review-details">
+                        <div class="product-summary">
+                            <img id="detailProductImage" src="/placeholder.svg?height=80&width=80" alt="상품 이미지" class="detail-product-thumb" />
+                            <div class="product-summary-info">
+                                <h3 id="detailProductName">상품명</h3>
+                                <div class="product-price-info">
+                                    <span id="detailProductPrice">0원</span>
+                                    <button class="product-detail-btn">상품 상세 보기</button>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="review-rating-info">
+                            <div class="rating-stars" id="detailRating">⭐⭐⭐⭐⭐</div>
+                            <span class="view-count" id="detailViewCount">조회 0</span>
+                        </div>
+
+
+                        <div class="detailed-review-content">
+                            <h2 id="detailReviewTitle">리뷰 제목</h2>
+                            <div class="review-text-content" id="detailReviewText">
+                                <p>내용</p>
+                            </div>
+                        </div>
+
+
+                        <div class="review-actions">
+                            <button class="action-btn like-btn">👍 도움돼요</button>
+                            <button class="action-btn share-btn">📤 공유하기</button>
                         </div>
                     </div>
                 </div>
-
-                <div class="review-rating-info">
-                    <div class="rating-stars" id="detailRating">⭐⭐⭐⭐⭐</div>
-                    <span class="view-count" id="detailViewCount">조회 0</span>
-                </div>
-
-                <div class="detailed-review-content">
-                    <h2 id="detailReviewTitle">리뷰 제목</h2>
-                    <div class="review-text-content" id="detailReviewText">
-                        <p>내용</p>
-                    </div>
-                </div>
-
-                <div class="review-actions">
-                    <button class="action-btn like-btn">👍 도움돼요</button>
-                    <button class="action-btn share-btn">📤 공유하기</button>
-                </div>
             </div>
         </div>
     </div>
 </div>
-</div>
-</div>
+
 
 <th:block layout:fragment="script">
     <script th:src="@{/resources/js/review.js}"></script>
 </th:block>
+
 
 </body>
 </html>
