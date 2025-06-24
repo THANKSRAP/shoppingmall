@@ -51,7 +51,14 @@ public class RegisterController {
         try {
             // 서버 측 유효성 검사
             if (email == null || email.trim().isEmpty()) {
-                model.addAttribute("error", "이메일은 필수 입력 사항입니다.");
+                password == null || password.trim().isEmpty() ||
+                        name == null || name.trim().isEmpty() ||
+                        residentRegistrationNumber == null || residentRegistrationNumber.trim().isEmpty() ||
+                        phone_number == null || phone_number.trim().isEmpty() ||
+                        gender == null || gender.trim().isEmpty()) {
+
+
+                    model.addAttribute("error", "이메일은 필수 입력 사항입니다.");
                 setModelAttributes(model, email, name, residentRegistrationNumber,
                         phone_number, gender, smsMarketingStatus, emailMarketingStatus);
                 return "user/registerForm";

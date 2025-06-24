@@ -5,6 +5,13 @@ import com.example.shoppingmall.user.domain.User;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
+
+// ✅ Map 클래스를 사용하기 위해 import 문을 추가
+import java.util.HashMap;
+import java.util.Map;
+
+
+
 @Repository
 public class UserDaoImpl implements UserDao {
 
@@ -47,9 +54,17 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User findByEmailAndPassword(String email, String password) {
-        User user = new User();
-        user.setEmail(email);
-        user.setPassword(password);
-        return sqlSession.selectOne(NAMESPACE + "findByEmailAndPassword", user);
+        // ✅ Map으로 파라미터 전달 (XML에서 #{email}, #{password}로 접근 가능)
+        Map<String, Object> params = new HashMap<>();
+        params.put("email", email);
+        params.put("password", password);
+        return sqlSession.selectOne(NAMESPACE + "findByEmailAndPassword", params);
     }
+
+//    public User findByEmailAndPassword(String email, String password) {
+//        User user = new User();
+//        user.setEmail(email);
+//        user.setPassword(password);
+//        return sqlSession.selectOne(NAMESPACE + "findByEmailAndPassword", user);
+//    }
 }
