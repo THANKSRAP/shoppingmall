@@ -16,12 +16,6 @@
         <property name="username" value="${db.username}"/>
         <property name="password" value="${db.password}"/>
     </bean>
-<!--    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">-->
-<!--        <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>-->
-<!--        <property name="url" value="jdbc:mysql://localhost:3306/testdb?useUnicode=true&amp;characterEncoding=utf8"/>-->
-<!--        <property name="username" value="root"/>-->
-<!--        <property name="password" value="7164"/>-->
-<!--    </bean>-->
 
     <!-- MyBatis SqlSessionFactory 설정 -->
     <!-- (추후에 property에 따라서 domain 세부 경로 설정 필요, 루트 경로로 하면 성능 저하 발생)-->
@@ -46,11 +40,14 @@
 
     <!-- Mapper 인터페이스 자동 스캔 -->
     <!-- (추후에 property에 따라서 dao or mapper 세부 경로 설정 필요, 루트 경로로 하면 성능 저하 발생)-->
+    <!-- 루트 경로로 설정했을 때 service를 mapper로 인식하는 오류 발생 -->
     <!-- Controller가 Mapper로 인식되어서 Binding Exception이 발생함 -> 정확한 Mapper(dao) 설정 필요-->
-    <context:component-scan base-package="com.example.shoppingmall" />
+    <!-- MapperScannerConfigurer로 직접 등록하는 경우, dao에 @Repository 어노테이션 제거하기 (중복 등록 됨) -->
+    <context:component-scan base-package="com.example.shoppingmall"/>
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-        <property name="basePackage" value="com.example.shoppingmall"/>
-        <!-- <property name="basePackage" value="com.example.shoppingmall.item.dao"/>-->
+        <!-- <property name="basePackage" value="com.example.shoppingmall"/> -->
+        <property name="basePackage"
+                  value="com.example.shoppingmall.item.dao, com.example.shoppingmall.notice.dao, com.example.shoppingmall.cart.dao, com.example.shoppingmall.review.dao"/>
     </bean>
 
     <!-- 트랜잭션 매니저 설정 -->

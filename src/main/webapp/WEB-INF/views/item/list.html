@@ -12,35 +12,63 @@
 <body>
 
 <div layout:fragment="content">
-<h1>상품 목록</h1>
-<a th:href="@{/item/new}">신규 상품 등록</a>
-<table border="1">
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>이름</th>
-        <th>가격</th>
-        <th>상태</th>
-        <th>등급</th>
-        <th>국가</th>
-        <th>등록일</th>
-        <th>상세</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="item : ${items}">
-        <td th:text="${item.itemId}">ID</td>
-        <td th:text="${item.name}">상품명</td>
-        <td th:text="${item.price}">0</td>
-        <td th:text="${item.status}">SALE</td>
-        <td th:text="${item.grade}">A</td>
-        <td th:text="${item.manufactureCountry}">Korea</td>
-        <td th:text="${#temporals.format(item.createdAt, 'yyyy-MM-dd')}">날짜</td>
-        <td><a th:href="@{/item/{id}(id=${item.itemId})}">상세보기</a></td>
-    </tr>
-    </tbody>
-</table>
+
+    <!-- 선택값을 안전하게 전달 -->
+    <div id="categoryData"
+         th:data-major-id="${majorId}"
+         th:data-middle-id="${middleId}"
+         th:data-minor-id="${minorId}"></div>
+
+    <form id="categoryFilterForm" th:action="@{/item}" method="get"
+          style="display: flex; gap: 10px; align-items: center;">
+        <select name="majorId" id="majorSelect">
+            <option value="">대분류 선택</option>
+            <th:block th:each="cat : ${majorCategories}">
+                <option th:value="${cat.categoryId}"
+                        th:text="${cat.name}"
+                        th:selected="${cat.categoryId == majorId}"></option>
+            </th:block>
+        </select>
+        <select name="middleId" id="middleSelect">
+            <option value="">중분류 선택</option>
+        </select>
+        <select name="minorId" id="minorSelect">
+            <option value="">소분류 선택</option>
+        </select>
+        <button type="submit">필터</button>
+    </form>
+
+    <h1>상품 목록</h1>
+    <a th:href="@{/item/new}">신규 상품 등록</a>
+    <table border="1">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>이름</th>
+            <th>가격</th>
+            <th>상태</th>
+            <th>등급</th>
+            <th>국가</th>
+            <th>상세</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="item : ${items}">
+            <td th:text="${item.itemId}">ID</td>
+            <td th:text="${item.name}">상품명</td>
+            <td th:text="${item.price}">0</td>
+            <td th:text="${item.status}">SALE</td>
+            <td th:text="${item.grade}">A</td>
+            <td th:text="${item.manufactureCountry}">Korea</td>
+            <td><a th:href="@{/item/{id}(id=${item.itemId})}">상세보기</a></td>
+        </tr>
+        </tbody>
+    </table>
 </div>
+
+<th:block layout:fragment="script">
+    <script th:src="@{/resources/js/category.js}"></script>
+</th:block>
 
 </body>
 </html>

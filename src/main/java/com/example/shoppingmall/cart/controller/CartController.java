@@ -1,0 +1,70 @@
+package com.example.shoppingmall.cart.controller;
+
+import com.example.shoppingmall.cart.domain.CartDto;
+import com.example.shoppingmall.cart.service.CartService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpSession;
+import java.util.List;
+import java.util.Map;
+
+@Controller
+@RequestMapping("/cart")
+public class CartController {
+
+    @Autowired
+    private CartService cartService;
+
+    // ✅ [1] HTML 장바구니 페이지
+    @GetMapping
+    public String cartPage(Model model) {
+        int userId = 1; // 로그인 미적용 상태
+        List<CartDto> cartList = cartService.getCartByUserId(userId);
+
+        int totalCount = cartList.stream().mapToInt(CartDto::getQuantity).sum();
+        model.addAttribute("cartList", cartList);
+        model.addAttribute("cartItemCount", totalCount);
+
+        return "cart/cart";
+    }
+
+    // ✅ [2] 수량 변경 API (PATCH)
+    @PatchMapping("/api/item/{id}")
+    @ResponseBody
+    public ResponseEntity<String> updateQuantity(@PathVariable("id") int cartId,
+                                                 @RequestBody Map<String, Object> payload) {
+        int quantity = (int) payload.get("quantity");
+        cartService.updateQuantity(cartId, quantity);
+        return ResponseEntity.ok("업데이트 성공");
+    }
+
+    // ✅ [3] 선택 삭제 API (DELETE)
+    @DeleteMapping("/api/items")
+    @ResponseBody
+    public ResponseEntity<Void> deleteSelectedItems(@RequestBody Map<String, List<Integer>> body) {
+        List<Integer> cartItemIds = body.get("cartItemIds");
+        cartService.deleteByCartIds(cartItemIds);
+        return ResponseEntity.ok().build();
+    }
+
+    // ✅ [4] 전체 삭제 API (DELETE)
+    @DeleteMapping("/api/all")
+    @ResponseBody
+    public ResponseEntity<Void> deleteAllItems(HttpSession session) {
+        int userId = 1; // 로그인 미적용 상태
+        cartService.deleteAllByUserId(userId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/order")
+    public String handleOrder(@RequestBody Map<String, Object> orderData, HttpSession session) {
+        System.out.println("🛒 받은 주문 데이터: " + orderData);
+        session.setAttribute("orderData", orderData);
+        return "redirect:/order/";
+    }
+
+}
