@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css" />
+    <style>
+        * { box-sizing:border-box; }
+
+        form {
+            width:400px;
+            height:750px;
+            display : flex;
+            flex-direction: column;
+            align-items:center;
+            position : absolute;
+            top:50%;
+            left:50%;
+            transform: translate(-50%, -50%) ;
+            border: 1px solid rgb(89,117,196);
+            border-radius: 10px;
+        }
+
+        .input-field {
+            width: 300px;
+            height: 40px;
+            border : 1px solid rgb(89,117,196);
+            border-radius:5px;
+            padding: 0 10px;
+            margin-bottom: 10px;
+        }
+
+        label {
+            width:300px;
+            height:30px;
+            margin-top :4px;
+        }
+
+        /* 필수 필드 표시 */
+        .required {
+            color: red;
+        }
+
+        button {
+            background-color: rgb(89,117,196);
+            color : white;
+            width:300px;
+            height:50px;
+            font-size: 17px;
+            border : none;
+            border-radius: 5px;
+            margin : 20px 0 30px 0;
+        }
+
+        .title {
+            font-size : 50px;
+            margin: 40px 0 30px 0;
+        }
+
+        .msg {
+            height: 30px;
+            text-align:center;
+            font-size:16px;
+            color:red;
+            margin-bottom: 20px;
+        }
+
+        .marketing-chk {
+            margin-top : 5px;
+            width: 300px;
+        }
+
+        .gender-select {
+            width: 300px;
+            margin-bottom: 10px;
+        }
+    </style>
+    <title>Register</title>
+</head>
+<body>
+<form th:action="@{/register/save}" method="POST" onsubmit="return formCheck(this)">
+    <div class="title">Register</div>
+    <div id="msg" class="msg" th:if="${error}" th:text="${error}"></div>
+
+    <label for="email">이메일 <span class="required">*</span></label>
+    <input class="input-field" type="email" id="email" name="email"
+           th:value="${email}" placeholder="example@email.com" required autofocus>
+
+    <label for="password">비밀번호 <span class="required">*</span></label>
+    <input class="input-field" type="password" id="password" name="password"
+           placeholder="8자 이상의 영문, 숫자 조합" required>
+
+    <label for="name">이름 <span class="required">*</span></label>
+    <input class="input-field" type="text" id="name" name="name"
+           th:value="${name}" placeholder="홍길동" required>
+
+    <label for="residentRegistrationNumber">주민등록번호 <span class="required">*</span></label>
+    <input class="input-field" type="text" id="residentRegistrationNumber" name="residentRegistrationNumber"
+           th:value="${residentRegistrationNumber}" placeholder="000000-0000000" maxlength="14" required>
+
+    <label for="phone_number">전화번호 <span class="required">*</span></label>
+    <input class="input-field" type="tel" id="phone_number" name="phone_number"
+           th:value="${phone_number}" placeholder="010-0000-0000" required>
+
+    <div class="gender-select">
+        <label>성별 <span class="required">*</span></label>
+        <select name="gender" class="input-field" required>
+            <option value="">선택하세요</option>
+            <option value="M" th:selected="${gender == 'M'}">남성</option>
+            <option value="F" th:selected="${gender == 'F'}">여성</option>
+        </select>
+    </div>
+
+    <div class="marketing-chk">
+        <label><input type="checkbox" name="smsMarketingStatus" value="true"
+                      th:checked="${smsMarketingStatus}"/> SMS 마케팅 수신 동의</label>
+        <label><input type="checkbox" name="emailMarketingStatus" value="true"
+                      th:checked="${emailMarketingStatus}"/> 이메일 마케팅 수신 동의</label>
+    </div>
+
+    <button type="submit">회원가입</button>
+</form>
+<script th:inline="javascript">
+    function formCheck(frm) {
+        // 이메일 검증
+        if (frm.email.value.trim() === '') {
+            setMessage('이메일을 입력해주세요.', frm.email);
+            return false;
+        }
+
+        const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+        if (!emailPattern.test(frm.email.value)) {
+            setMessage('올바른 이메일 형식이 아닙니다.', frm.email);
+            return false;
+        }
+
+        // 비밀번호 검증 (8자 이상, 영문+숫자)
+        if (frm.password.value.trim() === '') {
+            setMessage('비밀번호를 입력해주세요.', frm.password);
+            return false;
+        }
+
+        const pwPattern = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+        if (!pwPattern.test(frm.password.value)) {
+            setMessage('비밀번호는 8자 이상의 영문, 숫자 조합이어야 합니다.', frm.password);
+            return false;
+        }
+
+        // 이름 검증
+        if (frm.name.value.trim() === '') {
+            setMessage('이름을 입력해주세요.', frm.name);
+            return false;
+        }
+
+        // 주민등록번호 검증 (필수로 변경)
+        if (frm.residentRegistrationNumber.value.trim() === '') {
+            setMessage('주민등록번호를 입력해주세요.', frm.residentRegistrationNumber);
+            return false;
+        }
+
+        const rrnPattern = /^\d{6}-\d{7}$/;
+        if (!rrnPattern.test(frm.residentRegistrationNumber.value)) {
+            setMessage('올바른 주민등록번호 형식이 아닙니다. (예: 900101-1234567)', frm.residentRegistrationNumber);
+            return false;
+        }
+
+        // 전화번호 형식 검증
+        if (frm.phone_number.value.trim() === '') {
+            setMessage('전화번호를 입력해주세요.', frm.phone_number);
+            return false;
+        }
+
+        const phonePattern = /^01[0-9]-?\d{3,4}-?\d{4}$/;
+        if (!phonePattern.test(frm.phone_number.value)) {
+            setMessage('올바른 전화번호 형식이 아닙니다.', frm.phone_number);
+            return false;
+        }
+
+        // 성별 검증
+        if (frm.gender.value === '') {
+            setMessage('성별을 선택해주세요.', frm.gender);
+            return false;
+        }
+
+        return true;
+    }
+
+    function setMessage(msg, element){
+        document.getElementById("msg").innerHTML = `<i class="fa fa-exclamation-circle"> ${msg}</i>`;
+        if(element) {
+            element.select();
+        }
+    }
+</script>
+</body>
+</html>

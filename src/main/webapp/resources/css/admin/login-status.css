@@ -1,0 +1,332 @@
+/* 관리자 로그인 현황 페이지 - 파란색 테마 */
+:root {
+    --primary-blue: #0056b3;
+    --light-blue: #e3f2fd;
+    --dark-blue: #003d82;
+    --accent-blue: #1976d2;
+    --text-blue: #1565c0;
+    --border-blue: #bbdefb;
+    --hover-blue: #0288d1;
+}
+
+body {
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.admin-container {
+    min-height: 100vh;
+    padding: 20px 0;
+}
+
+.admin-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* 페이지 헤더 */
+.page-header {
+    background: linear-gradient(135deg, var(--primary-blue), var(--accent-blue));
+    color: white;
+    padding: 30px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 15px rgba(0, 86, 179, 0.2);
+}
+
+.page-header h2 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 600;
+}
+
+.page-header i {
+    margin-right: 10px;
+}
+
+/* 상태 요약 카드 */
+.status-summary {
+    margin-bottom: 30px;
+}
+
+.status-card {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 4px 15px rgba(0, 86, 179, 0.1);
+    border: 1px solid var(--border-blue);
+}
+
+.status-icon {
+    background: linear-gradient(135deg, var(--primary-blue), var(--accent-blue));
+    color: white;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 20px;
+}
+
+.status-icon i {
+    font-size: 32px;
+}
+
+.status-info h3 {
+    margin: 0 0 10px 0;
+    color: var(--text-blue);
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.status-count {
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--primary-blue);
+}
+
+/* 검색 섹션 */
+.search-section {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 15px rgba(0, 86, 179, 0.1);
+    border: 1px solid var(--border-blue);
+}
+
+.search-form {
+    width: 100%;
+}
+
+.search-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: end;
+}
+
+.search-group {
+    flex: 1;
+    min-width: 150px;
+}
+
+.search-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--text-blue);
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.search-group .form-control,
+.search-group .form-select {
+    border: 2px solid var(--border-blue);
+    border-radius: 8px;
+    padding: 10px 15px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.search-group .form-control:focus,
+.search-group .form-select:focus {
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 0.2rem rgba(0, 86, 179, 0.25);
+    outline: none;
+}
+
+.btn-search {
+    background: linear-gradient(135deg, var(--primary-blue), var(--accent-blue));
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.btn-search:hover {
+    background: linear-gradient(135deg, var(--dark-blue), var(--primary-blue));
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 86, 179, 0.3);
+}
+
+/* 테이블 섹션 */
+.table-section {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 15px rgba(0, 86, 179, 0.1);
+    border: 1px solid var(--border-blue);
+}
+
+.table-header {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--border-blue);
+}
+
+.table-header h4 {
+    margin: 0;
+    color: var(--text-blue);
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+}
+
+.data-table th,
+.data-table td {
+    padding: 15px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-blue);
+}
+
+.data-table th {
+    background: linear-gradient(135deg, var(--light-blue), #f5f9ff);
+    color: var(--text-blue);
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: sticky;
+    top: 0;
+}
+
+.data-table tr:hover {
+    background-color: var(--light-blue);
+    transition: all 0.3s ease;
+}
+
+.data-table td {
+    font-size: 14px;
+    color: #333;
+}
+
+/* 역할 배지 */
+.role-badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.role-admin {
+    background: linear-gradient(135deg, #e53935, #d32f2f);
+    color: white;
+}
+
+.role-employee {
+    background: linear-gradient(135deg, var(--primary-blue), var(--accent-blue));
+    color: white;
+}
+
+/* 상태 배지 */
+.status-badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.status-active {
+    background: linear-gradient(135deg, #4caf50, #2e7d32);
+    color: white;
+}
+
+.status-inactive {
+    background: linear-gradient(135deg, #f44336, #c62828);
+    color: white;
+}
+
+/* 페이지네이션 */
+.pagination-section {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.pagination {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.pagination-btn {
+    display: inline-block;
+    padding: 10px 15px;
+    text-decoration: none;
+    border: 2px solid var(--border-blue);
+    color: var(--text-blue);
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    min-width: 45px;
+    text-align: center;
+}
+
+.pagination-btn:hover {
+    background: var(--primary-blue);
+    color: white;
+    border-color: var(--primary-blue);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 86, 179, 0.3);
+}
+
+.pagination-btn.active {
+    background: linear-gradient(135deg, var(--primary-blue), var(--accent-blue));
+    color: white;
+    border-color: var(--primary-blue);
+    box-shadow: 0 4px 12px rgba(0, 86, 179, 0.3);
+}
+
+.pagination-btn.prev,
+.pagination-btn.next {
+    font-weight: 700;
+    font-size: 16px;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .search-row {
+        flex-direction: column;
+    }
+
+    .search-group {
+        min-width: 100%;
+    }
+
+    .status-card {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .status-icon {
+        margin-right: 0;
+        margin-bottom: 15px;
+    }
+
+    .pagination-btn {
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+}

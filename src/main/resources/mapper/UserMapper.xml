@@ -1,0 +1,80 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.shoppingmall.user.dao.UserDao">
+
+    <select id="findByEmail" parameterType="string" resultType="com.example.shoppingmall.user.domain.User">
+        SELECT * FROM user WHERE email = #{email}
+    </select>
+
+    <select id="findById" parameterType="long" resultType="com.example.shoppingmall.user.domain.User">
+        SELECT * FROM user WHERE user_id = #{user_id}
+    </select>
+
+    <insert id="insert" parameterType="com.example.shoppingmall.user.domain.User">
+        INSERT INTO user (
+                          email,
+                          password,
+
+                          name,
+                          phone_number,
+                          role,
+                          customer_status,
+                          created_at,
+                          updated_at,
+                          registration_at,
+
+                          is_withdrawal,
+                          user_id_creation_at,
+                          gender,
+                          resident_registration_number,
+                          sms_marketing_status,
+                          email_marketing_status
+        )
+        VALUES (
+                #{email},
+                #{password},
+                #{name},
+                #{phone_number},
+                #{role},
+                #{customer_status},
+                #{created_at},
+                #{updated_at},
+                #{registration_at},
+
+                #{is_withdrawal},
+                #{user_id_creation_at},
+                #{gender},
+                #{resident_registration_number},
+                #{sms_marketing_status},
+                #{email_marketing_status}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.example.shoppingmall.user.domain.User">
+        UPDATE user
+        SET email = #{email},
+            password = #{password},
+            name = #{name},
+            phone_number = #{phone_number},
+            role = #{role},
+            customer_status = #{customer_status},
+            updated_at = #{updated_at}
+        WHERE user_id = #{user_id}
+    </update>
+
+    <delete id="delete" parameterType="long">
+        DELETE FROM user WHERE user_id = #{user_id}
+    </delete>
+
+    <!-- 파라미터 매핑 추가 (기존 쿼리 수정) -->
+    <select id="findByEmailAndPassword" resultType="com.example.shoppingmall.user.domain.User">
+        SELECT * FROM user
+        WHERE email = #{email}
+          AND password = #{password}
+          AND (is_withdrawal IS NULL OR is_withdrawal = false)
+          AND customer_status = 'ACTIVE'
+    </select>
+
+
+</mapper>

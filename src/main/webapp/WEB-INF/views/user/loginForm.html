@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<!-- Thymeleaf 네임스페이스 추가 -->
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 보안 관련 메타 태그 추가 -->
+    <meta name="referrer" content="same-origin">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com;">
+    <title>Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css" />
+    <style>
+        * { box-sizing:border-box; }
+        a { text-decoration: none; }
+        form {
+            width:400px;
+            height:500px;
+            display : flex;
+            flex-direction: column;
+            align-items:center;
+            position : absolute;
+            top:50%;
+            left:50%;
+            transform: translate(-50%, -50%) ;
+            border: 1px solid rgb(89,117,196);
+            border-radius: 10px;
+        }
+        input[type='email'], input[type='password'] {
+            width: 300px;
+            height: 40px;
+            border : 1px solid rgb(89,117,196);
+            border-radius:5px;
+            padding: 0 10px;
+            margin-bottom: 10px;
+        }
+        button {
+            background-color: rgb(89,117,196);
+            color : white;
+            width:300px;
+            height:50px;
+            font-size: 17px;
+            border : none;
+            border-radius: 5px;
+            margin : 20px 0 30px 0;
+        }
+        #title {
+            font-size : 50px;
+            margin: 40px 0 30px 0;
+        }
+        #msg {
+            height: 30px;
+            text-align:center;
+            font-size:16px;
+            color:red;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<!-- 폼 액션 경로를 Thymeleaf 형식으로 변경 -->
+<form th:action="@{/user/loginForm}" method="post" onsubmit="return formCheck(this);">
+    <h3 id="title">Login</h3>
+    <!-- 에러 메시지 처리를 Thymeleaf 형식으로 변경 -->
+    <div id="msg" th:if="${error}" th:text="${error}">
+        <i class="fa fa-exclamation-circle"></i>
+    </div>
+    <!-- 데이터베이스 스키마에 맞게 필드명 변경 및 유효성 검사 속성 추가 -->
+    <input type="email" name="email" placeholder="이메일 입력" autofocus required>
+    <input type="password" name="password" placeholder="비밀번호" required>
+    <button>로그인</button>
+    <div>
+        <label><input type="checkbox" name="rememberId"> 아이디 기억</label> |
+        <!-- Thymeleaf URL 표현식으로 변경 -->
+        <a th:href="@{/password/reset}">비밀번호 찾기</a> |
+        <a th:href="@{/register/add}">회원가입</a>
+    </div>
+    <script th:inline="javascript">
+        function formCheck(frm) {
+            // 이메일 필드 검증
+            if(frm.email.value.length==0) {
+                setMessage('이메일을 입력해주세요.', frm.email);
+                return false;
+            }
+
+            // 이메일 형식 검증
+            const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+            if(!emailPattern.test(frm.email.value)) {
+                setMessage('올바른 이메일 형식이 아닙니다.', frm.email);
+                return false;
+            }
+
+            // 비밀번호 필드 검증
+            if(frm.password.value.length==0) {
+                setMessage('비밀번호를 입력해주세요.', frm.password);
+                return false;
+            }
+
+            // 비밀번호 길이 검증
+            if(frm.password.value.length < 8) {
+                setMessage('비밀번호는 최소 8자 이상이어야 합니다.', frm.password);
+                return false;
+            }
+
+            return true;
+        }
+
+        function setMessage(msg, element){
+            document.getElementById("msg").innerHTML = `<i class="fa fa-exclamation-circle"> ${msg}</i>`;
+
+            if(element) {
+                element.select();
+            }
+        }
+    </script>
+</form>
+</body>
+</html>
