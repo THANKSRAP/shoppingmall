@@ -1,0 +1,59 @@
+package com.example.shoppingmall.itemquestion.dao;
+
+
+import com.example.shoppingmall.itemquestion.domain.ItemQuestion;
+import com.example.shoppingmall.notice.domain.dto.PageRequest;
+import org.apache.ibatis.session.SqlSession;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public class ItemQuestionDaoImpl implements ItemQuestionDao {
+    private final SqlSession sqlSession;
+    private  static final String namespace = "ItemQuestionMapper";
+
+    public ItemQuestionDaoImpl(SqlSession sqlSession) {
+        this.sqlSession = sqlSession;
+    }
+    
+    //전체조회
+    @Override
+    public List<ItemQuestion> findAll(){
+        return sqlSession.selectList(namespace + "findAll");
+    }
+    
+    //단건조회
+    @Override
+    public ItemQuestion findById(Long id){
+        return sqlSession.selectOne(namespace+"findById", id);
+    }
+    
+    //등록
+    @Override
+    public void insert(ItemQuestion itemQuestion){
+        sqlSession.insert(namespace+"insert",itemQuestion);
+    }
+    
+    //수정
+    @Override
+    public int update(ItemQuestion itemQuestion){
+        return sqlSession.update(namespace+"update",itemQuestion);
+    }
+    //삭제
+    @Override
+    public int delete(Long id){
+        return sqlSession.update(namespace+"delete", id);
+    }
+
+    @Override
+    public List<ItemQuestion> findPage(PageRequest pageRequest){
+        var params = new java.util.HashMap<String, Object>();
+        params.put("offset", pageRequest.getOffset());
+        params.put("limit", pageRequest.getLimit());
+        return sqlSession.selectList(namespace+"findPage",params);
+    }
+
+    @Override
+    public int count(){ return sqlSession.selectOne(namespace + "count"); }
+}
