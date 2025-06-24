@@ -76,11 +76,11 @@ public class Notice {
         this.status = status;
     }
 
-    public Boolean getPinned() {
+    public Boolean getIsPinned() {
         return isPinned;
     }
 
-    public void setPinned(Boolean pinned) {
+    public void setisPinned(Boolean pinned) {
         isPinned = pinned;
     }
 

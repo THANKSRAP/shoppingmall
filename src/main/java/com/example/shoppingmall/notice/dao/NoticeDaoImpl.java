@@ -49,7 +49,7 @@ public class NoticeDaoImpl implements NoticeDao {
     @Override
     public List<Notice> findPage(PageRequest pageRequest){
         var params = new java.util.HashMap<String, Object>();
-        params.put("offset", pageRequest.getoffset());
+        params.put("offset", pageRequest.getOffset());
         params.put("limit", pageRequest.getLimit());
         return sqlSession.selectList("NoticeMapper.findPage");
     }

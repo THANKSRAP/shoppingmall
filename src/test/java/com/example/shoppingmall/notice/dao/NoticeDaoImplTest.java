@@ -44,7 +44,7 @@ public class NoticeDaoImplTest {
         notice.setContent("test ing");
         notice.setViewCount(0);
         notice.setStatus("ACTIVE");
-        notice.setPinned(false);
+        notice.setisPinned(false);
 
         System.out.println("notice.getNoticeId() = " + notice.getNoticeId());
         noticeDao.insert(notice);
@@ -70,7 +70,7 @@ public class NoticeDaoImplTest {
         notice.setContent("테스트 내용입니다.1");
         notice.setViewCount(0);
         notice.setStatus("ACTIVE");
-        notice.setPinned(false);
+//        notice.setPinned(false);
         System.out.println(notice.getNoticeId());
 
         noticeDao.insert(notice);
