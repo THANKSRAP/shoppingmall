@@ -61,14 +61,11 @@ public class ItemDaoImpl implements ItemDao {
     }
 
     @Override
-    public List<Item> findItemsByCategory(@Param("majorId") Long majorId,
-                                          @Param("middleId") Long middleId,
-                                          @Param("minorId") Long minorId) {
-        Map<String, Long> paramMap = new HashMap<>();
-        paramMap.put("majorId", majorId);
-        paramMap.put("middleId", middleId);
-        paramMap.put("minorId", minorId);
-
-        return sqlSession.selectList(NAMESPACE + "findItemsByCategory", paramMap);
+    public List<Item> findItemsByCategory(Long majorId, Long middleId, Long minorId) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("majorId", majorId);
+        params.put("middleId", middleId);
+        params.put("minorId", minorId);
+        return sqlSession.selectList(NAMESPACE + "findItemsByCategory", params);
     }
 }

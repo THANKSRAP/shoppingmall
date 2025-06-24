@@ -6,67 +6,196 @@
 <head>
     <meta charset="UTF-8">
     <title th:text="${item.name} + ' - 상세정보'">상품 상세</title>
-    <link rel="stylesheet" th:href="@{/resources/css/style.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/item-detail.css}">
 </head>
 
+
 <body>
-<div layout:fragment="content" class="container">
 
-    <h1 th:text="${item.name}">상품명</h1>
+<div layout:fragment="content" class="product-detail-container">
 
-    <div class="item-detail-box">
-        <img th:src="@{${item.image}}" alt="상품 이미지" style="width:300px; height:auto;"/>
-        <div class="item-info">
-            <p><strong>설명:</strong> <span th:text="${item.description}"></span></p>
-            <p><strong>가격:</strong> <span th:text="${item.price}"></span> 원</p>
-            <p><strong>등급:</strong> <span th:text="${item.grade}"></span></p>
-            <p><strong>제조국:</strong> <span th:text="${item.manufactureCountry}"></span></p>
-            <p><strong>상태:</strong> <span th:text="${item.status}"></span></p>
-            <p><strong>베스트셀러:</strong> <span th:text="${item.isBestSeller} ? 'Yes' : 'No'"></span></p>
+    <div class="product-detail-wrapper">
+        <!-- Product Image Section -->
+        <div class="product-image-section">
+            <div class="product-image-container">
+                <img th:src="@{${item.image}}" th:alt="${item.name}" class="product-image"/>
+            </div>
+
+            <!-- Trust Badges -->
+            <div class="trust-badges">
+                <div class="trust-badge">
+                    <svg class="trust-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M5 12V7a7 7 0 1 1 14 0v5"/>
+                        <rect x="2" y="12" width="20" height="8" rx="2"/>
+                    </svg>
+                    <span>무료배송</span>
+                </div>
+                <div class="trust-badge">
+                    <svg class="trust-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>
+                    </svg>
+                    <span>품질보증</span>
+                </div>
+                <div class="trust-badge">
+                    <svg class="trust-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                        <path d="M3 3v5h5"/>
+                    </svg>
+                    <span>무료반품</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Info Section -->
+        <div class="product-info-section">
+            <!-- Title and Badges -->
+            <div class="product-header">
+                <div class="product-badges">
+                    <span th:if="${item.isBestSeller}" class="badge badge-bestseller">베스트셀러</span>
+                    <span class="badge badge-grade" th:text="${item.grade}">프리미엄</span>
+                </div>
+
+                <h1 class="product-title" th:text="${item.name}">상품명</h1>
+
+                <div class="rating-section">
+                    <div class="stars">
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                    </div>
+                    <span class="rating-text">(4.8) 리뷰 234개</span>
+                </div>
+            </div>
+
+            <!-- Price Section -->
+            <div class="price-section">
+                <div class="price-display">
+                    <span class="base-price" th:text="${#numbers.formatInteger(item.price, 0, 'COMMA')} + '원'">298,000원</span>
+                    <span id="additional-price" class="additional-price" style="display: none;"></span>
+                </div>
+                <div id="total-price" class="total-price" style="display: none;"></div>
+            </div>
+
+            <!-- Product Details -->
+            <div class="product-details">
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <span class="detail-label">제조국:</span>
+                        <span class="detail-value" th:text="${item.manufactureCountry}">한국</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">상태:</span>
+                        <span class="detail-value status-active" th:text="${item.status}">판매중</span>
+                    </div>
+                </div>
+                <div class="description">
+                    <p th:text="${item.description}">상품 설명</p>
+                </div>
+            </div>
+
+            <!-- Options Form -->
+            <form th:action="@{/cart/add}" method="post" class="options-form">
+                <input type="hidden" name="itemId" th:value="${item.itemId}"/>
+                <input type="hidden" id="itemOptionId" name="itemOptionId"/>
+
+                <!-- Color Selection -->
+                <div class="option-group">
+                    <label for="colorSelect" class="option-label">색상 선택</label>
+                    <div class="select-buttons color-options">
+                        <th:block th:each="color : ${colorOptions}">
+                            <button type="button" class="option-button"
+                                    th:data-value="${color.colorOptionId}"
+                                    th:text="${color.colorName}"
+                                    th:classappend="${#lists.size(colorOptions) == 1} ? 'selected' : ''">
+                                색상
+                            </button>
+                        </th:block>
+                    </div>
+                    <select id="colorSelect" style="display: none;" required th:disabled="${#lists.size(colorOptions) == 1}">
+                        <option disabled th:if="${#lists.size(colorOptions) > 1}" selected>색상을 선택하세요</option>
+                        <th:block th:each="color : ${colorOptions}">
+                            <option th:value="${color.colorOptionId}" th:text="${color.colorName}"
+                                    th:selected="${#lists.size(colorOptions) == 1}"></option>
+                        </th:block>
+                    </select>
+                </div>
+
+                <!-- Size Selection -->
+                <div class="option-group">
+                    <label for="sizeSelect" class="option-label">사이즈 선택</label>
+                    <div class="select-buttons size-options">
+                        <th:block th:each="size : ${sizeOptions}">
+                            <button type="button" class="option-button"
+                                    th:data-value="${size.sizeOptionId}"
+                                    th:text="${size.sizeName}"
+                                    th:classappend="${#lists.size(sizeOptions) == 1} ? 'selected' : ''">
+                                사이즈
+                            </button>
+                        </th:block>
+                    </div>
+                    <select id="sizeSelect" style="display: none;" required th:disabled="${#lists.size(sizeOptions) == 1}">
+                        <option disabled th:if="${#lists.size(sizeOptions) > 1}" selected>사이즈를 선택하세요</option>
+                        <th:block th:each="size : ${sizeOptions}">
+                            <option th:value="${size.sizeOptionId}" th:text="${size.sizeName}"
+                                    th:selected="${#lists.size(sizeOptions) == 1}"></option>
+                        </th:block>
+                    </select>
+                </div>
+
+                <!-- Stock Info -->
+                <div id="inventoryInfo" class="inventory-info" style="display: none;"></div>
+
+                <!-- Quantity Selection -->
+                <div class="quantity-group">
+                    <label for="quantity" class="option-label">수량</label>
+                    <div class="quantity-controls">
+                        <button type="button" class="quantity-btn" id="decrease-btn">−</button>
+                        <input type="number" name="quantity" id="quantity" value="1" min="1" class="quantity-input" required/>
+                        <button type="button" class="quantity-btn" id="increase-btn">+</button>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <div class="button-row">
+                        <button type="submit" formaction="/cart/add" class="btn btn-cart" id="cart-btn">
+                            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <circle cx="8" cy="21" r="1"/>
+                                <circle cx="19" cy="21" r="1"/>
+                                <path d="m2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
+                            </svg>
+                            장바구니
+                        </button>
+
+                        <button type="button" class="btn btn-wishlist" id="wishlist-btn">
+                            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="m19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <button type="submit" formaction="/order/create" class="btn btn-order" id="order-btn">
+                        즉시 주문하기
+                    </button>
+                </div>
+            </form>
+
+            <!-- Additional Info -->
+            <div class="additional-info">
+                <ul class="info-list">
+                    <li>• 결제 완료 후 1-3일 내 배송됩니다.</li>
+                    <li>• 제품 수령 후 7일 내 무료 반품/교환 가능합니다.</li>
+                    <li>• 고객센터: 1588-0000 (평일 09:00-18:00)</li>
+                </ul>
+            </div>
         </div>
     </div>
-
-    <form th:action="@{/cart/add}" method="post">
-        <input type="hidden" name="itemId" th:value="${item.itemId}"/>
-        <input type="hidden" id="itemOptionId" name="itemOptionId"/>
-
-        <label for="colorSelect">색상:</label>
-        <select id="colorSelect" required
-                th:disabled="${#lists.size(colorOptions) == 1}">
-            <option disabled th:if="${#lists.size(colorOptions) > 1}" selected>색상을 선택하세요</option>
-            <th:block th:each="color : ${colorOptions}">
-                <option th:value="${color.colorOptionId}"
-                        th:text="${color.colorName}"
-                        th:selected="${#lists.size(colorOptions) == 1}"></option>
-            </th:block>
-        </select>
-
-        <label for="sizeSelect">사이즈:</label>
-        <select id="sizeSelect" required
-                th:disabled="${#lists.size(sizeOptions) == 1}">
-            <option disabled th:if="${#lists.size(sizeOptions) > 1}" selected>사이즈를 선택하세요</option>
-            <th:block th:each="size : ${sizeOptions}">
-                <option th:value="${size.sizeOptionId}"
-                        th:text="${size.sizeName}"
-                        th:selected="${#lists.size(sizeOptions) == 1}"></option>
-            </th:block>
-        </select>
-
-        <p id="inventoryInfo" style="margin-top: 10px; color: green;"></p>
-        <label for="quantity">수량:</label>
-        <input type="number" name="quantity" id="quantity" value="1" min="1" required/>
-
-        <div>
-            <button type="submit" formaction="/cart/add">장바구니</button>
-            <button type="submit" formaction="/order/create">주문하기</button>
-        </div>
-    </form>
-
-    <a th:href="@{/item}">목록으로</a>
 </div>
 
 <th:block layout:fragment="script">
-    <script th:src="@{/resources/js/item.js}"></script>
+    <script th:src="@{/resources/js/item-detail.js}"></script>
 </th:block>
 
 </body>
