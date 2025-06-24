@@ -282,12 +282,10 @@ function deleteSelected() {
 
 
 
-// 장바구니에서 상품 제거
+//장바구니에서 상품 제거
 function removeFromCart(cartId) {
-    if (!confirm('정말 삭제하시겠습니까?')) return;
-
-
-
+    console.log('삭제할 cartId:', cartId);
+    // if (!confirm('정말 삭제하시겠습니까?')) return;
 
     fetch('/cart/item/' + cartId, {
         method: 'DELETE'
@@ -302,9 +300,6 @@ function removeFromCart(cartId) {
         })
         .catch(() => alert('서버 오류'));
 }
-
-
-
 
 // ✅ 전체선택
 document.getElementById('select-all-link').addEventListener('click', function (e) {
@@ -363,8 +358,6 @@ document.getElementById('delete-selected-link').addEventListener('click', functi
             alert('서버 오류');
         });
 });
-
-
 
 
 // ✅ 전체상품삭제

@@ -30,12 +30,23 @@ public class CartServiceImpl implements CartService {
     @Override
     public void updateQuantity(int cartId, int quantity) {
         try {
-            cartdao.updateQuantity(cartId, quantity);
+            CartDto cartDto = new CartDto();
+            cartDto.setCartId(cartId);
+            cartDto.setQuantity(quantity);
+            cartdao.updateItemQuantity(cartDto); // 기존 updateItemQuantity 재활용
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
+    @Override
+    public void deleteByCartId(int cartId) {
+        try {
+            cartdao.deleteByCartId(cartId);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Override
     public void deleteByCartIds(List<Integer> cartItemIds) {
@@ -61,6 +72,22 @@ public class CartServiceImpl implements CartService {
     public void addToWishlist(int userId, int itemId, int itemOptionId)  {
         try {
             cartdao.addToWishlist(userId, itemId, itemOptionId);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void insertCart(CartDto cartDto) {
+        try {
+            CartDto existingCartItem = cartdao.selectExistingCartItem(cartDto);
+            if (existingCartItem != null) {
+                int newQuantity = existingCartItem.getQuantity() + cartDto.getQuantity();
+                existingCartItem.setQuantity(newQuantity);
+                cartdao.updateItemQuantity(existingCartItem);
+            } else {
+                cartdao.insertCart(cartDto);
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

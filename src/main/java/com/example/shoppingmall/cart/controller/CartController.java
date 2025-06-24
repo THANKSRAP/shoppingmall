@@ -71,6 +71,13 @@ public class CartController {
         return ResponseEntity.ok().build();
     }
 
+    @DeleteMapping("/item/{cartId}")
+    @ResponseBody
+    public ResponseEntity<Void> deleteCartItem(@PathVariable("cartId") int cartId) {
+        cartService.deleteByCartId(cartId); // 서비스 계층에서 단일 삭제 메서드 호출
+        return ResponseEntity.ok().build();
+    }
+
 
     @PostMapping("/order")
     public String handleOrder(@RequestBody Map<String, Object> orderData, HttpSession session) {
@@ -103,5 +110,46 @@ public class CartController {
         }
     }
 
+    @PostMapping("/add")
+    public String addToCart(@RequestParam("itemId") int itemId,
+                            @RequestParam("itemOptionId") int itemOptionId,
+                            @RequestParam("quantity") int quantity,
+                            HttpSession session) {
+
+        // 아직 로그인 기능 없으므로 임시 userId 지정
+        int userId = 1;
+
+        CartDto cartDto = new CartDto();
+        cartDto.setUserId(userId);
+        cartDto.setItemId(itemId);
+        cartDto.setItemOptionId(itemOptionId);
+        cartDto.setQuantity(quantity);
+
+        cartService.insertCart(cartDto);
+
+        return "redirect:/cart";
+    }
+
+    @PostMapping("/order/create")
+    public String createOrderFromItem(@RequestParam("itemId") int itemId,
+                                      @RequestParam("itemOptionId") int itemOptionId,
+                                      @RequestParam("quantity") int quantity) {
+        try {
+            int userId = 1; // 로그인 구현 전 고정값
+
+            CartDto cartDto = new CartDto();
+            cartDto.setUserId(userId);
+            cartDto.setItemId(itemId);
+            cartDto.setItemOptionId(itemOptionId);
+            cartDto.setQuantity(quantity);
+
+            cartService.insertCart(cartDto);
+
+            return "redirect:/order";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "error"; // 에러 페이지가 있다면
+        }
+    }
 
 }

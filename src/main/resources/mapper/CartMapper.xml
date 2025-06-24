@@ -38,7 +38,7 @@
 
     <insert id="insert" parameterType="com.example.shoppingmall.cart.domain.CartDto">
         INSERT INTO cart (user_id, item_id, item_option_id, quantity, added_at, created_at, updated_at)
-        VALUES (#{userId}, #{itemId}, #{itemOptionId}, #{itemQuantity}, NOW(), NOW(), NOW())
+        VALUES (#{userId}, #{itemId}, #{itemOptionId}, #{quantity}, NOW(), NOW(), NOW())
     </insert>
 
 
@@ -46,6 +46,9 @@
         DELETE FROM cart WHERE cart_id = #{cartId}
     </delete>
 
+    <delete id="deleteCartItemById">
+        DELETE FROM cart WHERE cart_id = #{cartId}
+    </delete>
 
     <delete id="deleteByCartIds" parameterType="list">
         DELETE FROM cart WHERE cart_id IN
@@ -60,20 +63,19 @@
     </delete>
 
 
-    <select id="selectByUserIdAndItemId" parameterType="map" resultType="com.example.shoppingmall.cart.domain.CartDto">
-        SELECT * FROM cart
-        WHERE user_id = #{userId} AND item_id = #{itemId} LIMIT 1
-    </select>
-
-
     <select id="countByUserId" parameterType="int" resultType="int">
         SELECT COUNT(*) FROM cart WHERE user_id = #{userId}
+    </select>
+
+    <select id="selectExistingCartItem" parameterType="com.example.shoppingmall.cart.domain.CartDto" resultType="com.example.shoppingmall.cart.domain.CartDto">
+        SELECT * FROM cart
+        WHERE user_id = #{userId} AND item_id = #{itemId} AND item_option_id = #{itemOptionId}
     </select>
 
 
     <update id="updateItemQuantity" parameterType="com.example.shoppingmall.cart.domain.CartDto">
         UPDATE cart
-        SET quantity = #{itemQuantity}, updated_at = NOW()
+        SET quantity = #{quantity}, updated_at = NOW()
         WHERE cart_id = #{cartId}
     </update>
 
@@ -94,6 +96,11 @@
     <insert id="addToWishlist" parameterType="map">
         INSERT INTO wish_list (user_id, item_id, item_option_id, added_at, created_at, updated_at)
         VALUES (#{userId}, #{itemId}, #{itemOptionId}, NOW(), NOW(), NOW())
+    </insert>
+
+    <insert id="insertCart" parameterType="com.example.shoppingmall.cart.domain.CartDto">
+        INSERT INTO cart (cart_id, user_id, item_id, item_option_id, quantity, added_at, created_at, updated_at)
+        VALUES ( #{cartId},   #{userId}, #{itemId}, #{itemOptionId}, #{quantity}, NOW(), NOW(), NOW())
     </insert>
 
 

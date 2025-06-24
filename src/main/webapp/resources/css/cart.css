@@ -535,3 +535,12 @@ body {
         justify-content: space-between;
     }
 }
+
+.cart-item {
+    display: flex;
+    align-items: flex-start;
+}
+
+.select-item {
+    margin-top: 0;
+}

@@ -9,10 +9,12 @@ public interface CartService {
     List<CartDto> getCartByUserId(int userId);
 
     void updateQuantity(int cartId, int quantity);
+    void deleteByCartId(int cartId);
 
     void deleteByCartIds(List<Integer> cartItemIds);
 
     void deleteAllByUserId(int userId);
 
     void addToWishlist(int userId, int itemId, int itemOptionId);
-}
+    void insertCart(CartDto cartDto);
+    }
