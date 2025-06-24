@@ -1,5 +1,7 @@
 package com.example.shoppingmall.notice.domain;
 
+import java.time.LocalDateTime;
+
 public class Notice {
     private Long noticeId;
     private Long adminId;
@@ -8,8 +10,23 @@ public class Notice {
     private Integer viewCount;
     private String status;
     private Boolean isPinned;
-    private String startDate;
-    private String endDate;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+
+    @Override
+    public String toString() {
+        return "Notice{" +
+                "noticeId=" + noticeId +
+                ", adminId=" + adminId +
+                ", title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                ", viewCount=" + viewCount +
+                ", status='" + status + '\'' +
+                ", isPinned=" + isPinned +
+                ", createdAt='" + createdAt + '\'' +
+                ", updatedAt='" + updatedAt + '\'' +
+                '}';
+    }
 
     public Long getNoticeId() {
         return noticeId;
@@ -59,27 +76,27 @@ public class Notice {
         this.status = status;
     }
 
-    public Boolean getPinned() {
+    public Boolean getIsPinned() {
         return isPinned;
     }
 
-    public void setPinned(Boolean pinned) {
+    public void setisPinned(Boolean pinned) {
         isPinned = pinned;
     }
 
-    public String getStartDate() {
-        return startDate;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setStartDate(String startDate) {
-        this.startDate = startDate;
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public String getEndDate() {
-        return endDate;
+    public LocalDateTime getupdatedAt() {
+        return updatedAt;
     }
 
-    public void setEndDate(String endDate) {
-        this.endDate = endDate;
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }
