@@ -19,7 +19,7 @@
          th:data-middle-id="${middleId}"
          th:data-minor-id="${minorId}"></div>
 
-    <form id="categoryFilterForm" th:action="@{/item}" method="get"
+    <form id="categoryFilterForm" th:action="@{/item/list}" method="get"
           style="display: flex; gap: 10px; align-items: center;">
         <select name="majorId" id="majorSelect">
             <option value="">대분류 선택</option>
