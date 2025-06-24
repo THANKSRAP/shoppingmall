@@ -33,7 +33,7 @@ function updateCartQuantity(cartId, quantity, optionDetail) {
         optionDetail
     });
 
-    fetch('/cart/item/' + cartId, {
+    fetch('api/cart/item/' + cartId, {
         method: 'PATCH',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({quantity: quantity})
@@ -141,7 +141,7 @@ function removeFromCart(cartId) {
     if (!confirm('정말 삭제하시겠습니까?')) return;
 
 
-    fetch('/cart/item/' + cartId, {
+    fetch('/cart/api/items/' + cartId, {
         method: 'DELETE'
     })
         .then(res => {
@@ -185,7 +185,7 @@ function orderAll() {
     };
 
     // 주문 데이터 서버에 전송
-    fetch('/order', {
+    fetch('cart/order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -242,7 +242,7 @@ function orderSelected() {
         delivery_fee: deliveryFee
     };
 
-    fetch('/order', {
+    fetch('cart/order', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(orderData)
@@ -283,7 +283,7 @@ document.getElementById('delete-all-link').addEventListener('click', function (e
 
     if (!confirm('정말 전체 상품을 삭제하시겠습니까?')) return;
 
-    fetch('/cart/all', {
+    fetch('/cart/api/all', {
         method: 'DELETE'
     })
         .then(res => {
