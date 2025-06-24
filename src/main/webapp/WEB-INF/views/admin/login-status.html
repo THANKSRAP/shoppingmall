@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>관리자 - 로그인 현황</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link th:href="@{/css/admin-login-status.css}" rel="stylesheet">
+</head>
+<body>
+<!-- Header 포함 -->
+<div th:replace="~{header :: header}"></div>
+
+<div class="admin-container">
+  <div class="admin-content">
+    <div class="page-header">
+      <h2><i class="fas fa-chart-line"></i> 로그인 현황</h2>
+    </div>
+
+    <div class="status-summary">
+      <div class="status-card">
+        <div class="status-icon">
+          <i class="fas fa-users"></i>
+        </div>
+        <div class="status-info">
+          <h3>현재 접속자 수</h3>
+          <span class="status-count" th:text="${activeUsers}">150</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 검색 필터 -->
+    <div class="search-section">
+      <form th:action="@{/admin/login-status}" method="get" class="search-form">
+        <div class="search-row">
+          <div class="search-group">
+            <label>시작일</label>
+            <input type="date" name="startDate" th:value="${param.startDate}" class="form-control">
+          </div>
+          <div class="search-group">
+            <label>종료일</label>
+            <input type="date" name="endDate" th:value="${param.endDate}" class="form-control">
+          </div>
+          <div class="search-group">
+            <label>권한</label>
+            <select name="role" class="form-select">
+              <option value="">전체 권한</option>
+              <option value="admin" th:selected="${param.role == 'admin'}">관리자</option>
+              <option value="employee" th:selected="${param.role == 'employee'}">직원</option>
+            </select>
+          </div>
+          <div class="search-group">
+            <label>이름</label>
+            <input type="text" name="name" placeholder="이름" th:value="${param.name}" class="form-control">
+          </div>
+          <div class="search-group">
+            <label>상태</label>
+            <select name="status" class="form-select">
+              <option value="">전체 상태</option>
+              <option value="활성" th:selected="${param.status == '활성'}">활성</option>
+              <option value="비활성" th:selected="${param.status == '비활성'}">비활성</option>
+            </select>
+          </div>
+          <div class="search-group">
+            <button type="submit" class="btn-search">
+              <i class="fas fa-search"></i> 검색
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- 로그인 기록 테이블 -->
+    <div class="table-section">
+      <div class="table-header">
+        <h4>로그인 현황 테이블</h4>
+      </div>
+      <div class="table-wrapper">
+        <table class="data-table">
+          <thead>
+          <tr>
+            <th>번호</th>
+            <th>권한 구분</th>
+            <th>사용자 아이디</th>
+            <th>이름</th>
+            <th>로그인 일시</th>
+            <th>역할</th>
+            <th>상태</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="history : ${loginHistories}">
+            <td th:text="${history.rowNumber}">1</td>
+            <td>
+                                <span class="role-badge" th:class="${history.role == 'admin' ? 'role-admin' : 'role-employee'}"
+                                      th:text="${history.role}">admin</span>
+            </td>
+            <td th:text="${history.userId}">limhb008</td>
+            <td th:text="${history.name}">홍길동</td>
+            <td th:text="${#temporals.format(history.loginDateTime, 'yyyy-MM-dd HH:mm:ss')}">2025-06-24 10:00:00</td>
+            <td th:text="${history.department}">입출고 담당</td>
+            <td>
+                                <span class="status-badge" th:class="${history.status == '활성' ? 'status-active' : 'status-inactive'}"
+                                      th:text="${history.status}">활성</span>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 페이지네이션 -->
+    <div class="pagination-section" th:if="${totalPages > 1}">
+      <div class="pagination">
+        <!-- 이전 페이지 -->
+        <a th:href="@{/admin/login-status(page=${currentPage - 1},
+                                                     startDate=${param.startDate},
+                                                     endDate=${param.endDate},
+                                                     role=${param.role},
+                                                     name=${param.name},
+                                                     status=${param.status})}"
+           th:if="${currentPage > 1}"
+           class="pagination-btn prev">&lt;</a>
+
+        <!-- 페이지 번호들 -->
+        <span th:each="pageNum : ${#numbers.sequence(startPage, endPage)}">
+                        <a th:href="@{/admin/login-status(page=${pageNum},
+                                                         startDate=${param.startDate},
+                                                         endDate=${param.endDate},
+                                                         role=${param.role},
+                                                         name=${param.name},
+                                                         status=${param.status})}"
+                           th:text="${pageNum}"
+                           th:class="${pageNum == currentPage ? 'pagination-btn active' : 'pagination-btn'}">1</a>
+                    </span>
+
+        <!-- 다음 페이지 -->
+        <a th:href="@{/admin/login-status(page=${currentPage + 1},
+                                                     startDate=${param.startDate},
+                                                     endDate=${param.endDate},
+                                                     role=${param.role},
+                                                     name=${param.name},
+                                                     status=${param.status})}"
+           th:if="${currentPage < totalPages}"
+           class="pagination-btn next">&gt;</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Footer 포함 -->
+<div th:replace="~{footer :: footer}"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/login-status.js}"></script>
+</body>
+</html>
