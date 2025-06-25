@@ -64,6 +64,7 @@ public class ItemViewController {
         return "item/list";
     }
 
+    // 상품 검색 페이지
     @GetMapping("/search")
     public String search(@RequestParam(value = "name", required = false) String name, Model model) {
         List<ItemDto> items;
