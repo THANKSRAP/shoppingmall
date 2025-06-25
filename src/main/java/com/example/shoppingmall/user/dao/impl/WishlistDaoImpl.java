@@ -42,4 +42,22 @@ public class WishlistDaoImpl implements WishlistDao {
     public void deleteAllWishlist(Long userId) {
         sqlSession.delete(NAMESPACE + "deleteAllWishlist", userId);
     }
+
+    @Override
+    public void insertWishlistItem(Long userId, Long itemId) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("userId", userId);
+        params.put("itemId", itemId);
+        sqlSession.insert(NAMESPACE + "insertWishlistItem", params);
+    }
+
+    @Override
+    public boolean existsWishlistItem(Long userId, Long itemId) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("userId", userId);
+        params.put("itemId", itemId);
+        Boolean result = sqlSession.selectOne(NAMESPACE + "existsWishlistItem", params);
+        return result != null && result;
+    }
+
 }

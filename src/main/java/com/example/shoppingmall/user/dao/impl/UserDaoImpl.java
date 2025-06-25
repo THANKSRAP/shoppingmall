@@ -52,6 +52,7 @@ public class UserDaoImpl implements UserDao {
         sqlSession.delete(NAMESPACE + "delete", id);
     }
 
+
     @Override
     public User findByEmailAndPassword(String email, String password) {
         // ✅ Map으로 파라미터 전달 (XML에서 #{email}, #{password}로 접근 가능)
@@ -61,10 +62,4 @@ public class UserDaoImpl implements UserDao {
         return sqlSession.selectOne(NAMESPACE + "findByEmailAndPassword", params);
     }
 
-//    public User findByEmailAndPassword(String email, String password) {
-//        User user = new User();
-//        user.setEmail(email);
-//        user.setPassword(password);
-//        return sqlSession.selectOne(NAMESPACE + "findByEmailAndPassword", user);
-//    }
 }

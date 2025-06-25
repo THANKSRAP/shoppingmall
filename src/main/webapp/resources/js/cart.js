@@ -156,6 +156,135 @@ function removeFromCart(cartId) {
 }
 
 
+
+// 기존 cart.js 코드들...
+
+// 관심상품 버튼 기능 추가
+document.addEventListener('DOMContentLoaded', function() {
+    initWishlistButtons();
+});
+
+/**
+ * 관심상품 버튼 초기화
+ */
+function initWishlistButtons() {
+    // 모든 관심상품 버튼에 이벤트 리스너 추가
+    document.querySelectorAll('.wishlist-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            addToWishlist(this);
+        });
+    });
+}
+
+
+/**
+ * 관심목록에 상품 추가
+ */
+function addToWishlist(button) {
+    // 장바구니 아이템에서 상품 ID 찾기
+    const cartItem = button.closest('.cart-item') ||
+        button.closest('tr') ||
+        button.closest('[data-item-id]');
+
+    let itemId = null;
+
+    // 여러 방법으로 itemId 찾기
+    if (cartItem) {
+        // data-item-id 속성에서 찾기
+        itemId = cartItem.dataset.itemId;
+
+        // input 필드에서 찾기
+        if (!itemId) {
+            const itemIdInput = cartItem.querySelector('input[name="itemId"]') ||
+                cartItem.querySelector('[data-item-id]');
+            if (itemIdInput) {
+                itemId = itemIdInput.value || itemIdInput.dataset.itemId;
+            }
+        }
+    }
+
+    // 버튼의 data 속성에서 찾기
+    if (!itemId) {
+        itemId = button.dataset.itemId;
+    }
+
+    if (!itemId) {
+        alert('상품 정보를 찾을 수 없습니다.');
+        console.error('ItemId not found');
+        return;
+    }
+
+    // 서버에 관심목록 추가 요청
+    fetch('/wishlist/add', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'itemId=' + itemId
+    })
+        .then(response => response.text())
+        .then(result => {
+            handleWishlistResponse(result, button);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('오류가 발생했습니다.');
+        });
+}
+
+// 관심상품 버튼 클릭 이벤트 (기존 코드를 이것으로 교체)
+document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('wishlist-btn')) {
+        const itemId = e.target.getAttribute('data-item-id');
+
+        if (!itemId) {
+            alert('상품 정보를 찾을 수 없습니다.');
+            return;
+        }
+
+        fetch('/wishlist/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'itemId=' + itemId
+        })
+            .then(response => {
+                console.log('응답 상태:', response.status);
+                return response.text();
+            })
+            .then(result => {
+                console.log('서버 응답:', result);
+                handleWishlistResponse(result);
+            })
+            .catch(error => {
+                console.error('관심목록 추가 오류:', error);
+                alert('네트워크 오류가 발생했습니다.');
+            });
+    }
+});
+
+// 관심목록 응답 처리 함수
+function handleWishlistResponse(result) {
+    switch(result) {
+        case 'success':
+            alert('관심목록에 추가되었습니다.');
+            break;
+        case 'already_exists':
+            alert('이미 관심목록에 있는 상품입니다.');
+            break;
+        case 'login_required':
+            alert('로그인이 필요합니다.');
+            window.location.href = '/user/loginForm';
+            break;
+        case 'error':
+        default:
+            alert('관심목록 추가에 실패했습니다.');
+            break;
+    }
+}
+
+
 // 전체 상품 주문
 function orderAll() {
     const cartElements = document.querySelectorAll('.product-item');

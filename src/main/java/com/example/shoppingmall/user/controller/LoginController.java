@@ -3,7 +3,7 @@ package com.example.shoppingmall.user.controller;
 import com.example.shoppingmall.user.service.UserService;
 import com.example.shoppingmall.user.domain.User;
 import com.example.shoppingmall.user.exception.LoginFailedException;
-import lombok.extern.slf4j.Slf4j; // 로깅을 위한 Lombok 어노테이션 추가
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,13 +16,20 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.regex.Pattern;
 
-@Slf4j // 디버깅을 위한 로깅 기능 추가(Lombok의 로깅 어노테이션 추가)
+@Slf4j
 @Controller
 @RequestMapping("/user")
 public class LoginController {
 
     private final UserService userService;
+
+    // 이메일 정규식 패턴
+    private static final Pattern EMAIL_PATTERN =
+            Pattern.compile("^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$");
 
     @Autowired
     public LoginController(UserService userService) {
@@ -34,41 +41,37 @@ public class LoginController {
      */
     @GetMapping("/loginForm")
     public String loginForm(HttpServletRequest request, Model model) {
+        log.info("==================== 로그인 폼 접근 ====================");
+        log.info("요청 IP: {}", request.getRemoteAddr());
+        log.info("Referer: {}", request.getHeader("Referer"));
+
+
         // 이미 로그인된 사용자는 메인 페이지로 리다이렉트
         HttpSession session = request.getSession(false);
-        if (session != null && session.getAttribute("id") != null) {
+        if (session != null && session.getAttribute("user_id") != null) {
             return "redirect:/";
         }
 
-        // 쿠키에서 저장된 이메일 읽어오기 (아이디 기억하기 기능)
+        // 저장된 이메일 정보 복원
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if ("rememberedEmail".equals(cookie.getName())) {
-                    model.addAttribute("rememberedEmail", cookie.getValue());
-                    model.addAttribute("rememberId", true);
+                    String email = cookie.getValue();
+                    if (email != null && !email.isEmpty()) {
+                        model.addAttribute("email", email);
+                        model.addAttribute("rememberId", true);
+                    }
                     break;
                 }
             }
         }
-
+        log.info("로그인 폼 표시");
         return "user/loginForm";
     }
 
     /**
-     * 로그아웃 처리
-     */
-    @GetMapping("/logout")
-    public String logout(HttpSession session) {
-        // 세션 무효화
-        if (session != null) {
-            session.invalidate();
-        }
-        return "redirect:/";
-    }
-
-    /**
-     * 로그인 처리 - 예외 처리 및 로깅 개선
+     * 로그인 처리
      */
     @PostMapping("/loginForm")
     public String login(@RequestParam String email,
@@ -76,197 +79,286 @@ public class LoginController {
                         @RequestParam(required = false, defaultValue = "false") boolean rememberId,
                         HttpServletRequest request,
                         HttpServletResponse response,
-                        Model model) {  // throws Exception 제거하여 예외를 내부에서 처리
-
-        log.info("로그인 시도 시작 - 이메일: {}", email); // 로그인 시도 로그 추가
+                        Model model) {
 
         try {
-            // 입력값 유효성 검사 추가
-            if (email == null || email.trim().isEmpty()) {
-                log.warn("로그인 실패 - 이메일이 비어있음");
-                model.addAttribute("error", "이메일을 입력해주세요.");
+            // 1. 서버 사이드 입력값 검증
+            String validationError = validateLoginInput(email, password);
+            if (validationError != null) {
+                model.addAttribute("error", validationError);
+                model.addAttribute("email", email);
+                model.addAttribute("rememberId", rememberId);
                 return "user/loginForm";
             }
 
-            if (password == null || password.trim().isEmpty()) {
-                log.warn("로그인 실패 - 비밀번호가 비어있음");
-                model.addAttribute("error", "비밀번호를 입력해주세요.");
-                return "user/loginForm";
-            }
-
-            // UserService를 통한 사용자 인증
+            // 2. 로그인 처리
             User loginUser = new User();
-            loginUser.setEmail(email.trim()); // 공백 제거 추가
-            loginUser.setPassword(password.trim()); // 공백 제거 추가
+            loginUser.setEmail(email.trim().toLowerCase()); // 정규화
+            loginUser.setPassword(password);
 
-            log.info("UserService.login() 호출 전"); // 서비스 호출 전 로그
+            log.info("=== 로그인 시도 ===");
+            log.info("입력 이메일: {}", email);
+            log.info("정규화된 이메일: {}", email.trim().toLowerCase());
+
             User authenticatedUser = userService.login(loginUser);
-            log.info("UserService.login() 호출 후 - 인증된 사용자 ID: {}", authenticatedUser.getUser_id()); // 서비스 호출 후 로그
 
-            // 로그인 성공 시 세션에 사용자 정보 저장 (header.html에서 사용하는 'id' 키 사용)
-            HttpSession session = request.getSession();
-            session.setAttribute("id", authenticatedUser.getEmail()); // header.html에서 체크하는 키
-            session.setAttribute("user", authenticatedUser); // 전체 사용자 객체
-            session.setAttribute("userId", authenticatedUser.getUser_id());
-            session.setAttribute("userName", authenticatedUser.getName());
-            session.setAttribute("userRole", authenticatedUser.getRole());
-            session.setAttribute("customerStatus", authenticatedUser.getCustomer_status());
+            log.info("=== 로그인 성공 ===");
+            log.info("authenticatedUser: {}", authenticatedUser);
+            log.info("authenticatedUser.getUser_id(): {}", authenticatedUser.getUser_id());
+            log.info("authenticatedUser.getEmail(): {}", authenticatedUser.getEmail());
+            log.info("authenticatedUser.getName(): {}", authenticatedUser.getName());
 
-            log.info("로그인 성공 - 세션 생성 완료: {}", authenticatedUser.getEmail()); // 세션 생성 완료 로그
+            // ✅ 3. 기존 세션 무효화 (중복 로그인 방지)
+            HttpSession oldSession = request.getSession(false);
+            if (oldSession != null) {
+                log.info("기존 세션 무효화: {}", oldSession.getId());
+                oldSession.invalidate();
+            }
 
-            // 아이디 기억하기 처리
-            handleRememberMe(email, rememberId, response);
+            // ✅ 4. 새 세션 생성 및 정보 저장 (한 번만!)
+            HttpSession session = request.getSession(true);
+            log.info("새 세션 생성: {}", session.getId());
 
+            // 세션에 사용자 정보 저장
+            session.setAttribute("user_id", authenticatedUser.getUser_id());
+            session.setAttribute("email", authenticatedUser.getEmail());
+            session.setAttribute("user", authenticatedUser);
+            session.setMaxInactiveInterval(30 * 60);
+
+            log.info("=== 세션에 저장된 정보 ===");
+            log.info("Session ID: {}", session.getId());
+            log.info("session.setAttribute('user_id'): {}", authenticatedUser.getUser_id());
+            log.info("session.setAttribute('email'): {}", authenticatedUser.getEmail());
+            log.info("session.setAttribute('user'): {}", authenticatedUser);
+
+            // ✅ 세션 저장 후 즉시 확인
+            Long savedUserId = (Long) session.getAttribute("user_id");
+            String savedEmail = (String) session.getAttribute("email");
+            log.info("=== 세션 저장 확인 ===");
+            log.info("세션에서 다시 조회한 user_id: {}", savedUserId);
+            log.info("세션에서 다시 조회한 email: {}", savedEmail);
+
+            // ✅ 5. 세션 쿠키 설정
+            setupSessionCookie(response, session.getId());
+
+            // 6. 아이디 기억하기 처리
+            handleRememberMe(email.trim().toLowerCase(), rememberId, response);
+
+            // 7. 성공 리다이렉트
             return "redirect:/";
 
         } catch (LoginFailedException e) {
-            // LoginFailedException은 이미 RuntimeException을 상속받으므로 별도 처리
-            log.warn("로그인 실패 - LoginFailedException: {}", e.getMessage()); // 로그인 실패 상세 로그
+            log.error("로그인 실패: {}", e.getMessage());
             model.addAttribute("error", e.getMessage());
-            model.addAttribute("email", email); // 입력했던 이메일 유지
-            model.addAttribute("rememberId", rememberId); // 체크박스 상태 유지
+            model.addAttribute("email", email);
+            model.addAttribute("rememberId", rememberId);
             return "user/loginForm";
         } catch (Exception e) {
-            // 예상하지 못한 오류 처리 - 상세한 에러 로깅 추가
-            log.error("로그인 처리 중 예상치 못한 오류 발생 - 이메일: {}, 오류: {}", email, e.getMessage(), e); // 스택 트레이스 포함한 상세 로그
-            model.addAttribute("error", "로그인 처리 중 시스템 오류가 발생했습니다. 잠시 후 다시 시도해주세요."); // 사용자에게 더 친화적인 메시지
+            log.error("로그인 처리 중 시스템 오류 발생: {}", e.getMessage(), e);
+            model.addAttribute("error", "시스템 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
             model.addAttribute("email", email);
             model.addAttribute("rememberId", rememberId);
             return "user/loginForm";
         }
     }
 
+
+
+    /**
+     *  세션 쿠키 설정 메서드 (URL 노출 방지)
+     */
+    private void setupSessionCookie(HttpServletResponse response, String sessionId) {
+        Cookie sessionCookie = new Cookie("JSESSIONID", sessionId);
+        sessionCookie.setMaxAge(-1); // 브라우저 세션 종료 시까지
+        sessionCookie.setPath("/");
+        sessionCookie.setHttpOnly(true); // XSS 방지
+        sessionCookie.setSecure(false); // HTTP 환경에서는 false (HTTPS에서는 true)
+        response.addCookie(sessionCookie);
+    }
+
+
+    /**
+     * 서버 사이드 입력값 검증
+     */
+    private String validateLoginInput(String email, String password) {
+        // 이메일 검증
+        if (email == null || email.trim().isEmpty()) {
+            return "이메일을 입력해주세요.";
+        }
+
+        if (!EMAIL_PATTERN.matcher(email.trim()).matches()) {
+            return "올바른 이메일 형식이 아닙니다.";
+        }
+
+        if (email.trim().length() > 100) {
+            return "이메일이 너무 깁니다. (최대 100자)";
+        }
+
+        // 비밀번호 검증
+        if (password == null || password.isEmpty()) {
+            return "비밀번호를 입력해주세요.";
+        }
+
+        if (password.length() < 8) {
+            return "비밀번호는 최소 8자 이상이어야 합니다.";
+        }
+
+        if (password.length() > 100) {
+            return "비밀번호가 너무 깁니다. (최대 100자)";
+        }
+
+        // 추가 보안 검증
+        if (containsSqlInjectionPatterns(email) || containsSqlInjectionPatterns(password)) {
+            log.warn("의심스러운 입력 감지: email={}", email);
+            return "유효하지 않은 입력입니다.";
+        }
+
+        return null; // 검증 통과
+    }
+
+    /**
+     * SQL 인젝션 패턴 검사
+     */
+    private boolean containsSqlInjectionPatterns(String input) {
+        if (input == null) return false;
+
+        String lowerInput = input.toLowerCase();
+        String[] dangerousPatterns = {
+                "select", "insert", "update", "delete", "drop", "union",
+                "script", "<script", "</script", "javascript:", "onload=",
+                "onclick=", "onerror=", "alert(", "eval(", "expression("
+        };
+
+        for (String pattern : dangerousPatterns) {
+            if (lowerInput.contains(pattern)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * 아이디 기억하기 쿠키 처리
      */
     private void handleRememberMe(String email, boolean rememberId, HttpServletResponse response) {
-        Cookie cookie = new Cookie("rememberedEmail", rememberId ? email : "");
-        cookie.setPath("/");
-        cookie.setHttpOnly(true); // XSS 방지
-
-        if (rememberId) {
-            cookie.setMaxAge(60 * 60 * 24 * 7); // 7일간 유지
-        } else {
-            cookie.setMaxAge(0); // 쿠키 삭제
-        }
-
-        response.addCookie(cookie);
+        Cookie emailCookie = new Cookie("rememberedEmail", rememberId ? email : "");
+        emailCookie.setMaxAge(rememberId ? 30 * 24 * 60 * 60 : 0);
+        emailCookie.setPath("/");
+        emailCookie.setHttpOnly(true);
+        emailCookie.setSecure(false); // HTTP 환경에서는 false로 설정
+        response.addCookie(emailCookie);
     }
 
     /**
-     * 로그인 상태 확인 (다른 컨트롤러에서 사용할 수 있는 유틸리티 메서드)
+     * URL 인코딩 헬퍼 메서드
+     */
+    private String encodeMessage(String message) {
+        try {
+            return URLEncoder.encode(message, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            log.error("URL 인코딩 실패: {}", message, e);
+            return message; // 인코딩 실패 시 원본 메시지 반환
+        }
+    }
+
+    /**
+     * 로그아웃 처리 (GET)
+     */
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request, HttpServletResponse response) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+
+        clearSessionCookies(response);
+
+        return "redirect:/?message=" + encodeMessage("로그아웃되었습니다.");
+    }
+
+    /**
+     * 로그아웃 처리 (POST)
+     */
+    @PostMapping("/logout")
+    public String logoutPost(HttpServletRequest request, HttpServletResponse response) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+
+        clearSessionCookies(response);
+
+        return "redirect:/?message=" + encodeMessage("로그아웃되었습니다.");
+    }
+
+    /**
+     * 세션 관련 쿠키 제거
+     */
+    private void clearSessionCookies(HttpServletResponse response) {
+        Cookie jsessionCookie = new Cookie("JSESSIONID", null);
+        jsessionCookie.setMaxAge(0);
+        jsessionCookie.setPath("/");
+        response.addCookie(jsessionCookie);
+    }
+
+    /**
+     * 로그인 상태 확인
      */
     public static boolean isLoggedIn(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
-        return session != null && session.getAttribute("id") != null;
+        return session != null && session.getAttribute("user_id") != null;
     }
 
     /**
      * 현재 로그인한 사용자 정보 가져오기
      */
-    public static User getCurrentUser(HttpServletRequest request) {
+//    public static User getCurrentUser(HttpServletRequest request) {
+//        HttpSession session = request.getSession(false);
+//        if (session != null) {
+//            return (User) session.getAttribute("user");
+//        }
+//        return null;
+//    }
+
+    public static Long getCurrentUserId(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         if (session != null) {
-            return (User) session.getAttribute("user");
+            return (Long) session.getAttribute("user_id");
         }
         return null;
     }
 
+
+
     /**
-     * 마이페이지 (세션 확인 예시)
+     * 현재 로그인한 사용자 정보 가져오기 (필요시에만 DB 조회)
+     */
+    public static User getCurrentUser(HttpServletRequest request) {
+        Long userId = getCurrentUserId(request);
+        if (userId != null) {
+            // 여기서 UserService나 UserDao를 통해 최신 정보 조회
+            // 의존성 주입이 어려우므로 각 컨트롤러에서 처리하는 것이 좋음
+            return null; // 각 컨트롤러에서 별도 처리
+        }
+        return null;
+    }
+
+
+
+
+
+    /**
+     * 마이페이지
      */
     @GetMapping("/mypage")
     public String mypage(HttpServletRequest request, Model model) {
-        if (!isLoggedIn(request)) {
-            return "redirect:/user/loginForm";
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("user_id") == null) {
+            return "redirect:/user/loginForm?msg=" + encodeMessage("로그인이 필요합니다.");
         }
 
-        User currentUser = getCurrentUser(request);
-        model.addAttribute("user", currentUser);
+        Long userId = (Long) session.getAttribute("user_id");
+        model.addAttribute("userId", userId);
         return "user/mypage";
     }
 }
-
-
-//package com.example.shoppingmall.user.controller;
-//
-//import com.example.shoppingmall.user.dao.UserDao;
-//import com.example.shoppingmall.user.domain.User;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.stereotype.Controller;
-//import org.springframework.web.bind.annotation.GetMapping;
-//import org.springframework.web.bind.annotation.PostMapping;
-//import org.springframework.web.bind.annotation.RequestMapping;
-//
-//import javax.servlet.http.Cookie;
-//import javax.servlet.http.HttpServletRequest;
-//import javax.servlet.http.HttpServletResponse;
-//import javax.servlet.http.HttpSession;
-//import java.net.URLEncoder;
-//
-//@Controller
-//@RequestMapping("/user")
-//public class LoginController {
-//
-//    private final UserDao userDao;
-//
-//    @Autowired
-//    public LoginController(UserDao userDao) {
-//        this.userDao = userDao;
-//    }
-//
-///* <<<<<<<<<<<<<<  ✨ Windsurf Command ⭐ >>>>>>>>>>>>>>>> */
-//    /**
-//     * Login form view
-//     *
-//     * @return login form view
-//     */
-///* <<<<<<<<<<  5a35d80d-f1ee-45b8-9137-b6e3d556e4a3  >>>>>>>>>>> */
-//    @GetMapping("/loginForm")
-//    public String loginForm() {
-//        return "user/loginForm";
-//    }
-//
-//    @GetMapping("/logout")
-//    public String logout(HttpSession session) {
-//        // 세션 종료
-//        session.invalidate();
-//        // 홈으로 이동
-//        return "redirect:/";
-//    }
-//
-//    @PostMapping("/loginForm")
-//    public String login(String email, String password, boolean rememberId,
-//                        HttpServletRequest request, HttpServletResponse response) throws Exception {
-//        if (!loginCheck(email, password)) {
-//            String msg = URLEncoder.encode("아이디 또는 비밀번호가 일치하지 않습니다.", "utf-8");
-//            return "user/loginForm";
-//        }
-//
-//        // 로그인 성공 시 로그인 이력 저장
-//        HttpSession session = request.getSession();
-//        session.setAttribute("id", email);
-//
-//        // 로그인 유지 체크박스 처리
-//        Cookie cookie = new Cookie("id", rememberId ? email : "");
-//        cookie.setPath("/");
-//        if (rememberId) {
-//            cookie.setMaxAge(60 * 60 * 24 * 7); // 1주일 유지
-//        } else {
-//            cookie.setMaxAge(0); // 쿠키 삭제
-//        }
-//        response.addCookie(cookie);
-//
-//        return "redirect:/";
-//    }
-//
-//    private boolean loginCheck(String id, String pwd) {
-//        try {
-//            User user = userDao.findByEmail(id);
-//            return user != null && user.getPwd().equals(pwd);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return false;
-//        }
-//    }
-//}

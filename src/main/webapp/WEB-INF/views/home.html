@@ -11,6 +11,14 @@
 <body>
 <div layout:fragment="content">
     <div class="container-fluid">
+        <!-- 메시지 표시 영역 추가 -->
+        <div th:if="${param.message}" class="alert alert-info alert-dismissible fade show" role="alert"
+             style="margin: 10px 0; text-align: center;">
+            <span th:text="${param.message}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"
+                    onclick="this.parentElement.style.display='none';">×</button>
+        </div>
+
         <div class="row justify-content-center">
 
             <!-- Hero Banner -->

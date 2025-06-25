@@ -1,5 +1,6 @@
 package com.example.shoppingmall.user.controller;
 
+import com.example.shoppingmall.user.dao.UserDao;
 import com.example.shoppingmall.user.domain.User;
 import com.example.shoppingmall.user.service.UserService;
 import org.springframework.stereotype.Controller;
@@ -9,14 +10,18 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 
+
+
 @Controller
 @RequestMapping("/user")
 public class UserController {
 
     private final UserService userService;
+    private final UserDao userDao;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, UserDao userDao) {
         this.userService = userService;
+        this.userDao = userDao;
     }
 
     /**
@@ -44,7 +49,8 @@ public class UserController {
             return "redirect:/user/loginForm";
         }
 
-        User currentUser = LoginController.getCurrentUser(request);
+        Long userId = LoginController.getCurrentUserId(request);
+        User currentUser = userDao.findById(userId);  // ← DB에서 최신 정보 조회
         model.addAttribute("user", currentUser);
         return "user/editForm";
     }

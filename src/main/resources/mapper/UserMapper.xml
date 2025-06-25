@@ -2,30 +2,129 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<!-- ✅ 네임스페이스를 UserMapper로 설정 (UserDaoImpl의 NAMESPACE와 일치) -->
-<mapper namespace="UserMapper">
+<!-- 네임스페이스  변경 -->
+<mapper namespace="com.example.shoppingmall.user.dao.UserDao">
 
 
     <select id="findByEmail" parameterType="string" resultType="com.example.shoppingmall.user.domain.User">
-        SELECT * FROM user WHERE email = #{email}
+        SELECT
+            user_id,
+            email,
+            password,
+            pre_password,
+            name,
+            resident_registration_number,
+            phone_number,
+            gender,
+            registration_at,
+            user_id_creation_at,
+            sms_marketing_status,
+            email_marketing_status,
+            customer_status,
+            is_withdrawal,
+            withdrawal_at,
+            withdrawal_reason,
+            role,
+            created_at,
+            updated_at
+        FROM user
+        WHERE email = #{email}
     </select>
+
 
     <select id="findById" parameterType="long" resultType="com.example.shoppingmall.user.domain.User">
-        SELECT * FROM user WHERE user_id = #{user_id}
+        SELECT
+            user_id,
+            email,
+            password,
+            pre_password,
+            name,
+            resident_registration_number,
+            phone_number,
+            gender,
+            registration_at,
+            user_id_creation_at,
+            sms_marketing_status,
+            email_marketing_status,
+            customer_status,
+            is_withdrawal,
+            withdrawal_at,
+            withdrawal_reason,
+            role,
+            created_at,
+            updated_at
+        FROM user
+        WHERE user_id = #{user_id}
     </select>
 
-    <!-- ✅ Map 파라미터로 수정 -->
+
+
     <select id="findByEmailAndPassword" parameterType="map" resultType="com.example.shoppingmall.user.domain.User">
-        SELECT * FROM user
+        SELECT
+            user_id,
+            email,
+            password,
+            name,
+            phone_number,
+            customer_status,
+            role,
+            created_at,
+            updated_at,
+            registration_at,
+            user_id_creation_at,
+            is_withdrawal
+        FROM user
         WHERE email = #{email}
           AND password = #{password}
-          AND (is_withdrawal IS NULL OR is_withdrawal = false)
           AND customer_status = 'ACTIVE'
+          AND is_withdrawal = FALSE
     </select>
+
+
+    <!--    &lt;!&ndash; ✅ Map 파라미터로 수정 &ndash;&gt;-->
+<!--    <select id="findByEmailAndPassword" parameterType="map" resultType="com.example.shoppingmall.user.domain.User">-->
+<!--        SELECT-->
+<!--            user_id,-->
+<!--            email,-->
+<!--            password,-->
+<!--            pre_password,-->
+<!--            name,-->
+<!--            resident_registration_number,-->
+<!--            phone_number,-->
+<!--            gender,-->
+<!--            registration_at,-->
+<!--            user_id_creation_at,-->
+<!--            sms_marketing_status,-->
+<!--            email_marketing_status,-->
+<!--            customer_status,-->
+<!--            is_withdrawal,-->
+<!--            withdrawal_at,-->
+<!--            withdrawal_reason,-->
+<!--            role,-->
+<!--            created_at,-->
+<!--            updated_at-->
+<!--        FROM user-->
+<!--        WHERE email = #{email}-->
+<!--          AND password = #{password}-->
+<!--          AND (is_withdrawal IS NULL OR is_withdrawal = false)-->
+<!--          AND customer_status = 'ACTIVE'-->
+<!--    </select>-->
+
+
+<!--    &lt;!&ndash; ✅ Map 파라미터로 수정 &ndash;&gt;-->
+<!--    <select id="findByEmailAndPassword" parameterType="map" resultType="com.example.shoppingmall.user.domain.User">-->
+<!--        SELECT * FROM user-->
+<!--        WHERE email = #{email}-->
+<!--          AND password = #{password}-->
+<!--          AND (is_withdrawal IS NULL OR is_withdrawal = false)-->
+<!--          AND customer_status = 'ACTIVE'-->
+<!--    </select>-->
+
 
 
     <insert id="insert" parameterType="com.example.shoppingmall.user.domain.User">
         INSERT INTO user (
+                        user_id,
                           email,
                           password,
 
@@ -45,7 +144,8 @@
                           email_marketing_status
         )
         VALUES (
-                #{email},
+                   #{user_id}
+                   #{email},
                 #{password},
                 #{name},
                 #{phone_number},
@@ -66,7 +166,8 @@
 
     <update id="update" parameterType="com.example.shoppingmall.user.domain.User">
         UPDATE user
-        SET email = #{email},
+        SET user_id = #{user_id},
+            email = #{email},
             password = #{password},
             name = #{name},
             phone_number = #{phone_number},

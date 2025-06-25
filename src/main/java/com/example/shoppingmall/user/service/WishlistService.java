@@ -12,7 +12,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class WishlistService {
-    // ... 나머지 코드는 동일
+
     private final WishlistDao wishlistDao;
 
     public PageResult<WishlistDto> getWishlistPage(WishlistSearchDto searchDto) {
@@ -20,6 +20,20 @@ public class WishlistService {
         int totalCount = wishlistDao.countWishlist(searchDto.getUserId());
 
         return new PageResult<>(wishlist, totalCount, searchDto.getPageSize());
+    }
+
+    /**
+     * 관심목록에 상품 추가
+     */
+    public void addToWishlist(Long userId, Long itemId) {
+        wishlistDao.insertWishlistItem(userId, itemId);
+    }
+
+    /**
+     * 관심목록에 이미 있는 상품인지 확인
+     */
+    public boolean isItemInWishlist(Long userId, Long itemId) {
+        return wishlistDao.existsWishlistItem(userId, itemId);
     }
 
     public void deleteWishlistItems(List<Long> ids, Long userId) {

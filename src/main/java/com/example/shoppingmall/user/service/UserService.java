@@ -31,6 +31,12 @@ public class UserService {
         return userDao.findByEmail(email);
     }
 
+    // 이메일 중복 체크 메서드
+    public boolean isEmailExists(String email) {
+        User user = userDao.findByEmail(email);
+        return user != null;
+    }
+
     public void updateUser(User user) {
         userDao.update(user);
     }
