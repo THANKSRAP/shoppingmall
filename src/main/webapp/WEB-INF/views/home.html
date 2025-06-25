@@ -4,99 +4,219 @@
       layout:decorate="~{layout}">
 
 <head>
-    <title>홈</title>
-    <link rel="stylesheet" th:href="@{/resources/css/style.css}"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>홈 - 온라인 쇼핑몰</title>
+    <link rel="stylesheet" th:href="@{/resources/css/style.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
-<div layout:fragment="content">
-    <div class="container-fluid">
-        <div class="row justify-content-center">
 
-            <!-- Hero Banner -->
-            <div class="bg-primary text-white p-5">
-                <div class="row align-items-center">
-                    <div class="col-md-8">
-                        <h1 class="display-5 fw-bold">새로운 상품과의 만남</h1>
-                        <p class="lead">매일 업데이트되는 새로운 상품과 만나보세요</p>
-                        <a class="btn btn-light btn-lg" th:href="@{/item/list}">
-                            상품 보러가기 <i class="fas fa-arrow-right"></i>
-                        </a>
+<div layout:fragment="content">
+    <div class="homepage">
+        <!-- Hero Section -->
+        <section class="hero-banner">
+            <div class="container">
+                <div class="hero-content">
+                    <div class="hero-text">
+                        <h1 class="hero-title">새로운 상품과의 만남</h1>
+                        <p class="hero-subtitle">매일 업데이트되는 새로운 상품과 만나보세요</p>
+                        <div class="hero-actions">
+                            <a class="btn btn-primary btn-hero" th:href="@{/item/list}">
+                                <i class="fas fa-shopping-bag"></i>
+                                상품 보러가기
+                            </a>
+                            <a class="btn btn-outline-light btn-hero" th:href="@{/item/search}">
+                                <i class="fas fa-search"></i>
+                                상품 검색
+                            </a>
+                        </div>
                     </div>
-                    <div class="col-md-4 text-center">
-                        <i class="fas fa-gift fa-5x opacity-75"></i>
+                    <div class="hero-visual">
+                        <div class="hero-icon">
+                            <i class="fas fa-gift"></i>
+                        </div>
                     </div>
                 </div>
             </div>
+        </section>
 
-            <!-- Monthly Bestsellers -->
-            <section class="mb-5 px-5">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h2 class="h3">
-                        <i class="fas fa-trophy text-warning me-2"></i>
+        <div class="container">
+
+            <!-- Bestsellers Section -->
+            <section class="products-section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-trophy"></i>
                         이달의 베스트 상품
                     </h2>
-                    <a th:href="@{/item/list}" class="btn btn-outline-primary btn-sm">
-                        더보기 <i class="fas fa-arrow-right"></i>
+                    <a th:href="@{/item/list}" class="section-link">
+                        전체보기 <i class="fas fa-arrow-right"></i>
                     </a>
                 </div>
 
-                <div class="row">
-                    <div class="col-md-2 col-sm-4 col-6 mb-4"
-                         th:each="item, iterStat : ${bestSellers}"
-                         th:if="${iterStat.index < 5}">
-                        <a th:href="@{/item/{id}(id=${item.itemId})}" class="item-card-link">
-                            <div class="card item-card h-100 position-relative">
-                                <span class="bestseller-badge" th:text="${iterStat.index + 1}"></span>
-                                <img th:src="${item.image != null ? item.image : '/images/item-placeholder.jpg'}"
-                                     class="card-img-top item-image" th:alt="${item.name}">
-                                <div class="card-body p-2">
-                                    <h6 class="card-title text-truncate" th:text="${item.name}">상품 이름</h6>
-                                    <p class="card-text text-muted small mb-1" th:text="${item.description}">상품 설명</p>
-                                    <p class="price mb-0"
-                                       th:text="${#numbers.formatInteger(item.price, 0, 'COMMA')} + '원'">
-                                        15,000원</p>
+                <div class="products-grid" th:if="${bestSellers != null and !#lists.isEmpty(bestSellers)}">
+                    <article class="product-item" th:each="item, iterStat : ${bestSellers}" th:if="${iterStat.index < 6}">
+                        <a th:href="@{/item/{id}(id=${item.itemId})}" class="product-link">
+                            <div class="product-image-wrapper">
+                                <img th:src="${item.image != null ? item.image : '/placeholder.svg?height=300&width=240'}"
+                                     th:alt="${item.name}"
+                                     class="product-image"
+                                     loading="lazy">
+
+                                <!-- 베스트셀러 순위 배지 -->
+                                <div class="rank-badge" th:text="${iterStat.index + 1}">1</div>
+
+                                <!-- 상태 배지 -->
+                                <div class="product-badges">
+                                    <span class="badge badge-sale">판매중</span>
+                                </div>
+                            </div>
+
+                            <div class="product-info">
+                                <h3 class="product-name" th:text="${item.name}">상품명</h3>
+                                <p class="product-description" th:text="${item.description}">상품 설명</p>
+
+                                <div class="product-rating">
+                                    <div class="stars">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                    </div>
+                                    <span class="rating-count">(128)</span>
+                                </div>
+
+                                <div class="product-meta">
+                                    <span class="product-country" th:text="${item.manufactureCountry}">Korea</span>
+                                </div>
+
+                                <div class="product-price">
+                                    <span class="price" th:text="${#numbers.formatInteger(item.price, 0, 'COMMA')} + '원'">
+                                        15,000원
+                                    </span>
+                                    <span class="original-price">20,000원</span>
+                                    <span class="discount-badge">25%</span>
                                 </div>
                             </div>
                         </a>
-                    </div>
+                    </article>
                 </div>
             </section>
 
-            <!-- New Releases -->
-            <section class="mb-5 px-5">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h2 class="h3">
-                        <i class="fas fa-trophy text-warning me-2"></i>
+            <!-- New Releases Section -->
+            <section class="products-section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-sparkles"></i>
                         신상품
                     </h2>
-                    <a th:href="@{/item/list}" class="btn btn-outline-primary btn-sm">
-                        더보기 <i class="fas fa-arrow-right"></i>
+                    <a th:href="@{/item/list}" class="section-link">
+                        전체보기 <i class="fas fa-arrow-right"></i>
                     </a>
                 </div>
 
-                <div class="row">
-                    <div class="col-md-2 col-sm-4 col-6 mb-4"
-                         th:each="item, iterStat : ${newReleases}"
-                         th:if="${iterStat.index < 5}">
-                        <a th:href="@{/item/{id}(id=${item.itemId})}" class="item-card-link">
-                            <div class="card item-card h-100 position-relative">
-                                <img th:src="${item.image != null ? item.image : '/images/item-placeholder.jpg'}"
-                                     class="card-img-top item-image" th:alt="${item.name}">
-                                <div class="card-body p-2">
-                                    <h6 class="card-title text-truncate" th:text="${item.name}">상품 이름</h6>
-                                    <p class="card-text text-muted small mb-1" th:text="${item.description}">상품 설명</p>
-                                    <p class="price mb-0"
-                                       th:text="${#numbers.formatInteger(item.price, 0, 'COMMA')} + '원'">
-                                        15,000원</p>
+                <div class="products-grid" th:if="${newReleases != null and !#lists.isEmpty(newReleases)}">
+                    <article class="product-item" th:each="item, iterStat : ${newReleases}" th:if="${iterStat.index < 6}">
+                        <a th:href="@{/item/{id}(id=${item.itemId})}" class="product-link">
+                            <div class="product-image-wrapper">
+                                <img th:src="${item.image != null ? item.image : '/placeholder.svg?height=300&width=240'}"
+                                     th:alt="${item.name}"
+                                     class="product-image"
+                                     loading="lazy">
+
+                                <!-- 신상품 배지 -->
+                                <div class="new-badge">NEW</div>
+
+                                <!-- 상태 배지 -->
+                                <div class="product-badges">
+                                    <span class="badge badge-sale">판매중</span>
+                                </div>
+                            </div>
+
+                            <div class="product-info">
+                                <h3 class="product-name" th:text="${item.name}">상품명</h3>
+                                <p class="product-description" th:text="${item.description}">상품 설명</p>
+
+                                <div class="product-rating">
+                                    <div class="stars">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                    </div>
+                                    <span class="rating-count">(45)</span>
+                                </div>
+
+                                <div class="product-meta">
+                                    <span class="product-country" th:text="${item.manufactureCountry}">Korea</span>
+                                </div>
+
+                                <div class="product-price">
+                                    <span class="price" th:text="${#numbers.formatInteger(item.price, 0, 'COMMA')} + '원'">
+                                        15,000원
+                                    </span>
                                 </div>
                             </div>
                         </a>
+                    </article>
+                </div>
+            </section>
+
+            <!-- Service Features -->
+            <section class="service-features">
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-shipping-fast"></i>
+                        </div>
+                        <h3 class="feature-title">빠른 배송</h3>
+                        <p class="feature-description">주문 후 24시간 내 배송 시작</p>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3 class="feature-title">안전한 결제</h3>
+                        <p class="feature-description">SSL 보안으로 안전한 거래</p>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-undo"></i>
+                        </div>
+                        <h3 class="feature-title">무료 반품</h3>
+                        <p class="feature-description">30일 내 무료 반품 가능</p>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-headset"></i>
+                        </div>
+                        <h3 class="feature-title">24/7 고객지원</h3>
+                        <p class="feature-description">언제든지 도움을 받으세요</p>
                     </div>
                 </div>
             </section>
         </div>
     </div>
 </div>
+
+<th:block layout:fragment="script">
+    <script>
+        // 페이지 로드 시 애니메이션
+        document.addEventListener('DOMContentLoaded', function() {
+            // 상품 카드 순차 애니메이션
+            const productItems = document.querySelectorAll('.product-item');
+            productItems.forEach((item, index) => {
+                item.style.animationDelay = `${index * 0.1}s`;
+                item.classList.add('fade-in');
+            });
+        });
+    </script>
+</th:block>
+
 </body>
 </html>

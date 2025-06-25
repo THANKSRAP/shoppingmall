@@ -72,7 +72,8 @@
             <!-- Price Section -->
             <div class="price-section">
                 <div class="price-display">
-                    <span class="base-price" th:text="${#numbers.formatInteger(item.price, 0, 'COMMA')} + '원'">298,000원</span>
+                    <span class="base-price"
+                          th:text="${#numbers.formatInteger(item.price, 0, 'COMMA')} + '원'">298,000원</span>
                     <span id="additional-price" class="additional-price" style="display: none;"></span>
                 </div>
                 <div id="total-price" class="total-price" style="display: none;"></div>
@@ -87,7 +88,11 @@
                     </div>
                     <div class="detail-item">
                         <span class="detail-label">상태:</span>
-                        <span class="detail-value status-active" th:text="${item.status}">판매중</span>
+                            <span class="detail-value">
+                            <span th:if="${item.status == 'ON_SALE'}">판매중</span>
+                            <span th:if="${item.status == 'OUT_OF_STOCK'}">품절</span>
+                            <span th:if="${item.status == 'ADDRESS_ISSUE' or item.status == 'QUALITY_CHECK' or item.status == 'WAREHOUSE_OVERLOAD'}">판매중지</span>
+                        </span>
                     </div>
                 </div>
                 <div class="description">
@@ -113,7 +118,8 @@
                             </button>
                         </th:block>
                     </div>
-                    <select id="colorSelect" style="display: none;" required th:disabled="${#lists.size(colorOptions) == 1}">
+                    <select id="colorSelect" style="display: none;" required
+                            th:disabled="${#lists.size(colorOptions) == 1}">
                         <option disabled th:if="${#lists.size(colorOptions) > 1}" selected>색상을 선택하세요</option>
                         <th:block th:each="color : ${colorOptions}">
                             <option th:value="${color.colorOptionId}" th:text="${color.colorName}"
@@ -135,7 +141,8 @@
                             </button>
                         </th:block>
                     </div>
-                    <select id="sizeSelect" style="display: none;" required th:disabled="${#lists.size(sizeOptions) == 1}">
+                    <select id="sizeSelect" style="display: none;" required
+                            th:disabled="${#lists.size(sizeOptions) == 1}">
                         <option disabled th:if="${#lists.size(sizeOptions) > 1}" selected>사이즈를 선택하세요</option>
                         <th:block th:each="size : ${sizeOptions}">
                             <option th:value="${size.sizeOptionId}" th:text="${size.sizeName}"
@@ -152,7 +159,8 @@
                     <label for="quantity" class="option-label">수량</label>
                     <div class="quantity-controls">
                         <button type="button" class="quantity-btn" id="decrease-btn">−</button>
-                        <input type="number" name="quantity" id="quantity" value="1" min="1" class="quantity-input" required/>
+                        <input type="number" name="quantity" id="quantity" value="1" min="1" class="quantity-input"
+                               required/>
                         <button type="button" class="quantity-btn" id="increase-btn">+</button>
                     </div>
                 </div>
