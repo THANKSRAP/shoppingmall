@@ -92,16 +92,18 @@
 }
 
 .product-title {
-    margin: 0;
-    font-size: 1.875rem;
+    /*margin: 0;*/
+    /*font-size: 1.875rem;*/
     font-weight: 700;
     color: #1e293b;
-    line-height: 1.2;
+    /*line-height: 1.2;*/
+    flex-shrink: 1;
+    min-width: 0;
 }
 
 .product-badges {
-    display: flex;
-    gap: 0.75rem;
+    /*display: flex;*/
+    /*gap: 0.75rem;*/
     white-space: nowrap;
 }
 
