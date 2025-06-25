@@ -57,7 +57,10 @@
                                 <h3 id="detailProductName">상품명</h3>
                                 <div class="product-price-info">
                                     <span id="detailProductPrice">0원</span>
-                                    <button class="product-detail-btn">상품 상세 보기</button>
+                                    <button class="product-detail-btn"
+                                            th:onclick="'location.href=\'/item/' + ${itemId} + '\';'">
+                                        상품 상세 보기
+                                    </button>
                                 </div>
                             </div>
                         </div>

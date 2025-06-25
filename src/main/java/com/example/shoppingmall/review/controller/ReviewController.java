@@ -26,11 +26,6 @@ public class ReviewController {
     }
 
 
-//    @GetMapping("/list")
-//    @ResponseBody
-//    public List<ReviewDto> getReviewList() {
-//        return reviewService.getAllReviews();
-//    }
 @GetMapping("/list")
 public String reviewList(@RequestParam(required = false) Long itemId, Model model) {
     List<ReviewDto> reviews;
@@ -41,6 +36,7 @@ public String reviewList(@RequestParam(required = false) Long itemId, Model mode
     if (itemId != null) {
         reviews = reviewService.getReviewsByItemId(itemId);
         System.out.println("🔍 해당 itemId에 대한 리뷰 수: " + reviews.size());
+
     } else {
         reviews = reviewService.getAllReviews();
         System.out.println("📦 전체 리뷰 수: " + reviews.size());

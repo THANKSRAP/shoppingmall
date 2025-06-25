@@ -22,4 +22,6 @@ public interface ItemService {
     List<ItemDto> searchItemsByName(String name);
 
     List<ItemDto> getItemsByCategory(Long majorId, Long middleId, Long minorId);
+
+    ItemDto getItemWithReviewSummary(Long itemId);
 }

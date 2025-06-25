@@ -30,6 +30,15 @@ public class ItemViewController {
     @GetMapping("/{id}")
     public String detail(@PathVariable Long id, Model model) {
         ItemDto item = itemService.getItemById(id);
+
+        ItemDto ratingSummary = itemService.getItemWithReviewSummary(id);
+        if (ratingSummary != null) {
+            item.setAverageRating(ratingSummary.getAverageRating());
+            item.setReviewCount(ratingSummary.getReviewCount());
+        } else {
+            System.out.println("별점 요약 정보가 없습니다.");
+        }
+
         CategoryDto category = categoryService.getCategoryByItemId(id);
         List<ItemOptionDto> options = itemOptionService.getItemOptionsWithInventory(id); // 서비스 계층에서 옵션+재고 조회
         List<ItemOptionDto> sizeOptions = itemOptionService.getSizeOptions(id);

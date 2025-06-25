@@ -10,6 +10,8 @@ public class Item {
     private Long categoryId;
     private String name;
     private String image;
+    private Double averageRating;
+    private Integer reviewCount;
     private String description;
     private BigDecimal price;
     private String status; // enum: SALE, OUT_OF_STOCK, ...
