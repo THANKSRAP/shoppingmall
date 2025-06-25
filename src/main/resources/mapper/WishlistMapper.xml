@@ -2,7 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
+<!-- 네임스페이스 변경 -->
 <mapper namespace="com.example.shoppingmall.user.dao.WishlistDao">
+
 
     <select id="selectWishlist" parameterType="com.example.shoppingmall.user.domain.dto.WishlistSearchDto"
             resultType="com.example.shoppingmall.user.domain.dto.WishlistDto">
@@ -27,7 +29,20 @@
         WHERE user_id = #{userId}
     </select>
 
-    <delete id="deleteWishlistItem">
+    <!-- 관심목록에 상품 추가 -->
+    <insert id="insertWishlistItem" parameterType="map">
+        INSERT INTO wish_list (user_id, item_id, created_at)
+        VALUES (#{userId}, #{itemId}, NOW())
+    </insert>
+
+    <!-- 관심목록에 이미 있는 상품인지 확인   - parameterType 추가 -->
+    <select id="existsWishlistItem" resultType="boolean">
+        SELECT COUNT(*) > 0
+        FROM wish_list
+        WHERE user_id = #{userId} AND item_id = #{itemId}
+    </select>
+
+    <delete id="deleteWishlistItem" parameterType="map">
         DELETE FROM wish_list
         WHERE wish_list_id = #{id} AND user_id = #{userId}
     </delete>

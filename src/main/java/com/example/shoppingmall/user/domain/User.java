@@ -5,29 +5,29 @@ import java.time.LocalDateTime;
 
 @Data
 public class User {
-    private Long user_id;
+    private Long userId;
     private String email;
     private String password;
-    private String pre_password;
+    private String prePassword;
     private String name;
-    private String phone_number;
-    private String resident_registration_number;  // 주민번호
+    private String phoneNumber;
+    private String residentRegistrationNumber;  // 주민번호
     private String gender;                       // 성별
-    private boolean sms_marketing_status;               // SMS 마케팅 동의
-    private boolean email_marketing_status;             // 이메일 마케팅 동의
+    private boolean smsMarketingStatus;               // SMS 마케팅 동의
+    private boolean emailMarketingStatus;             // 이메일 마케팅 동의
 
     private String role;     // enum: ROLE_USER, ROLE_ADMIN
-    private String customer_status;   // enum: ACTIVE, INACTIVE, SUSPENDED
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
-    private LocalDateTime registration_at;
+    private String customerStatus;   // enum: ACTIVE, INACTIVE, SUSPENDED
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    private LocalDateTime registrationAt;
 
 
     // === SQL 스키마에서 새로 추가되는 필드들 ===
-    private LocalDateTime user_id_creation_at;          // user_id_creation_at timestamp
-    private Boolean is_withdrawal;                // is_user_withdrawal boolean
-    private LocalDateTime withdrawal_at;          // user_withdrawal_at timestamp
-    private String withdrawal_reason;             // user_withdrawal_reason varchar(300)
+    private LocalDateTime userIdCreationAt;          // user_id_creation_at timestamp
+    private Boolean isWithdrawal;                // is_user_withdrawal boolean
+    private LocalDateTime withdrawalAt;          // user_withdrawal_at timestamp
+    private String withdrawalReason;             // user_withdrawal_reason varchar(300)
 
     // 편의 메서드들
     public boolean isAdmin() {
@@ -44,11 +44,11 @@ public class User {
 
 
     public Long getUser_id() {
-        return user_id;
+        return userId;
     }
 
-    public void setUser_id(Long user_id) {
-        this.user_id = user_id;
+    public void setUser_id(Long userId) {
+        this.userId = userId;
     }
 
     public String getEmail() {
@@ -68,11 +68,11 @@ public class User {
     }
 
     public String getPre_password() {
-        return pre_password;
+        return prePassword;
     }
 
-    public void setPre_password(String pre_password) {
-        this.pre_password = pre_password;
+    public void setPre_password(String prePassword) {
+        this.prePassword = prePassword;
     }
 
     public String getName() {
@@ -84,19 +84,19 @@ public class User {
     }
 
     public String getPhone_number() {
-        return phone_number;
+        return phoneNumber;
     }
 
-    public void setPhone_number(String phone_number) {
-        this.phone_number = phone_number;
+    public void setPhone_number(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public String getResident_registration_number() {
-        return resident_registration_number;
+        return residentRegistrationNumber;
     }
 
-    public void setResident_registration_number(String resident_registration_number) {
-        this.resident_registration_number = resident_registration_number;
+    public void setResident_registration_number(String residentRegistrationNumber) {
+        this.residentRegistrationNumber = residentRegistrationNumber;
     }
 
     public String getGender() {
@@ -108,19 +108,19 @@ public class User {
     }
 
     public boolean isSms_marketing_status() {
-        return sms_marketing_status;
+        return smsMarketingStatus;
     }
 
-    public void setSms_marketing_status(boolean sms_marketing_status) {
-        this.sms_marketing_status = sms_marketing_status;
+    public void setSms_marketing_status(boolean smsMarketingStatus) {
+        this.smsMarketingStatus = smsMarketingStatus;
     }
 
     public boolean isEmail_marketing_status() {
-        return email_marketing_status;
+        return emailMarketingStatus;
     }
 
-    public void setEmail_marketing_status(boolean email_marketing_status) {
-        this.email_marketing_status = email_marketing_status;
+    public void setEmail_marketing_status(boolean emailMarketingStatus) {
+        this.emailMarketingStatus = emailMarketingStatus;
     }
 
     public String getRole() {
@@ -132,67 +132,67 @@ public class User {
     }
 
     public String getCustomer_status() {
-        return customer_status;
+        return customerStatus;
     }
 
-    public void setCustomer_status(String customer_status) {
-        this.customer_status = customer_status;
+    public void setCustomer_status(String customerStatus) {
+        this.customerStatus = customerStatus;
     }
 
     public LocalDateTime getCreated_at() {
-        return created_at;
+        return createdAt;
     }
 
-    public void setCreated_at(LocalDateTime created_at) {
-        this.created_at = created_at;
+    public void setCreated_at(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     public LocalDateTime getUpdated_at() {
-        return updated_at;
+        return updatedAt;
     }
 
-    public void setUpdated_at(LocalDateTime updated_at) {
-        this.updated_at = updated_at;
+    public void setUpdated_at(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     public LocalDateTime getRegistration_at() {
-        return registration_at;
+        return registrationAt;
     }
 
-    public void setRegistration_at(LocalDateTime registration_at) {
-        this.registration_at = registration_at;
+    public void setRegistration_at(LocalDateTime registrationAt) {
+        this.registrationAt = registrationAt;
     }
 
     public LocalDateTime getUser_id_creation_at() {
-        return user_id_creation_at;
+        return userIdCreationAt;
     }
 
-    public void setUser_id_creation_at(LocalDateTime user_id_creation_at) {
-        this.user_id_creation_at = user_id_creation_at;
+    public void setUser_id_creation_at(LocalDateTime userIdCreationAt) {
+        this.userIdCreationAt = userIdCreationAt;
     }
 
     public Boolean getIs_withdrawal() {
-        return is_withdrawal;
+        return isWithdrawal;
     }
 
-    public void setIs_withdrawal(Boolean is_withdrawal) {
-        this.is_withdrawal = is_withdrawal;
+    public void setIs_withdrawal(Boolean isWithdrawal) {
+        this.isWithdrawal = isWithdrawal;
     }
 
     public LocalDateTime getWithdrawal_at() {
-        return withdrawal_at;
+        return withdrawalAt;
     }
 
-    public void setWithdrawal_at(LocalDateTime withdrawal_at) {
-        this.withdrawal_at = withdrawal_at;
+    public void setWithdrawal_at(LocalDateTime withdrawalAt) {
+        this.withdrawalAt = withdrawalAt;
     }
 
     public String getWithdrawal_reason() {
-        return withdrawal_reason;
+        return withdrawalReason;
     }
 
-    public void setWithdrawal_reason(String withdrawal_reason) {
-        this.withdrawal_reason = withdrawal_reason;
+    public void setWithdrawal_reason(String withdrawalReason) {
+        this.withdrawalReason = withdrawalReason;
     }
 
     // Lombok의 @Data 어노테이션이 자동으로 getter/setter를 생성해주지만,
@@ -204,5 +204,30 @@ public class User {
     // setter도 필요한 경우 추가
     public void setPwd(String password) {
         this.password = password;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId=" + userId +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", prePassword='" + prePassword + '\'' +
+                ", name='" + name + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", residentRegistrationNumber='" + residentRegistrationNumber + '\'' +
+                ", gender='" + gender + '\'' +
+                ", smsMarketingStatus=" + smsMarketingStatus +
+                ", emailMarketingStatus=" + emailMarketingStatus +
+                ", role='" + role + '\'' +
+                ", customerStatus='" + customerStatus + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", registrationAt=" + registrationAt +
+                ", userIdCreationAt=" + userIdCreationAt +
+                ", isWithdrawal=" + isWithdrawal +
+                ", withdrawalAt=" + withdrawalAt +
+                ", withdrawalReason='" + withdrawalReason + '\'' +
+                '}';
     }
 }

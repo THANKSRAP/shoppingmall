@@ -14,7 +14,7 @@
         NOW() as loginDateTime,
         COALESCE(u.role, '일반 사용자') as department,
         CASE
-        WHEN u.customer_status = 'ACTIVE' THEN '활성'
+        WHEN u.customerStatus = 'ACTIVE' THEN '활성'
         ELSE '비활성'
         END as status
         FROM user u
@@ -27,13 +27,13 @@
         </if>
         <if test="status != null and status != ''">
             <if test="status == '활성'">
-                AND u.customer_status = 'ACTIVE'
+                AND u.customerStatus = 'ACTIVE'
             </if>
             <if test="status == '비활성'">
-                AND u.customer_status != 'ACTIVE'
+                AND u.customerStatus != 'ACTIVE'
             </if>
         </if>
-        ORDER BY u.created_at DESC
+        ORDER BY u.createdAt DESC
         LIMIT #{pageSize} OFFSET #{offset}
     </select>
 
@@ -50,10 +50,10 @@
         </if>
         <if test="status != null and status != ''">
             <if test="status == '활성'">
-                AND u.customer_status = 'ACTIVE'
+                AND u.customerStatus = 'ACTIVE'
             </if>
             <if test="status == '비활성'">
-                AND u.customer_status != 'ACTIVE'
+                AND u.customerStatus != 'ACTIVE'
             </if>
         </if>
     </select>
@@ -61,7 +61,7 @@
     <select id="countActiveUsers" resultType="int">
         SELECT COUNT(*)
         FROM user
-        WHERE customer_status = 'ACTIVE'
+        WHERE customerStatus = 'ACTIVE'
     </select>
 
 </mapper>

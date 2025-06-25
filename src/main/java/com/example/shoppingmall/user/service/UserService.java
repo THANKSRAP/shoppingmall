@@ -31,6 +31,12 @@ public class UserService {
         return userDao.findByEmail(email);
     }
 
+    // 이메일 중복 체크 메서드
+    public boolean isEmailExists(String email) {
+        User user = userDao.findByEmail(email);
+        return user != null;
+    }
+
     public void updateUser(User user) {
         userDao.update(user);
     }
@@ -41,6 +47,7 @@ public class UserService {
 
     public User login(User user) {
         User foundUser = userDao.findByEmailAndPassword(user.getEmail(), user.getPassword());
+        System.out.println(foundUser);
         if (foundUser == null) {
             throw new LoginFailedException("이메일 또는 비밀번호가 일치하지 않습니다.");
         }
