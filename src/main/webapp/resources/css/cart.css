@@ -1,8 +1,9 @@
-{
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
+
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -11,16 +12,19 @@ body {
     line-height: 1.6;
 }
 
+
 .container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
 }
 
+
 .header {
     text-align: center;
     margin-bottom: 30px;
 }
+
 
 .header h1 {
     font-size: 28px;
@@ -28,12 +32,14 @@ body {
     margin-bottom: 20px;
 }
 
+
 .breadcrumb {
     display: flex;
     justify-content: center;
     gap: 40px;
     margin-bottom: 30px;
 }
+
 
 .breadcrumb-item {
     display: flex;
@@ -43,10 +49,12 @@ body {
     color: #666;
 }
 
+
 .breadcrumb-item.active {
     color: #007bff;
     font-weight: bold;
 }
+
 
 .breadcrumb-number {
     width: 24px;
@@ -59,16 +67,19 @@ body {
     font-size: 12px;
 }
 
+
 .breadcrumb-item.active .breadcrumb-number {
     background-color: #007bff;
     color: white;
 }
+
 
 .main-content {
     display: grid;
     grid-template-columns: 1fr 300px;
     gap: 30px;
 }
+
 
 .product-order-section {
     padding: 15px 20px;
@@ -78,11 +89,13 @@ body {
     align-items: center;
 }
 
+
 .product-total-section {
     padding: 15px 20px;
     background-color: #f8f9fa;
     border-bottom: 1px solid #ddd;
 }
+
 
 .product-buttons-section {
     padding: 15px 20px;
@@ -93,10 +106,12 @@ body {
     border-top: 1px solid #ddd;
 }
 
+
 .product-order-box {
     padding: 20px;
     background-color: #fff;
 }
+
 
 /* 윗줄: 금액 표시 */
 .order-price-row {
@@ -106,21 +121,25 @@ body {
     margin-bottom: 16px;
 }
 
+
 .order-label {
     font-size: 14px;
     color: #333;
 }
+
 
 .order-amount {
     font-weight: 700;
     font-size: 16px;
 }
 
+
 /* 아랫줄: 버튼 2개 나란히 */
 .order-buttons-row {
     display: flex;
     gap: 10px;
 }
+
 
 .wishlist-btn {
     flex: 1;
@@ -130,6 +149,7 @@ body {
     font-size: 14px;
     cursor: pointer;
 }
+
 
 .order-now-btn {
     flex: 1;
@@ -141,6 +161,7 @@ body {
     cursor: pointer;
 }
 
+
 /* Update responsive design */
 @media (max-width: 768px) {
     .product-order-section {
@@ -149,10 +170,12 @@ body {
         align-items: stretch;
     }
 
+
     .order-buttons {
         justify-content: center;
     }
 }
+
 
 .wishlist-btn {
     background: white;
@@ -162,6 +185,8 @@ body {
     font-size: 14px;
     cursor: pointer;
 }
+
+
 
 
 .order-now-btn {
@@ -174,10 +199,12 @@ body {
     cursor: pointer;
 }
 
+
 .order-buttons {
     display: flex;
     gap: 10px;
 }
+
 
 .product-total {
     display: flex;
@@ -186,16 +213,19 @@ body {
     font-size: 14px;
 }
 
+
 .cart-section {
     background: white;
     border-radius: 8px;
     overflow: hidden;
 }
 
+
 .tabs {
     display: flex;
     border-bottom: 1px solid #e9ecef;
 }
+
 
 .tab {
     flex: 1;
@@ -207,12 +237,14 @@ body {
     font-size: 14px;
 }
 
+
 .tab.active {
     background: white;
     border-bottom: 2px solid #007bff;
     color: #007bff;
     font-weight: bold;
 }
+
 
 .cart-header {
     padding: 20px;
@@ -222,15 +254,18 @@ body {
     align-items: center;
 }
 
+
 .cart-header h3 {
     font-size: 16px;
     font-weight: bold;
 }
 
+
 .cart-notice {
     font-size: 12px;
     color: #666;
 }
+
 
 .product-item {
     padding: 20px;
@@ -239,9 +274,11 @@ body {
     gap: 15px;
 }
 
+
 .product-checkbox {
     margin-top: 10px;
 }
+
 
 .product-image {
     width: 80px;
@@ -254,15 +291,18 @@ body {
     overflow: hidden;
 }
 
+
 .product-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
+
 .product-details {
     flex: 1;
 }
+
 
 .product-name {
     font-weight: bold;
@@ -272,6 +312,7 @@ body {
     gap: 8px;
 }
 
+
 .new-badge {
     background-color: #ff6b35;
     color: white;
@@ -280,17 +321,20 @@ body {
     border-radius: 3px;
 }
 
+
 .product-price {
     font-size: 16px;
     font-weight: bold;
     margin-bottom: 5px;
 }
 
+
 .product-size {
     font-size: 12px;
     color: #666;
     margin-bottom: 10px;
 }
+
 
 .product-options {
     display: flex;
@@ -299,12 +343,14 @@ body {
     font-size: 12px;
 }
 
+
 .product-actions {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
     gap: 10px;
 }
+
 
 .remove-btn {
     background: none;
@@ -314,12 +360,14 @@ body {
     color: #999;
 }
 
+
 .quantity-controls {
     display: flex;
     align-items: center;
     border: 1px solid #ddd;
     border-radius: 4px;
 }
+
 
 .quantity-btn {
     width: 30px;
@@ -332,6 +380,7 @@ body {
     justify-content: center;
 }
 
+
 .quantity-input {
     width: 40px;
     height: 30px;
@@ -339,6 +388,7 @@ body {
     text-align: center;
     font-size: 14px;
 }
+
 
 .update-btn {
     background: #f8f9fa;
@@ -349,6 +399,7 @@ body {
     cursor: pointer;
 }
 
+
 .cart-footer {
     padding: 20px;
     display: flex;
@@ -356,11 +407,13 @@ body {
     align-items: center;
 }
 
+
 .coupon-section {
     display: flex;
     gap: 10px;
     align-items: center;
 }
+
 
 .coupon-input {
     padding: 8px 12px;
@@ -368,6 +421,7 @@ body {
     border-radius: 4px;
     width: 200px;
 }
+
 
 .apply-btn {
     background: #333;
@@ -378,16 +432,19 @@ body {
     cursor: pointer;
 }
 
+
 .total-price {
     font-size: 18px;
     font-weight: bold;
 }
+
 
 .total-amount {
     font-size: 16px;
     font-weight: bold;
     color: #333;
 }
+
 
 .order-summary {
     background: white;
@@ -396,12 +453,14 @@ body {
     height: fit-content;
 }
 
+
 .summary-row {
     display: flex;
     justify-content: space-between;
     margin-bottom: 10px;
     font-size: 14px;
 }
+
 
 .summary-row.total {
     font-size: 16px;
@@ -410,6 +469,7 @@ body {
     border-top: 1px solid #e9ecef;
     margin-top: 15px;
 }
+
 
 .order-btn {
     width: 100%;
@@ -422,16 +482,19 @@ body {
     margin-bottom: 10px;
 }
 
+
 .order-all-btn {
     background: #333;
     color: white;
 }
+
 
 .order-selected-btn {
     background: white;
     color: #333;
     border: 1px solid #ddd;
 }
+
 
 .bottom-links {
     margin-top: 30px;
@@ -441,6 +504,7 @@ body {
     background-color:white;
 }
 
+
 .bottom-links a {
     color: #666;
     text-decoration: none;
@@ -449,21 +513,34 @@ body {
     border-radius: 4px;
 }
 
+
 @media (max-width: 768px) {
     .main-content {
         grid-template-columns: 1fr;
     }
 
+
     .breadcrumb {
         gap: 20px;
     }
+
 
     .product-item {
         flex-direction: column;
     }
 
+
     .product-actions {
         flex-direction: row;
         justify-content: space-between;
     }
+}
+
+.cart-item {
+    display: flex;
+    align-items: flex-start;
+}
+
+.select-item {
+    margin-top: 0;
 }

@@ -3,6 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
+
 <mapper namespace="com.example.shoppingmall.cart.dao.CartDao">
     <select id="selectCartByUserId" parameterType="int" resultType="com.example.shoppingmall.cart.domain.CartDto">
         SELECT
@@ -15,9 +16,11 @@
             c.created_at AS createdAt,
             c.updated_at AS updatedAt,
 
+
             i.name AS itemName,
             i.image AS itemImage,
             i.price AS price,
+
 
             color.value AS colorOptionName,
             size.value AS sizeOptionName,
@@ -31,39 +34,76 @@
     </select>
 
 
+
+
     <insert id="insert" parameterType="com.example.shoppingmall.cart.domain.CartDto">
         INSERT INTO cart (user_id, item_id, item_option_id, quantity, added_at, created_at, updated_at)
-        VALUES (#{userId}, #{itemId}, #{itemOptionId}, #{itemQuantity}, NOW(), NOW(), NOW())
+        VALUES (#{userId}, #{itemId}, #{itemOptionId}, #{quantity}, NOW(), NOW(), NOW())
     </insert>
 
-    <delete  id="deleteByCartId" parameterType="int">
+
+    <delete id="deleteByCartId" parameterType="int">
         DELETE FROM cart WHERE cart_id = #{cartId}
     </delete>
 
-    <update id="updateItemQuantity" parameterType="com.example.shoppingmall.cart.domain.CartDto">
-        UPDATE cart
-        SET quantity = #{itemQuantity}, updated_at = NOW()
-        WHERE cart_id = #{cartId}
-    </update>
+    <delete id="deleteCartItemById">
+        DELETE FROM cart WHERE cart_id = #{cartId}
+    </delete>
+
+    <delete id="deleteByCartIds" parameterType="list">
+        DELETE FROM cart WHERE cart_id IN
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
 
     <delete id="deleteAllByUserId" parameterType="int">
         DELETE FROM cart WHERE user_id = #{userId}
     </delete>
 
-    <select id="selectByUserIdAndItemId" parameterType="map" resultType="com.example.shoppingmall.cart.domain.CartDto">
-        SELECT * FROM cart
-        WHERE user_id = #{userId} AND item_id = #{itemId} LIMIT 1
-    </select>
 
     <select id="countByUserId" parameterType="int" resultType="int">
         SELECT COUNT(*) FROM cart WHERE user_id = #{userId}
     </select>
 
+    <select id="selectExistingCartItem" parameterType="com.example.shoppingmall.cart.domain.CartDto" resultType="com.example.shoppingmall.cart.domain.CartDto">
+        SELECT * FROM cart
+        WHERE user_id = #{userId} AND item_id = #{itemId} AND item_option_id = #{itemOptionId}
+    </select>
+
+
+    <update id="updateItemQuantity" parameterType="com.example.shoppingmall.cart.domain.CartDto">
+        UPDATE cart
+        SET quantity = #{quantity}, updated_at = NOW()
+        WHERE cart_id = #{cartId}
+    </update>
+
+
     <update id="updateQuantity">
         UPDATE cart
-        SET quantity = #{quantity}
-        WHERE id = #{cartId}
+        SET quantity = #{quantity}, updated_at = NOW()
+        WHERE cart_id = #{cartId}
     </update>
+
+
+    <insert id="insertToWishList">
+        INSERT INTO wish_list (user_id, item_id, item_option_id, added_at, created_at, updated_at)
+        VALUES (#{userId}, #{itemId}, #{itemOptionId}, NOW(), NOW(), NOW())
+    </insert>
+
+
+    <insert id="addToWishlist" parameterType="map">
+        INSERT INTO wish_list (user_id, item_id, item_option_id, added_at, created_at, updated_at)
+        VALUES (#{userId}, #{itemId}, #{itemOptionId}, NOW(), NOW(), NOW())
+    </insert>
+
+    <insert id="insertCart" parameterType="com.example.shoppingmall.cart.domain.CartDto">
+        INSERT INTO cart (cart_id, user_id, item_id, item_option_id, quantity, added_at, created_at, updated_at)
+        VALUES ( #{cartId},   #{userId}, #{itemId}, #{itemOptionId}, #{quantity}, NOW(), NOW(), NOW())
+    </insert>
+
+
 
 
 </mapper>
