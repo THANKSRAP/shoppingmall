@@ -48,25 +48,16 @@ function openReviewDetail(reviewId) {
                 ? review.productImage
                 : "/placeholder.svg?height=80&width=80";
 
-
+            //
             document.getElementById("detailProductImage").src = productImageUrl;
-            // ✅ 버튼이 이제 DOM에 생겼으므로, 이벤트 연결 가능
-            document.querySelector(".product-detail-btn").addEventListener("click", () => {
-                if (review.itemId) {
-                    window.location.href = `/shoppingmall/item/${review.itemId}`;
-                } else {
-                    alert("상품 정보가 없습니다.");
-                }
-            });
-
-
-
-
-            // // 이미지 관련 갤러리 업데이트 함수 (선택 사항)
-            // if (typeof updateGalleryImage === "function") {
-            //     updateGalleryImage();
-            // }
-
+            // // ✅ 버튼이 이제 DOM에 생겼으므로, 이벤트 연결 가능
+            // document.querySelector(".product-detail-btn").addEventListener("click", () => {
+            //     if (review.itemId) {
+            //         window.location.href = `/shoppingmall/item/${review.itemId}`;
+            //     } else {
+            //         alert("상품 정보가 없습니다.");
+            //     }
+            // });
 
             // 모달 열기
             document.getElementById("reviewDetailModal").style.display = "block";
@@ -77,7 +68,6 @@ function openReviewDetail(reviewId) {
             alert("리뷰 정보를 불러오는 데 실패했습니다.");
         });
 }
-
 
 
 // 상세 리뷰 모달 닫기
@@ -94,10 +84,6 @@ reviewDetailModal.addEventListener("click", (e) => {
         document.body.style.overflow = "auto"
     }
 })
-
-
-
-
 
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -171,6 +157,32 @@ document.addEventListener("DOMContentLoaded", () => {
                      </div>
                    </div>
                `;
+
+                // const navigatableElems = card.querySelectorAll('.product-navigate');
+                // navigatableElems.forEach(elem => {
+                //     elem.style.cursor = 'pointer'; // 클릭 가능한 UI처럼
+                //     elem.addEventListener('click', function () {
+                //         const itemId = this.dataset.itemId;
+                //         if (itemId) {
+                //             // contextPath 자동 판별
+                //             const contextPath = window.location.pathname.includes('/shoppingmall') ? '/shoppingmall' : '';
+                //             window.location.href = `${contextPath}/item/${itemId}`;
+                //         }
+                //     });
+                // });
+
+                document.addEventListener("click", (e) => {
+                    const productElem = e.target.closest(".product-navigate");
+                    if (productElem) {
+                        const itemId = document.getElementById("reviewPageItemId").value;
+                        console.log("🧭 이동할 itemId:", itemId);
+                        if (itemId) {
+                            const contextPath = window.location.pathname.includes('/shoppingmall') ? '/shoppingmall' : '';
+                            window.location.href = `${contextPath}/item/${itemId}`;
+                        }
+                    }
+                });
+
 
 
                 reviewGrid.appendChild(card);
