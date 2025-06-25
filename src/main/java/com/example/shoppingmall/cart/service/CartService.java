@@ -6,15 +6,15 @@ import java.util.List;
 
 
 public interface CartService {
-    List<CartDto> getCartByUserId(int userId);
+    List<CartDto> getCartByUserId(Long userId);
 
-    void updateQuantity(int cartId, int quantity);
-    void deleteByCartId(int cartId);
+    void updateQuantity(Long cartId, int quantity);
+    void deleteByCartId(Long cartId);
 
-    void deleteByCartIds(List<Integer> cartItemIds);
+    void deleteByCartIds(List<Long> cartItemIds);
 
-    void deleteAllByUserId(int userId);
+    void deleteAllByUserId(Long userId);
 
-    void addToWishlist(int userId, int itemId, int itemOptionId);
+    void addToWishlist(Long userId, Long itemId, Long itemOptionId);
     void insertCart(CartDto cartDto);
-    }
+}

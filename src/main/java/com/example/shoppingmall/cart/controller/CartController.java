@@ -3,6 +3,10 @@ package com.example.shoppingmall.cart.controller;
 
 import com.example.shoppingmall.cart.domain.CartDto;
 import com.example.shoppingmall.cart.service.CartService;
+import com.example.shoppingmall.item.dao.ItemDao;
+import com.example.shoppingmall.item.domain.Item;
+import com.example.shoppingmall.order.domain.request.OrderPageRequestDto;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 
 
 import javax.servlet.http.HttpSession;
+import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -24,11 +30,15 @@ public class CartController {
     @Autowired
     private CartService cartService;
 
+    @Autowired
+    private ItemDao itemDao;
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     // ✅ [1] HTML 장바구니 페이지
     @GetMapping
     public String cartPage(Model model) {
-        int userId = 1; // 로그인 미적용 상태
+        Long userId = 1L; // 로그인 미적용 상태
         List<CartDto> cartList = cartService.getCartByUserId(userId);
 
 
@@ -43,7 +53,7 @@ public class CartController {
     // ✅ [2] 수량 변경 API (PATCH)
     @PatchMapping("/item/{id}")
     @ResponseBody
-    public ResponseEntity<String> updateQuantity(@PathVariable("id") int cartId,
+    public ResponseEntity<String> updateQuantity(@PathVariable("id") Long cartId,
                                                  @RequestBody Map<String, Object> payload) {
         System.out.println("✅ PATCH 요청 받음: cartId=" + cartId);
         int quantity = (int) payload.get("quantity");
@@ -55,8 +65,8 @@ public class CartController {
     // ✅ [3] 선택 삭제 API (DELETE)
     @DeleteMapping("/items")
     @ResponseBody
-    public ResponseEntity<Void> deleteSelectedItems(@RequestBody Map<String, List<Integer>> body) {
-        List<Integer> cartItemIds = body.get("cartItemIds");
+    public ResponseEntity<Void> deleteSelectedItems(@RequestBody Map<String, List<Long>> body) {
+        List<Long> cartItemIds = body.get("cartItemIds");
         cartService.deleteByCartIds(cartItemIds);
         return ResponseEntity.ok().build();
     }
@@ -66,14 +76,14 @@ public class CartController {
     @DeleteMapping("/all")
     @ResponseBody
     public ResponseEntity<Void> deleteAllItems(HttpSession session) {
-        int userId = 1; // 로그인 미적용 상태
+        Long userId = 1L; // 로그인 미적용 상태
         cartService.deleteAllByUserId(userId);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/item/{cartId}")
     @ResponseBody
-    public ResponseEntity<Void> deleteCartItem(@PathVariable("cartId") int cartId) {
+    public ResponseEntity<Void> deleteCartItem(@PathVariable("cartId") Long cartId) {
         cartService.deleteByCartId(cartId); // 서비스 계층에서 단일 삭제 메서드 호출
         return ResponseEntity.ok().build();
     }
@@ -81,7 +91,6 @@ public class CartController {
 
     @PostMapping("/order")
     public String handleOrder(@RequestBody Map<String, Object> orderData, HttpSession session) {
-        System.out.println("🛒 받은 주문 데이터: " + orderData);
         session.setAttribute("orderData", orderData);
         return "redirect:/order/";
     }
@@ -96,9 +105,9 @@ public class CartController {
         System.out.println("✅ itemOptionId: " + data.get("itemOptionId"));
 
         try {
-            int userId = Integer.parseInt(data.get("userId").toString());
-            int itemId = Integer.parseInt(data.get("itemId").toString());
-            int itemOptionId = Integer.parseInt(data.get("itemOptionId").toString());
+            Long userId = Long.parseLong(data.get("userId").toString());
+            Long itemId = Long.parseLong(data.get("itemId").toString());
+            Long itemOptionId = Long.parseLong(data.get("itemOptionId").toString());
 
             System.out.println("🔥 itemId: " + itemId);
 
@@ -111,13 +120,13 @@ public class CartController {
     }
 
     @PostMapping("/add")
-    public String addToCart(@RequestParam("itemId") int itemId,
-                            @RequestParam("itemOptionId") int itemOptionId,
+    public String addToCart(@RequestParam("itemId") Long itemId,
+                            @RequestParam("itemOptionId") Long itemOptionId,
                             @RequestParam("quantity") int quantity,
                             HttpSession session) {
 
         // 아직 로그인 기능 없으므로 임시 userId 지정
-        int userId = 1;
+        Long userId = 1L;
 
         CartDto cartDto = new CartDto();
         cartDto.setUserId(userId);
@@ -131,11 +140,15 @@ public class CartController {
     }
 
     @PostMapping("/order/create")
-    public String createOrderFromItem(@RequestParam("itemId") int itemId,
-                                      @RequestParam("itemOptionId") int itemOptionId,
-                                      @RequestParam("quantity") int quantity) {
+    public String createOrderFromItem(@RequestParam("itemId") Long itemId,
+                                      @RequestParam("itemOptionId") Long itemOptionId,
+                                      @RequestParam("quantity") int quantity,
+                                      HttpSession session) {
         try {
-            int userId = 1; // 로그인 구현 전 고정값
+            Long userId = 1L;
+
+            Item item = itemDao.findById(itemId);
+            System.out.println("itemId: "+item.getItemId());
 
             CartDto cartDto = new CartDto();
             cartDto.setUserId(userId);
@@ -144,12 +157,25 @@ public class CartController {
             cartDto.setQuantity(quantity);
 
             cartService.insertCart(cartDto);
+            System.out.println(cartDto);
+            OrderPageRequestDto.CartItem cartItem = new OrderPageRequestDto.CartItem();
+            cartItem.setCartId(cartDto.getCartId());
+            cartItem.setPrice(item.getPrice().multiply(new BigDecimal(cartDto.getQuantity()))); // 가격 * 수량 계산
+
+            OrderPageRequestDto orderPageRequestDto = new OrderPageRequestDto();
+            orderPageRequestDto.setItemsPrice(cartItem.getPrice());
+            orderPageRequestDto.setDeliveryFee(orderPageRequestDto.getItemsPrice().compareTo(new BigDecimal(100000)) >= 0 ? BigDecimal.ZERO : new BigDecimal(3000)); // 배송비 계산
+
+            orderPageRequestDto.setCarts(Collections.singletonList(cartItem));
+            System.out.println(cartDto);
+            String json = objectMapper.writeValueAsString(orderPageRequestDto);
+            session.setAttribute("orderData", json);
 
             return "redirect:/order";
+
         } catch (Exception e) {
             e.printStackTrace();
-            return "error"; // 에러 페이지가 있다면
+            return "error";
         }
     }
-
 }

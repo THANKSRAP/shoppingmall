@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>주문</title>
+    <link rel="stylesheet" th:href="@{/resources/css/order.css}"/>
+</head>
+<body>
+<div class="container">
+
+    <!-- Checkout Page -->
+    <div id="checkoutPage" class="checkout-page">
+        <!-- Navigation -->
+        <div class="nav-bar"><button class="back-button" onclick="goBack()">←</button>
+            주문/결제
+        </div>
+
+        <div class="main-content">
+            <!-- Delivery Address Section -->
+            <div class="section">
+                <div class="section-header">
+                    <span>배송지</span>
+                </div>
+                <div class="address-tabs">
+                    <button class="tab active" id="recent-tab">최근 배송지</button>
+                    <button class="tab" id="direct-tab">직접입력</button>
+                </div>
+
+                <!-- Recent Address Content -->
+                <div id="recent-content" class="recent-content">
+                    <div class="address-item"
+                         th:if="${orderPage.deliveryAddresses != null and !orderPage.deliveryAddresses.isEmpty()}"
+                         th:with="addr=${orderPage.deliveryAddresses[0]},
+                  phone1=${#strings.substring(addr.recipientPhoneNumber, 0, 3)},
+                  phone2=${#strings.substring(addr.recipientPhoneNumber, 4, 8)},
+                  phone3=${#strings.substring(addr.recipientPhoneNumber, 9, 13)}">
+                        <div class="address-info">
+                            <div class="address-name"
+                                 th:text="${addr.isDefault} ? '[기본]' + ${addr.recipientName} : ${addr.recipientName}"></div>
+                            <div class="address-detail">
+                                <span th:text="'[' + ${addr.postalCode} + '] ' + ${addr.mainAddress}"></span>
+                                <span th:text="${addr.detailedAddress}"></span>
+                            </div>
+                            <div class="address-phone"
+                                 th:text="${phone1} + '-' + ${phone2} + '-' + ${phone3}"></div>
+                        </div>
+                        <button class="address-list-btn" onclick="showAddressList()">배송지 목록</button>
+                    </div>
+
+                    <div class="message-dropdown">
+                        <div class="message-select" onclick="toggleMessageOptions(event)">-- 메시지 선택 (선택사항) --</div>
+                        <div class="message-options" id="messageOptions">
+                            <div class="message-option" onclick="selectMessage(this)">배송 전에 미리 연락바랍니다.</div>
+                            <div class="message-option" onclick="selectMessage(this)">부재 시 경비실에 맡겨주세요.</div>
+                            <div class="message-option" onclick="selectMessage(this)">부재 시 문 앞에 놓아주세요.</div>
+                            <div class="message-option" onclick="selectMessage(this)">빠른 배송 부탁드립니다.</div>
+                            <div class="message-option" onclick="selectMessage(this)">택배함에 보관해 주세요.</div>
+                            <div class="message-option" onclick="selectMessage(this)">직접 입력</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Direct Input Content -->
+                <div id="direct-content" class="direct-input-form">
+                    <div class="radio-options">
+                        <div class="radio-option">
+                            <input type="radio" id="same-info" name="address-type">
+                            <label for="same-info">회원 정보와 동일</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="new-address" name="address-type" checked>
+                            <label for="new-address">새로운 배송지</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">받는사람<span class="required">*</span></label>
+                        <input type="text" class="form-input" id="recipient-name">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">주소<span class="required">*</span></label>
+                        <div class="address-row">
+                            <input type="text" class="form-input" id="postal-code" placeholder="우편번호" style="width: 150px;">
+                            <button class="address-search-btn">주소검색</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="text" class="form-input" id="basic-address" placeholder="기본주소">
+                    </div>
+
+                    <div class="form-group">
+                        <input type="text" class="form-input" id="detail-address" placeholder="나머지 주소">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">휴대전화<span class="required">*</span></label>
+                        <div class="phone-row">
+                            <select class="phone-select" id="phone1">
+                                <option value="010" selected>010</option>
+                                <option value="011">011</option>
+                                <option value="016">016</option>
+                                <option value="017">017</option>
+                                <option value="018">018</option>
+                                <option value="019">019</option>
+                            </select>
+                            <span>-</span>
+                            <input type="text" class="phone-input" id="phone2" maxlength="4">
+                            <span>-</span>
+                            <input type="text" class="phone-input" id="phone3" maxlength="4">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">이메일<span class="required">*</span></label>
+                        <div class="email-row">
+                            <input type="text" class="email-input" id="email-user">
+                            <span>@</span>
+                            <select class="email-select" id="email-domain">
+                                <option value="kakao.com" selected>kakao.com</option>
+                                <option value="gmail.com">gmail.com</option>
+                                <option value="naver.com">naver.com</option>
+                                <option value="daum.net">daum.net</option>
+                                <option value="yahoo.com">yahoo.com</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="message-dropdown">
+                            <div class="message-select" onclick="toggleMessageOptions(event)">-- 메시지 선택 (선택사항) --</div>
+                            <div class="message-options" id="directMessageOptions">
+                                <div class="message-option" onclick="selectMessage(this)">배송 전에 미리 연락바랍니다.</div>
+                                <div class="message-option" onclick="selectMessage(this)">부재 시 경비실에 맡겨주세요.</div>
+                                <div class="message-option" onclick="selectMessage(this)">부재 시 문 앞에 놓아주세요.</div>
+                                <div class="message-option" onclick="selectMessage(this)">빠른 배송 부탁드립니다.</div>
+                                <div class="message-option" onclick="selectMessage(this)">택배함에 보관해 주세요.</div>
+                                <div class="message-option" onclick="selectMessage(this)">직접 입력</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="save-default">
+                        <label for="save-default">기본 배송지로 저장</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Items Section -->
+            <div class="section" id="orderSection">
+                <div class="section-header" onclick="toggleSection('orderSection')">
+                    <span>주문상품</span>
+                    <div class="section-header-right">
+                        <span class="item-count" th:text="${orderPage.items.size()} + '개'"></span>
+                        <button class="collapse-btn">^</button>
+                    </div>
+                </div>
+                <div class="section-content">
+                    <div class="product-item" th:each="item : ${orderPage.items}" th:attr="data-item-id=${item.itemId}">
+                        <div class="product-image"
+                             th:style="'background-image: url(' + @{${item.itemImage}} + ')'">
+                        </div>
+                        <div class="product-info">
+                            <div class="product-brand" th:text="${item.itemName}"></div>
+                            <div class="product-name"
+                                 th:text="'[옵션: ' + ${item.sizeOptionName} + ']'"></div>
+                            <div class="product-details"
+                                 th:text="'수량: ' + ${item.quantity} + '개'"></div>
+                            <div class="product-price"
+                                 th:text="${#numbers.formatDecimal(item.price * item.quantity, 0, 'COMMA', 0, 'POINT')} + '원'"></div>
+                        </div>
+                        <button class="remove-btn" th:attr="data-cart-id=${item.cartId}">×</button>
+                    </div>
+
+                    <div class="shipping-info" id="shippingInfoText">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Summary -->
+            <div class="section" id="paymentSection">
+                <div class="section-header" onclick="toggleSection('paymentSection')">
+                    <span>결제정보</span>
+                    <div class="section-header-right">
+                        <button class="collapse-btn">^</button>
+                    </div>
+                </div>
+                <div class="section-content">
+                    <div class="payment-row">
+                        <span>주문상품</span>
+                        <span class="amount" id="itemsPrice"
+                              th:text="${#numbers.formatDecimal(orderPage.itemsPrice, 0, 'COMMA', 0, 'POINT')} + '원'"></span>
+                    </div>
+                    <div class="payment-row">
+                        <span>배송비</span>
+                        <span class="amount" id="deliveryFee"
+                              th:text="'+' + ${#numbers.formatDecimal(orderPage.deliveryFee, 0, 'COMMA', 0, 'POINT')} + '원'"></span>
+                    </div>
+                    <div class="payment-row">
+                        <span>할인/부가결제</span>
+                        <span class="amount discount">-0원</span>
+                    </div>
+                    <div class="payment-row total">
+                        <span>최종 결제 금액</span>
+                        <span class="amount"
+                              th:text="${#numbers.formatDecimal(orderPage.itemsPrice.add(orderPage.deliveryFee), 0, 'COMMA', 0, 'POINT')} + '원'">
+            </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Method -->
+            <div class="section" id="paymentMethodSection">
+                <div class="section-header" onclick="toggleSection('paymentMethodSection')">
+                    <span>결제수단</span>
+                    <div class="section-header-right">
+                        <button class="collapse-btn">^</button>
+                    </div>
+                </div>
+                <div class="section-content">
+                    <div class="payment-method">
+                        <div class="radio-group">
+                            <div class="radio-item">
+                                <input type="radio" id="card" name="payment" checked>
+                                <label for="card">최근 결제수단</label>
+                            </div>
+                            <input type="text" class="card-input" placeholder="카드 결제" value="카드 결제">
+                        </div>
+                        <div class="radio-group">
+                            <div class="radio-item">
+                                <input type="radio" id="other" name="payment">
+                                <label for="other">다른 결제수단 선택</label>
+                            </div>
+                        </div>
+                        <div class="payment-notice">
+                            - 소액 결제의 경우 PG사 정책에 따라 결제 금액이 한정될 수 있습니다.
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="agree" checked>
+                            <label for="agree">결제수단과 입금정보를 다음에도 사용</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rewards Section -->
+            <div class="section" id="rewardsSection">
+                <div class="section-header" onclick="toggleSection('rewardsSection')">
+                    <span>적립 혜택</span>
+                    <div class="section-header-right">
+                        <span class="item-count">0원</span>
+                        <button class="collapse-btn">^</button>
+                    </div>
+                </div>
+                <div class="section-content">
+                    <div class="rewards-content">
+                        <div class="reward-row">
+                            <span>상품별 적립금</span>
+                            <span>0원</span>
+                        </div>
+                        <div class="reward-row">
+                            <span>회원 적립금</span>
+                            <span>0원</span>
+                        </div>
+                        <div class="reward-row">
+                            <span>쿠폰 적립금</span>
+                            <span>0원</span>
+                        </div>
+                        <div class="reward-row reward-total">
+                            <span>적립 예정금액</span>
+                            <span>0원</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: center; padding: 25px; color: #666; font-size: 15px;">
+                주문 내용을 확인하였으며 약관에 동의합니다.
+            </div>
+
+            <div class="footer-space"></div>
+        </div>
+    </div>
+
+    <!-- Payment Complete Page -->
+    <div id="paymentCompletePage" class="payment-complete">
+        <div class="nav-bar">결제완료</div>
+
+        <div class="success-icon">✓</div>
+
+        <div class="success-title">결제가 완료되었습니다!</div>
+        <div class="success-subtitle">주문해 주셔서 감사합니다.<br>빠른 시일 내에 배송해드리겠습니다.</div>
+
+        <div class="order-number">
+            <div class="order-number-label">주문번호</div>
+            <div class="order-number-value" id="orderNumber"></div>
+        </div>
+
+        <div class="order-info" id="orderInfoSection">
+            <div class="order-info-title">주문 정보</div>
+            <div class="order-info-row">
+                <span class="order-info-label">상품금액</span>
+                <span class="order-info-value"></span>
+            </div>
+            <div class="order-info-row">
+                <span class="order-info-label">배송비</span>
+                <span class="order-info-value"></span>
+            </div>
+            <div class="order-info-row">
+                <span class="order-info-label">할인금액</span>
+                <span class="order-info-value"></span>
+            </div>
+            <div class="order-info-row">
+                <span class="order-info-label">결제금액</span>
+                <span class="order-info-value"></span>
+            </div>
+        </div>
+
+        <div class="order-info" id="deliveryInfoSection">
+            <div class="order-info-title">배송 정보</div>
+            <div class="order-info-row">
+                <span class="order-info-label">받는분</span>
+                <span class="order-info-value"></span>
+            </div>
+            <div class="order-info-row">
+                <span class="order-info-label">연락처</span>
+                <span class="order-info-value">5</span>
+            </div>
+            <div class="order-info-row">
+                <span class="order-info-label">배송지</span>
+                <span class="order-info-value"></span>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn-primary" onclick="viewOrderHistory()">주문내역 확인</button>
+            <button class="btn-secondary" onclick="continueShopping()">다른 상품 둘러보기</button>
+        </div>
+    </div>
+
+    <!-- Address List Modal -->
+    <div class="address-list-modal" id="addressListModal">
+        <div class="address-list-content">
+            <button class="close-modal-btn" onclick="closeAddressList()">&times;</button>
+            <div class="address-list-header">배송지 목록</div>
+
+            <div th:each="addr, iterStat : ${orderPage.deliveryAddresses}"
+                 th:with="
+                phone1=${#strings.substring(addr.recipientPhoneNumber, 0, 3)},
+                phone2=${#strings.substring(addr.recipientPhoneNumber, 4, 8)},
+                phone3=${#strings.substring(addr.recipientPhoneNumber, 9, 13)},
+                isDefault=${addr.default},
+                jsonAddress=${'{' +
+                    '&quot;name&quot;:&quot;' + addr.recipientName + '&quot;,' +
+                    '&quot;postal&quot;:&quot;' + addr.postalCode + '&quot;,' +
+                    '&quot;address&quot;:&quot;' + addr.mainAddress + '&quot;,' +
+                    '&quot;detail&quot;:&quot;' + addr.detailedAddress + '&quot;,' +
+                    '&quot;phone1&quot;:&quot;' + phone1 + '&quot;,' +
+                    '&quot;phone2&quot;:&quot;' + phone2 + '&quot;,' +
+                    '&quot;phone3&quot;:&quot;' + phone3 + '&quot;,' +
+                    '&quot;email&quot;:&quot;' + addr.recipientEmail + '&quot;,' +
+                    '&quot;isDefault&quot;:' + addr.isDefault +
+                '}'}"
+                 th:class="'address-list-item' + (${iterStat.index} == 0 ? ' selected' : '')"
+                 th:attr="data-address=${jsonAddress}, data-id=${addr.deliveryAddressId}">
+
+                <div class="address-name"
+                     th:text="${isDefault} ? '[기본] ' + ${addr.recipientName} : ${addr.recipientName}">
+                </div>
+
+                <div class="address-detail">
+                    <span th:text="'[' + ${addr.postalCode} + '] ' + ${addr.mainAddress}"></span><br>
+                    <span th:text="${addr.detailedAddress}"></span>
+                </div>
+
+                <div class="address-phone"
+                     th:text="${phone1} + '-' + ${phone2} + '-' + ${phone3}">
+                </div>
+
+                <div class="address-actions">
+                    <button class="edit-btn" onclick="editAddress(this)">수정</button>
+                </div>
+                <div class="checkmark">✓</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Checkout Button -->
+    <button class="checkout-btn" onclick="processPayment()">
+    <span class="amount"
+          th:text="${#numbers.formatDecimal(orderPage.itemsPrice.add(orderPage.deliveryFee), 0, 'COMMA', 0, 'POINT')} + '원'">
+    </span>
+        결제하기
+    </button>
+</div>
+
+<script th:src="@{/resources/js/order.js}"></script>
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+</body>
+</html>
