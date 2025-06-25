@@ -1,51 +1,92 @@
 package com.example.shoppingmall.cart.service;
 
+
 import com.example.shoppingmall.cart.dao.CartDao;
 import com.example.shoppingmall.cart.domain.CartDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 import java.util.List;
+
 
 @Service
 public class CartServiceImpl implements CartService {
     @Autowired
     private CartDao cartdao;
 
+
     @Override
-    public List<CartDto> getCartByUserId(int userId) {
+    public List<CartDto> getCartByUserId(Long userId) {
         try {
-            System.out.println("== Fighting  ==");
             return cartdao.selectCartByUserId(userId);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
+
     @Override
-    public void updateQuantity(int cartId, int quantity) {
+    public void updateQuantity(Long cartId, int quantity) {
         try {
-            cartdao.updateQuantity(cartId, quantity);
+            CartDto cartDto = new CartDto();
+            cartDto.setCartId(cartId);
+            cartDto.setQuantity(quantity);
+            cartdao.updateItemQuantity(cartDto); // 기존 updateItemQuantity 재활용
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public void deleteByCartIds(List<Integer> cartItemIds) {
+    public void deleteByCartId(Long cartId) {
         try {
-            for (int id : cartItemIds) {
-                cartdao.deleteByCartId(id);
-            }
+            cartdao.deleteByCartId(cartId);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public void deleteAllByUserId(int userId) {
+    public void deleteByCartIds(List<Long> cartItemIds) {
+        try {
+            cartdao.deleteByCartIds(cartItemIds);  // ✅ 한 번에 삭제
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    @Override
+    public void deleteAllByUserId(Long userId) {
         try {
             cartdao.deleteAllByUserId(userId);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    @Override
+    public void addToWishlist(Long userId, Long itemId, Long itemOptionId)  {
+        try {
+            cartdao.addToWishlist(userId, itemId, itemOptionId);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void insertCart(CartDto cartDto) {
+        try {
+            CartDto existingCartItem = cartdao.selectExistingCartItem(cartDto);
+            if (existingCartItem != null) {
+                int newQuantity = existingCartItem.getQuantity() + cartDto.getQuantity();
+                existingCartItem.setQuantity(newQuantity);
+                cartdao.updateItemQuantity(existingCartItem);
+            } else {
+                cartdao.insertCart(cartDto);
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

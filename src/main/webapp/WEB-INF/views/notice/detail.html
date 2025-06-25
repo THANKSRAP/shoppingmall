@@ -1,0 +1,42 @@
+<!-- webapp/WEB-INF/views/notice/detail.html -->
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>공지사항 상세</title>
+    <link rel="stylesheet" th:href="@{/resources/css/notice-detail.css}" />
+</head>
+
+<body>
+<div layout:fragment="content" class="notice-detail-content">
+    <div class="notice-detail-wrapper">
+        <h1 class="notice-detail-title">공지사항 상세</h1>
+
+        <div class="notice-detail-field">
+            <label>공지 제목</label>
+            <span th:text="${notice.title}"></span>
+        </div>
+
+        <div class="notice-detail-field">
+            <label>작성일</label>
+            <span th:text="${#temporals.format(notice.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
+        </div>
+
+        <div class="notice-detail-field">
+            <label>공지 내용</label>
+            <p th:utext="${notice.content}"></p>
+        </div>
+
+        <div class="notice-detail-buttons">
+            <a th:href="@{/notice/{id}/edit(id=${notice.noticeId})}" class="notice-detail-link">수정</a>
+            <form th:action="@{/notice/{id}/delete(id=${notice.noticeId})}" method="post" style="display:inline;">
+                <button type="submit" class="notice-detail-button"
+                        onclick="return confirm('정말 삭제하시겠습니까?')">삭제</button>
+            </form>
+            <a th:href="@{/notice}" class="notice-detail-link">목록으로</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -37,12 +37,11 @@ public class NoticeDaoImpl implements NoticeDao {
     }
 
     @Override
-    public Notice delete(Long id){
+    public void delete(Long id){
             sqlSession.delete("NoticeMapper.delete",id);
-        return null;
     }
     @Override
-    public int increaseViewCount(Integer noticeId){
+    public int increaseViewCount(Long noticeId){
         return sqlSession.update("NoticeMapper.increaseViewCount",noticeId);
     }
 

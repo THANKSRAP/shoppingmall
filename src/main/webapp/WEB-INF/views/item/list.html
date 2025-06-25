@@ -5,65 +5,247 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>상품 목록</title>
-    <link rel="stylesheet" th:href="@{/resources/css/style.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/item-list.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
 
 <div layout:fragment="content">
-
     <!-- 선택값을 안전하게 전달 -->
     <div id="categoryData"
          th:data-major-id="${majorId}"
          th:data-middle-id="${middleId}"
          th:data-minor-id="${minorId}"></div>
 
-    <form id="categoryFilterForm" th:action="@{/item/list}" method="get"
-          style="display: flex; gap: 10px; align-items: center;">
-        <select name="majorId" id="majorSelect">
-            <option value="">대분류 선택</option>
-            <th:block th:each="cat : ${majorCategories}">
-                <option th:value="${cat.categoryId}"
-                        th:text="${cat.name}"
-                        th:selected="${cat.categoryId == majorId}"></option>
-            </th:block>
-        </select>
-        <select name="middleId" id="middleSelect">
-            <option value="">중분류 선택</option>
-        </select>
-        <select name="minorId" id="minorSelect">
-            <option value="">소분류 선택</option>
-        </select>
-        <button type="submit">필터</button>
-    </form>
+    <div class="product-page">
 
-    <h1>상품 목록</h1>
-    <a th:href="@{/item/new}">신규 상품 등록</a>
-    <table border="1">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>이름</th>
-            <th>가격</th>
-            <th>상태</th>
-            <th>등급</th>
-            <th>국가</th>
-            <th>상세</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="item : ${items}">
-            <td th:text="${item.itemId}">ID</td>
-            <td th:text="${item.name}">상품명</td>
-            <td th:text="${item.price}">0</td>
-            <td th:text="${item.status}">SALE</td>
-            <td th:text="${item.grade}">A</td>
-            <td th:text="${item.manufactureCountry}">Korea</td>
-            <td><a th:href="@{/item/{id}(id=${item.itemId})}">상세보기</a></td>
-        </tr>
-        </tbody>
-    </table>
+        <div class="main-container">
+            <div class="product-layout">
+                <!-- 사이드바 필터 -->
+                <aside class="filter-sidebar">
+                    <div class="filter-header">
+                        <h2 class="filter-title">
+                            <i class="fas fa-sliders-h"></i>
+                            상품 필터
+                        </h2>
+                        <button class="filter-reset" onclick="resetFilters()">
+                            <i class="fas fa-redo"></i>
+                            초기화
+                        </button>
+                    </div>
+
+                    <!-- 카테고리 필터 -->
+                    <div class="filter-section">
+                        <h3 class="filter-section-title">카테고리</h3>
+                        <form id="categoryFilterForm" th:action="@{/item/list}" method="get">
+                            <div class="filter-group">
+                                <label class="filter-label">대분류</label>
+                                <div class="select-box">
+                                    <select name="majorId" id="majorSelect">
+                                        <option value="">전체</option>
+                                        <th:block th:each="cat : ${majorCategories}">
+                                            <option th:value="${cat.categoryId}"
+                                                    th:text="${cat.name}"
+                                                    th:selected="${cat.categoryId == majorId}"></option>
+                                        </th:block>
+                                    </select>
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                            </div>
+
+                            <div class="filter-group">
+                                <label class="filter-label">중분류</label>
+                                <div class="select-box">
+                                    <select name="middleId" id="middleSelect" disabled>
+                                        <option value="">전체</option>
+                                    </select>
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                            </div>
+
+                            <div class="filter-group">
+                                <label class="filter-label">소분류</label>
+                                <div class="select-box">
+                                    <select name="minorId" id="minorSelect" disabled>
+                                        <option value="">전체</option>
+                                    </select>
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- 검색 필터 -->
+                    <div class="filter-section">
+                        <h3 class="filter-section-title">상품 검색</h3>
+                        <div class="search-box">
+                            <input type="text" id="searchInput" placeholder="상품명을 입력하세요">
+                            <button id="searchBtn">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- 메인 상품 영역 -->
+                <main class="product-main">
+                    <!-- 상품 헤더 -->
+                    <div class="product-header">
+                        <div class="product-info">
+                            <h1 class="page-title">전체 상품</h1>
+                            <p class="product-count">
+                                총 <strong id="itemCount">0</strong>개 상품
+                            </p>
+                        </div>
+
+                        <div class="product-controls">
+                            <!-- 정렬 옵션 -->
+                            <div class="sort-box">
+                                <select id="sortSelect">
+                                    <option value="name_asc">상품명순</option>
+                                    <option value="price_asc">낮은가격순</option>
+                                    <option value="price_desc">높은가격순</option>
+                                    <option value="grade_asc">등급순</option>
+                                </select>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+
+                            <!-- 뷰 타입 -->
+                            <div class="view-toggle">
+                                <button id="gridViewBtn" class="view-btn active" title="격자보기">
+                                    <i class="fas fa-th"></i>
+                                </button>
+                                <button id="listViewBtn" class="view-btn" title="목록보기">
+                                    <i class="fas fa-list"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 로딩 -->
+                    <div id="loadingSpinner" class="loading" style="display: none;">
+                        <div class="loading-spinner"></div>
+                        <p>상품을 불러오는 중입니다...</p>
+                    </div>
+
+                    <!-- 상품 그리드 -->
+                    <div id="gridView" class="product-grid">
+                        <div id="itemGridContainer">
+                            <div class="grid-container" th:if="${items != null and !items.empty}">
+                                <article class="product-item" th:each="item : ${items}">
+                                    <a th:href="@{/item/{id}(id=${item.itemId})}" class="product-link">
+                                        <div class="product-image-wrapper">
+                                            <img th:src="${item.image != null ? item.image : '/placeholder.svg?height=300&width=240'}"
+                                                 th:alt="${item.name}"
+                                                 class="product-image"
+                                                 loading="lazy">
+
+                                            <!-- 상태 배지 -->
+                                            <div class="product-badges">
+                                                <span th:if="${item.status == 'ON_SALE'}" class="badge badge-sale">
+                                                    판매중
+                                                </span>
+                                                <span th:if="${item.status == 'OUT_OF_STOCK'}" class="badge badge-soldout">
+                                                    품절
+                                                </span>
+                                                <span th:if="${item.status != 'ON_SALE' and item.status != 'OUT_OF_STOCK'}"
+                                                      class="badge badge-stop">
+                                                    판매중지
+                                                </span>
+                                            </div>
+
+                                            <!-- 등급 배지 -->
+                                            <div class="grade-badge" th:text="${item.grade}">A</div>
+                                        </div>
+
+                                        <div class="product-info">
+                                            <h3 class="product-name" th:text="${item.name}">상품명</h3>
+                                            <p class="product-description" th:text="${item.description}">상품 설명</p>
+
+                                            <div class="product-meta">
+                                                <span class="product-country" th:text="${item.manufactureCountry}">Korea</span>
+                                            </div>
+
+                                            <div class="product-price">
+                                                <span class="price" th:text="${#numbers.formatInteger(item.price, 0, 'COMMA')} + '원'">
+                                                    15,000원
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </article>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 상품 리스트 -->
+                    <div id="listView" class="product-list" style="display: none;">
+                        <div class="list-header">
+                            <div class="list-col col-image">이미지</div>
+                            <div class="list-col col-info">상품정보</div>
+                            <div class="list-col col-price">가격</div>
+                            <div class="list-col col-status">상태</div>
+                            <div class="list-col col-grade">등급</div>
+                            <div class="list-col col-country">제조국</div>
+                        </div>
+                        <div id="itemListContainer" class="list-body">
+                            <div class="list-item" th:each="item : ${items}" th:if="${items != null and !items.empty}">
+                                <div class="list-col col-image">
+                                    <img th:src="${item.image != null ? item.image : '/placeholder.svg?height=80&width=60'}"
+                                         th:alt="${item.name}"
+                                         class="list-image">
+                                </div>
+                                <div class="list-col col-info">
+                                    <h4 class="list-name" th:text="${item.name}">상품명</h4>
+                                    <p class="list-description" th:text="${item.description}">상품 설명</p>
+                                </div>
+                                <div class="list-col col-price">
+                                    <span class="list-price" th:text="${#numbers.formatInteger(item.price, 0, 'COMMA')} + '원'">
+                                        15,000원
+                                    </span>
+                                </div>
+                                <div class="list-col col-status">
+                                    <span th:if="${item.status == 'ON_SALE'}" class="badge badge-sale">판매중</span>
+                                    <span th:if="${item.status == 'OUT_OF_STOCK'}" class="badge badge-soldout">품절</span>
+                                    <span th:if="${item.status != 'ON_SALE' and item.status != 'OUT_OF_STOCK'}"
+                                          class="badge badge-stop">판매중지</span>
+                                </div>
+                                <div class="list-col col-grade">
+                                    <span class="grade-badge" th:text="${item.grade}">A</span>
+                                </div>
+                                <div class="list-col col-country" th:text="${item.manufactureCountry}">Korea</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 빈 상태 -->
+                    <div id="emptyState" class="empty-state" style="display: none;">
+                        <div class="empty-icon">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <h2 class="empty-title">검색 결과가 없습니다</h2>
+                        <p class="empty-description">
+                            다른 검색어나 필터 조건을 시도해보세요.
+                        </p>
+                        <button class="empty-button" onclick="resetFilters()">
+                            전체 상품 보기
+                        </button>
+                    </div>
+
+                    <!-- 페이지네이션 -->
+                    <nav class="pagination-wrapper" id="paginationNav">
+                        <ul class="pagination" id="pagination">
+                            <!-- JavaScript로 동적 생성 -->
+                        </ul>
+                    </nav>
+                </main>
+            </div>
+        </div>
+    </div>
 </div>
 
 <th:block layout:fragment="script">

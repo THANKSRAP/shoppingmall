@@ -5,52 +5,241 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>상품 검색 페이지</title>
-    <link rel="stylesheet" th:href="@{/resources/css/style.css}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>상품 검색</title>
+    <link rel="stylesheet" th:href="@{/resources/css/search.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
 
 <div layout:fragment="content">
+    <div class="search-page">
+        <!-- 검색 헤더 -->
+        <div class="search-header">
+            <div class="main-container">
+                <div class="search-hero">
+                    <h1 class="search-title">
+                        <i class="fas fa-search"></i>
+                        상품 검색
+                    </h1>
+                    <p class="search-subtitle">원하는 상품을 빠르게 찾아보세요</p>
+                </div>
 
-    <!-- Search Bar -->
-    <div class="search-bar p-2">
-        <form th:action="@{/item/search}" method="get" class="d-flex">
-            <input class="form-control" type="search" name="name" placeholder="상품을 검색하세요"
-                   th:value="${searchName}">
-            <button class="btn btn-outline-primary" type="submit">
-                <i class="fas fa-search"></i>
-            </button>
-        </form>
+                <!-- 검색 폼 -->
+                <div class="search-form-wrapper">
+                    <form th:action="@{/item/search}" method="get" class="search-form">
+                        <div class="search-input-group">
+                            <div class="search-input-wrapper">
+                                <i class="fas fa-search search-icon"></i>
+                                <input type="search"
+                                       name="name"
+                                       class="search-input"
+                                       placeholder="상품명을 입력하세요 (예: 노트북, 스마트폰, 의류)"
+                                       th:value="${searchName}"
+                                       autocomplete="off">
+                                <button type="button" class="clear-btn" id="clearBtn" style="display: none;">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <button type="submit" class="search-btn">
+                                <i class="fas fa-search"></i>
+                                검색
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <!-- 검색 결과가 있을 때 -->
+            <div th:if="${searchName != null and !#strings.isEmpty(searchName)}" class="search-results">
+                <!-- 검색 결과 헤더 -->
+                <div class="results-header">
+                    <div class="results-info">
+                        <h2 class="results-title">
+                            '<span class="search-keyword" th:text="${searchName}">검색어</span>' 검색 결과
+                        </h2>
+                        <p class="results-count">
+                            총 <strong th:text="${#lists.size(items)}">0</strong>개의 상품을 찾았습니다
+                        </p>
+                    </div>
+
+                    <!-- 정렬 옵션 -->
+                    <div class="sort-controls">
+                        <div class="sort-box">
+                            <select id="sortSelect">
+                                <option value="relevance">관련도순</option>
+                                <option value="name_asc">상품명순</option>
+                                <option value="price_asc">낮은가격순</option>
+                                <option value="price_desc">높은가격순</option>
+                                <option value="grade_asc">등급순</option>
+                            </select>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+
+                        <!-- 뷰 타입 토글 -->
+                        <div class="view-toggle">
+                            <button id="gridViewBtn" class="view-btn active" title="격자보기">
+                                <i class="fas fa-th"></i>
+                            </button>
+                            <button id="listViewBtn" class="view-btn" title="목록보기">
+                                <i class="fas fa-list"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 상품이 있을 때 -->
+                <div th:if="${items != null and !#lists.isEmpty(items)}">
+                    <!-- 그리드 뷰 -->
+                    <div id="gridView" class="products-grid">
+                        <div class="grid-container">
+                            <article class="product-item" th:each="item : ${items}">
+                                <a th:href="@{/item/{id}(id=${item.itemId})}" class="product-link">
+                                    <div class="product-image-wrapper">
+                                        <img th:src="${item.image != null ? item.image : '/placeholder.svg?height=300&width=240'}"
+                                             th:alt="${item.name}"
+                                             class="product-image"
+                                             loading="lazy">
+
+                                        <!-- 상태 배지 -->
+                                        <div class="product-badges">
+                                            <span th:if="${item.status == 'ON_SALE'}" class="badge badge-sale">
+                                                판매중
+                                            </span>
+                                            <span th:if="${item.status == 'OUT_OF_STOCK'}" class="badge badge-soldout">
+                                                품절
+                                            </span>
+                                            <span th:if="${item.status != 'ON_SALE' and item.status != 'OUT_OF_STOCK'}"
+                                                  class="badge badge-stop">
+                                                판매중지
+                                            </span>
+                                        </div>
+
+                                        <!-- 등급 배지 -->
+                                        <div class="grade-badge" th:text="${item.grade}">A</div>
+                                    </div>
+
+                                    <div class="product-info">
+                                        <h3 class="product-name" th:text="${item.name}">상품명</h3>
+                                        <p class="product-description" th:text="${item.description}">상품 설명</p>
+
+                                        <div class="product-meta">
+                                            <span class="product-country" th:text="${item.manufactureCountry}">Korea</span>
+                                        </div>
+
+                                        <div class="product-price">
+                                            <span class="price" th:text="${#numbers.formatInteger(item.price, 0, 'COMMA')} + '원'">
+                                                15,000원
+                                            </span>
+                                        </div>
+                                    </div>
+                                </a>
+                            </article>
+                        </div>
+                    </div>
+
+                    <!-- 리스트 뷰 -->
+                    <div id="listView" class="products-list" style="display: none;">
+                        <div class="list-header">
+                            <div class="list-col col-image">이미지</div>
+                            <div class="list-col col-info">상품정보</div>
+                            <div class="list-col col-price">가격</div>
+                            <div class="list-col col-status">상태</div>
+                            <div class="list-col col-grade">등급</div>
+                            <div class="list-col col-country">제조국</div>
+                        </div>
+                        <div class="list-body">
+                            <div class="list-item" th:each="item : ${items}">
+                                <div class="list-col col-image">
+                                    <img th:src="${item.image != null ? item.image : '/placeholder.svg?height=80&width=60'}"
+                                         th:alt="${item.name}"
+                                         class="list-image">
+                                </div>
+                                <div class="list-col col-info">
+                                    <h4 class="list-name" th:text="${item.name}">상품명</h4>
+                                    <p class="list-description" th:text="${item.description}">상품 설명</p>
+                                </div>
+                                <div class="list-col col-price">
+                                    <span class="list-price" th:text="${#numbers.formatInteger(item.price, 0, 'COMMA')} + '원'">
+                                        15,000원
+                                    </span>
+                                </div>
+                                <div class="list-col col-status">
+                                    <span th:if="${item.status == 'ON_SALE'}" class="badge badge-sale">판매중</span>
+                                    <span th:if="${item.status == 'OUT_OF_STOCK'}" class="badge badge-soldout">품절</span>
+                                    <span th:if="${item.status != 'ON_SALE' and item.status != 'OUT_OF_STOCK'}"
+                                          class="badge badge-stop">판매중지</span>
+                                </div>
+                                <div class="list-col col-grade">
+                                    <span class="grade-badge" th:text="${item.grade}">A</span>
+                                </div>
+                                <div class="list-col col-country" th:text="${item.manufactureCountry}">Korea</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 검색 결과가 없을 때 -->
+                <div th:if="${items == null or #lists.isEmpty(items)}" class="no-results">
+                    <div class="no-results-icon">
+                        <i class="fas fa-search-minus"></i>
+                    </div>
+                    <h2 class="no-results-title">검색 결과가 없습니다</h2>
+                    <p class="no-results-description">
+                        '<strong th:text="${searchName}">검색어</strong>'에 대한 상품을 찾을 수 없습니다.<br>
+                        다른 검색어를 시도해보세요.
+                    </p>
+                    <div class="search-suggestions">
+                        <h3>검색 팁</h3>
+                        <ul>
+                            <li>단어의 철자가 정확한지 확인해보세요</li>
+                            <li>더 일반적인 검색어를 사용해보세요</li>
+                            <li>검색어를 줄여서 다시 검색해보세요</li>
+                            <li>유사한 의미의 다른 단어를 사용해보세요</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 검색어가 없을 때 (초기 상태) -->
+            <div th:if="${searchName == null or #strings.isEmpty(searchName)}" class="search-welcome">
+                <div class="welcome-content">
+                    <div class="welcome-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h2 class="welcome-title">상품을 검색해보세요</h2>
+                    <p class="welcome-description">
+                        찾고 계신 상품명을 입력하시면<br>
+                        관련 상품들을 빠르게 찾아드립니다.
+                    </p>
+
+                    <!-- 인기 검색어 -->
+                    <div class="popular-searches">
+                        <h3>인기 검색어</h3>
+                        <div class="popular-tags">
+                            <button class="popular-tag" onclick="searchKeyword('오리지널')">오리지널</button>
+                            <button class="popular-tag" onclick="searchKeyword('노이')">노이</button>
+                            <button class="popular-tag" onclick="searchKeyword('크로스')">크로스</button>
+                            <button class="popular-tag" onclick="searchKeyword('듄')">듄</button>
+                            <button class="popular-tag" onclick="searchKeyword('샌들')">샌들</button>
+                            <button class="popular-tag" onclick="searchKeyword('레이아')">레이아</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <table border="1">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>이름</th>
-            <th>가격</th>
-            <th>상태</th>
-            <th>등급</th>
-            <th>국가</th>
-            <th>상세</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="item : ${items}">
-            <td th:text="${item.itemId}">ID</td>
-            <td th:text="${item.name}">상품명</td>
-            <td th:text="${item.price}">0</td>
-            <td th:text="${item.status}">SALE</td>
-            <td th:text="${item.grade}">A</td>
-            <td th:text="${item.manufactureCountry}">Korea</td>
-            <td><a th:href="@{/item/{id}(id=${item.itemId})}">상세보기</a></td>
-        </tr>
-        </tbody>
-    </table>
-
-
 </div>
+
+<th:block layout:fragment="script">
+    <script th:src="@{/resources/js/search.js}">
+
+    </script>
+</th:block>
 
 </body>
 </html>

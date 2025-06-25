@@ -39,11 +39,11 @@ public class NoticeService {
         return noticeDao.update(notice);
     }
     //공지사항 삭제하는 메서드
-    public Notice deleteNotice(Long id) {
-        return noticeDao.delete(id);
+    public void deleteNotice(Long id) {
+        noticeDao.delete(id);
     }
     //조회수 증가 메소드
-    public int increaseViewCount(Integer noticeId){
+    public int increaseViewCount(Long noticeId){
         return noticeDao.increaseViewCount(noticeId);
     }
     //페이징 목록 조회

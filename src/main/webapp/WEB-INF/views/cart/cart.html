@@ -13,20 +13,6 @@
     <div class="container">
         <header class="header">
             <h1>장바구니</h1>
-            <div class="breadcrumb">
-                <div class="breadcrumb-item active">
-                    <div class="breadcrumb-number">1</div>
-                    <span>장바구니</span>
-                </div>
-                <div class="breadcrumb-item">
-                    <div class="breadcrumb-number">2</div>
-                    <span>주문서작성</span>
-                </div>
-                <div class="breadcrumb-item">
-                    <div class="breadcrumb-number">3</div>
-                    <span>주문완료</span>
-                </div>
-            </div>
         </header>
 
         <div class="main-content">
@@ -42,12 +28,14 @@
                 </div>
 
                 <div th:each="cartItem : ${cartList}">
-                    <div class="product-item" th:data-cart-id="${cartItem.cartId}" th:data-price="${cartItem.price}">
+                    <div class="cart-item product-item" th:data-cart-id="${cartItem.cartId}" th:data-price="${cartItem.price}">
                         <input type="checkbox" class="select-item"
                                th:id="'chk_' + ${cartItem.cartId}" th:value="${cartItem.cartId}"/>
 
                         <div class="product-image">
-                            <img th:src="${cartItem.itemImage}" th:alt="${cartItem.itemName}" width="80" height="80">
+                            <a th:href="@{/item/{itemId}(itemId=${cartItem.itemId})}">
+                                <img th:src="${cartItem.itemImage}" th:alt="${cartItem.itemName}" width="80" height="80">
+                            </a>
                         </div>
 
                         <div class="product-details">
@@ -62,16 +50,12 @@
 
                             <div class="product-size" th:text="${cartItem.sizeOptionName}">사이즈</div>
 
-                            <div class="product-options"
-                                 th:text="'사이즈: ' + ${cartItem.sizeOptionName} + ' / 수량: ' + ${cartItem.quantity} + '개'">
-                                옵션정보
-                            </div>
                         </div>
 
                         <div class="product-actions">
-                            <button class="remove-btn"
-                                    th:onclick="'removeFromCart(' + ${cartItem.cartId} + ')'">×
-                            </button>
+                            <button type="button"
+                                    class="remove-btn"
+                                    th:onclick="'removeFromCart(' + ${cartItem.cartId} + ')'">×</button>
 
                             <div class="quantity-controls">
                                 <button class="quantity-btn"
@@ -85,14 +69,7 @@
                                         th:onclick="'changeQuantity(' + ${cartItem.cartId} + ', 1)'">+
                                 </button>
                             </div>
-
-                            <!--          <button class="update-btn"-->
-                            <!--                  th:onclick="'changeQuantity(' + ${cartItem.cartId} + ', document.getElementById(\'qty_'+${cartItem.cartId}+'\').value)'">-->
-                            <!--            변경-->
-                            <!--          </button>-->
-                            <!-- 주문 금액 영역 -->
                             <div class="product-order-box">
-                                <!-- 윗줄: 주문금액 표시 -->
                                 <div class="order-price-row">
                                     <span class="order-label">주문금액</span>
                                     <div class="product-price"
@@ -102,10 +79,8 @@
                                         0원
                                     </div>
                                 </div>
-
-                                <!-- 아랫줄: 버튼 두 개 -->
                                 <div class="order-buttons-row">
-                                    <button class="wishlist-btn" th:data-item-id="${cartItem.itemId}">관심상품</button>
+                                    <button class="wishlist-btn" th:data-item-id="${cartItem.itemId}" th:data-item-option-id="${cartItem.itemOptionId}">관심상품</button>
                                     <button class="order-now-btn">주문하기</button>
                                 </div>
                             </div>
@@ -117,15 +92,15 @@
             <div class="order-summary">
                 <div class="summary-row">
                     <span>총 상품금액</span>
-                    <span id="total">0원</span> <!-- ✅ 합계 -->
+                    <span id="total">0원</span>
                 </div>
                 <div class="summary-row">
                     <span>총 배송비</span>
-                    <span id="shippingFee">0원</span> <!-- ✅ 배송비 -->
+                    <span id="shippingFee">0원</span>
                 </div>
                 <div class="summary-row total">
                     <span>결제예정금액</span>
-                    <span id="totalAmount">0원</span> <!-- ✅ 총합 -->
+                    <span id="totalAmount">0원</span>
                 </div>
                 <button class="order-btn order-all-btn">전체상품주문</button>
                 <button class="order-btn order-selected-btn">선택상품주문</button>

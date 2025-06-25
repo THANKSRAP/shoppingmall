@@ -81,7 +81,7 @@ public class ItemQuestionController {
         return "redirect:/itemquestion/" + id;
     }
 
-    @GetMapping("/{id}/delete")
+    @PostMapping("/{id}/delete")
     public String deleteItemQuestion(@PathVariable("id") Long id){
         itemQuestionService.deleteItemQuestion(id);
         return "redirect:/itemquestion";
