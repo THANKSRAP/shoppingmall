@@ -36,4 +36,5 @@ public interface CartDao {
     void insertCart(CartDto cartDto);
     CartDto selectExistingCartItem(CartDto cartDto);
 
+    List<CartDto> selectCartsByIds(@Param("list") List<Long> cartIds);
 }

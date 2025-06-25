@@ -3,6 +3,10 @@ package com.example.shoppingmall.cart.controller;
 
 import com.example.shoppingmall.cart.domain.CartDto;
 import com.example.shoppingmall.cart.service.CartService;
+import com.example.shoppingmall.item.dao.ItemDao;
+import com.example.shoppingmall.item.domain.Item;
+import com.example.shoppingmall.order.domain.request.OrderPageRequestDto;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 
 
 import javax.servlet.http.HttpSession;
+import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -24,6 +30,10 @@ public class CartController {
     @Autowired
     private CartService cartService;
 
+    @Autowired
+    private ItemDao itemDao;
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     // ✅ [1] HTML 장바구니 페이지
     @GetMapping
@@ -132,9 +142,13 @@ public class CartController {
     @PostMapping("/order/create")
     public String createOrderFromItem(@RequestParam("itemId") Long itemId,
                                       @RequestParam("itemOptionId") Long itemOptionId,
-                                      @RequestParam("quantity") int quantity) {
+                                      @RequestParam("quantity") int quantity,
+                                      HttpSession session) {
         try {
-            Long userId = 1L; // 로그인 구현 전 고정값
+            Long userId = 1L;
+
+            Item item = itemDao.findById(itemId);
+            System.out.println("itemId: "+item.getItemId());
 
             CartDto cartDto = new CartDto();
             cartDto.setUserId(userId);
@@ -143,12 +157,25 @@ public class CartController {
             cartDto.setQuantity(quantity);
 
             cartService.insertCart(cartDto);
+            System.out.println(cartDto);
+            OrderPageRequestDto.CartItem cartItem = new OrderPageRequestDto.CartItem();
+            cartItem.setCartId(cartDto.getCartId());
+            cartItem.setPrice(item.getPrice().multiply(new BigDecimal(cartDto.getQuantity()))); // 가격 * 수량 계산
+
+            OrderPageRequestDto orderPageRequestDto = new OrderPageRequestDto();
+            orderPageRequestDto.setItemsPrice(cartItem.getPrice());
+            orderPageRequestDto.setDeliveryFee(orderPageRequestDto.getItemsPrice().compareTo(new BigDecimal(100000)) >= 0 ? BigDecimal.ZERO : new BigDecimal(3000)); // 배송비 계산
+
+            orderPageRequestDto.setCarts(Collections.singletonList(cartItem));
+            System.out.println(cartDto);
+            String json = objectMapper.writeValueAsString(orderPageRequestDto);
+            session.setAttribute("orderData", json);
 
             return "redirect:/order";
+
         } catch (Exception e) {
             e.printStackTrace();
-            return "error"; // 에러 페이지가 있다면
+            return "error";
         }
     }
-
 }
