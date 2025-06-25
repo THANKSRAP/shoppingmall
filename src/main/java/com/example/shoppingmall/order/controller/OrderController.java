@@ -89,4 +89,17 @@ public class OrderController {
         model.addAttribute("orderPage", responseDto);
         return "order/order";
     }
+
+    @PostMapping("/submit")
+    public ResponseEntity<OrderResponseDto> submitOrder(
+            @RequestBody OrderRequestDto orderRequest,
+            HttpSession session
+    ) {
+        // TODO: 로그인 사용자로 교체 예정
+        Long userId = 1L;
+
+        OrderResponseDto response = orderService.processOrder(userId, orderRequest);
+
+        return ResponseEntity.ok(response);
+    }
 }

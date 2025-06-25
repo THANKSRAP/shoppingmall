@@ -57,4 +57,81 @@ public class OrderService {
                 })
                 .toList();
     }
+
+    @Transactional
+    public OrderResponseDto processOrder(Long userId, OrderRequestDto orderRequest) {
+        DeliveryAddressDto deliveryAddress;
+
+        if (orderRequest.isUseExistingAddress()) {
+            deliveryAddress = deliveryAddressDao.findById(orderRequest.getDeliveryAddressId());
+            if (deliveryAddress == null || !deliveryAddress.isActive() || !deliveryAddress.getUserId().equals(userId)) {
+                throw new IllegalArgumentException("유효하지 않은 배송지입니다.");
+            }
+        } else {
+            DeliveryAddressDto newAddress = orderRequest.getDeliveryAddress();
+            newAddress.setUserId(userId);
+
+            deliveryAddressService.upsertAddress(newAddress);
+            deliveryAddress = deliveryAddressDao.findActiveAddressByUserIdAndAddress(newAddress);
+
+            if (deliveryAddress == null) {
+                throw new RuntimeException("배송지 등록 실패");
+            }
+        }
+
+        BigDecimal itemsPrice = orderRequest.getItemsPrice();
+        BigDecimal deliveryFee = orderRequest.getDeliveryFee();
+        BigDecimal discountAmount = BigDecimal.ZERO;
+        BigDecimal totalAmount = itemsPrice.add(deliveryFee).subtract(discountAmount);
+
+        OrderDto order = new OrderDto();
+        order.setUserId(userId);
+        order.setStatus("PAID");
+        order.setItemsPrice(itemsPrice);
+        order.setDeliveryFee(deliveryFee);
+        order.setCreatedAt(LocalDateTime.now());
+        order.setUpdatedAt(LocalDateTime.now());
+
+        orderDao.insertOrder(order);
+        Long orderId = order.getOrderId();
+
+        if (orderId == null) {
+            throw new RuntimeException("주문 등록 실패");
+        }
+
+        int sequence = 1;
+        for (OrderItemRequestDto itemReq : orderRequest.getItems()) {
+            BigDecimal unitPrice = itemReq.getPrice().divide(BigDecimal.valueOf(itemReq.getQuantity()), 0, RoundingMode.HALF_UP);
+
+            for (int i = 0; i < itemReq.getQuantity(); i++) {
+                OrderItemDto itemDto = new OrderItemDto(); // 매 루프마다 새 객체 생성
+                itemDto.setOrderId(orderId);
+                itemDto.setItemSequence(sequence++); // 시퀀스 증가
+                itemDto.setItemId(itemReq.getItemId());
+                itemDto.setStatus("PAID");
+                itemDto.setDelayReason(null);
+                itemDto.setPrice(unitPrice);
+
+                orderItemDao.insertOrderItem(itemDto);
+            }
+        }
+
+        OrderResponseDto responseDto = new OrderResponseDto();
+        responseDto.setOrderNumber("DC" + orderId);
+        responseDto.setItemsPrice(itemsPrice);
+        responseDto.setDeliveryFee(deliveryFee);
+        responseDto.setDiscountAmount(discountAmount);
+        responseDto.setTotalAmount(totalAmount);
+
+        responseDto.setRecipientName(deliveryAddress.getRecipientName());
+        responseDto.setRecipientPhoneNumber(deliveryAddress.getRecipientPhoneNumber());
+
+        String fullAddress = "[" + deliveryAddress.getPostalCode() + "] " +
+                deliveryAddress.getMainAddress() + " " +
+                deliveryAddress.getDetailedAddress();
+
+        responseDto.setFullAddress(fullAddress);
+
+        return responseDto;
+    }
 }
