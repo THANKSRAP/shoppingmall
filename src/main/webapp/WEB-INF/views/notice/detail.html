@@ -30,9 +30,6 @@
 
         <div class="notice-detail-buttons">
             <a th:href="@{/notice/{id}/edit(id=${notice.noticeId})}" class="notice-detail-link">수정</a>
-            <form th:action="@{/notice/delete/{id}(id=${notice.noticeId})}" method="post" style="display:inline;">
-
-            </form>
             <form th:action="@{/notice/{id}/delete(id=${notice.noticeId})}" method="post" style="display:inline;">
                 <button type="submit" class="notice-detail-button"
                         onclick="return confirm('정말 삭제하시겠습니까?')">삭제</button>
