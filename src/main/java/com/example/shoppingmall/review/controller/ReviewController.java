@@ -5,6 +5,7 @@ import com.example.shoppingmall.review.domain.ReviewDto;
 import com.example.shoppingmall.review.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -25,11 +26,35 @@ public class ReviewController {
     }
 
 
-    @GetMapping("/list")
-    @ResponseBody
-    public List<ReviewDto> getReviewList() {
-        return reviewService.getAllReviews();
+//    @GetMapping("/list")
+//    @ResponseBody
+//    public List<ReviewDto> getReviewList() {
+//        return reviewService.getAllReviews();
+//    }
+@GetMapping("/list")
+public String reviewList(@RequestParam(required = false) Long itemId, Model model) {
+    List<ReviewDto> reviews;
+
+    // 🔍 itemId 로그
+    System.out.println("📥 요청받은 itemId: " + itemId);
+
+    if (itemId != null) {
+        reviews = reviewService.getReviewsByItemId(itemId);
+        System.out.println("🔍 해당 itemId에 대한 리뷰 수: " + reviews.size());
+    } else {
+        reviews = reviewService.getAllReviews();
+        System.out.println("📦 전체 리뷰 수: " + reviews.size());
     }
+
+    // ✅ 리뷰 하나하나 확인 (선택사항)
+    for (ReviewDto review : reviews) {
+        System.out.println("📝 리뷰 ID: " + review.getReviewId() + ", 제목: " + review.getTitle());
+    }
+
+    model.addAttribute("reviews", reviews);
+    model.addAttribute("itemId", itemId); // JS에서도 사용 가능
+    return "review/review";
+}
 
 
     @GetMapping("/detail")
@@ -44,5 +69,15 @@ public class ReviewController {
     @ResponseBody
     public List<ReviewDto> getReviewsByItemId(@PathVariable Long itemId) {
         return reviewService.getReviewsByItemId(itemId);
+    }
+
+    @GetMapping("/api/list")
+    @ResponseBody
+    public List<ReviewDto> reviewApiList(@RequestParam(required = false) Long itemId) {
+        if (itemId != null) {
+            return reviewService.getReviewsByItemId(itemId);
+        } else {
+            return reviewService.getAllReviews();
+        }
     }
 }

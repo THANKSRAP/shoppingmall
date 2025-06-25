@@ -11,6 +11,7 @@
 </head>
 <body>
 <div layout:fragment="content">
+    <input type="hidden" id="reviewPageItemId" th:value="${itemId}">
     <div class="container">
         <header class="review-header">
             <h1>상품 리뷰</h1>
@@ -44,18 +45,7 @@
                     <div class="review-gallery">
                         <div class="gallery-main">
                             <img id="mainReviewImage" src="/placeholder.svg?height=400&width=400" alt="리뷰 이미지" />
-                            <!--                    <button class="gallery-nav prev-btn">‹</button>-->
-                            <!--                    <button class="gallery-nav next-btn">›</button>-->
                         </div>
-                        <!--                <div class="gallery-counter">-->
-                        <!--                    <span id="imageCounter">1 / 1</span>-->
-                        <!--                    <span id="imageCounter">1 / 1</span>-->
-                        <!--                </div>-->
-                        <!--                <div class="gallery-indicator">-->
-                        <!--                    <div class="indicator-bar">-->
-                        <!--                        <div class="indicator-progress"></div>-->
-                        <!--                    </div>-->
-                        <!--                </div>-->
                     </div>
 
 

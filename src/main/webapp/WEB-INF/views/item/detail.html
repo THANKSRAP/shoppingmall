@@ -57,8 +57,8 @@
 
                 <h1 class="product-title" th:text="${item.name}">상품명</h1>
 
-                <div class="rating-section">
-                    <div class="stars">
+                <div class="rating-section" th:onclick="'goToItemReviewPage(' + ${item.itemId} + ')'">
+                <div class="stars">
                         <span class="star">★</span>
                         <span class="star">★</span>
                         <span class="star">★</span>
