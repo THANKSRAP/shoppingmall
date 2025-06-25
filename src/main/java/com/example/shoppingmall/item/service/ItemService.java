@@ -24,4 +24,9 @@ public interface ItemService {
     List<ItemDto> getItemsByCategory(Long majorId, Long middleId, Long minorId);
 
     ItemDto getItemWithReviewSummary(Long itemId);
+
+    List<ItemDto> getBestSellersWithReviewSummary();
+
+    List<ItemDto> getNewItemsWithReviewSummary();
+
 }

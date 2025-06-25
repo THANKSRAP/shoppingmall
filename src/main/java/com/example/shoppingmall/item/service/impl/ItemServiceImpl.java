@@ -121,4 +121,36 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto getItemWithReviewSummary(Long itemId) {
         return itemDao.selectItemWithReviewSummary(itemId);
     }
+
+    @Override
+    public List<ItemDto> getBestSellersWithReviewSummary() {
+        List<ItemDto> items = getBestSellers(); // 기존 메서드 사용
+
+        for (ItemDto item : items) {
+            ItemDto reviewSummary = itemDao.selectItemWithReviewSummary(item.getItemId());
+            if (reviewSummary != null) {
+                item.setAverageRating(reviewSummary.getAverageRating());
+                item.setReviewCount(reviewSummary.getReviewCount());
+            }
+        }
+
+        return items;
+    }
+
+    @Override
+    public List<ItemDto> getNewItemsWithReviewSummary() {
+        List<ItemDto> items = getNewItems();
+
+        for (ItemDto item : items) {
+            ItemDto reviewSummary = itemDao.selectItemWithReviewSummary(item.getItemId());
+            if (reviewSummary != null) {
+                item.setAverageRating(reviewSummary.getAverageRating());
+                item.setReviewCount(reviewSummary.getReviewCount());
+            }
+        }
+
+        return items;
+    }
+
+
 }

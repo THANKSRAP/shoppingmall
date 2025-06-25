@@ -20,6 +20,22 @@ public class HomeController {
         List<ItemDto> bestSellers = itemService.getBestSellers();
         List<ItemDto> newReleases = itemService.getNewItems();
 
+        bestSellers.forEach(item -> {
+            ItemDto summary = itemService.getItemWithReviewSummary(item.getItemId());
+            if (summary != null) {
+                item.setAverageRating(summary.getAverageRating());
+                item.setReviewCount(summary.getReviewCount());
+            }
+        });
+
+        newReleases.forEach(item -> {
+            ItemDto summary = itemService.getItemWithReviewSummary(item.getItemId());
+            if (summary != null) {
+                item.setAverageRating(summary.getAverageRating());
+                item.setReviewCount(summary.getReviewCount());
+            }
+        });
+
         model.addAttribute("bestSellers", bestSellers);
         model.addAttribute("newReleases", newReleases);
 
