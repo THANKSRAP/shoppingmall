@@ -5,7 +5,7 @@
 
 
 <mapper namespace="com.example.shoppingmall.cart.dao.CartDao">
-    <select id="selectCartByUserId" parameterType="int" resultType="com.example.shoppingmall.cart.domain.CartDto">
+    <select id="selectCartByUserId" parameterType="Long" resultType="com.example.shoppingmall.cart.domain.CartDto">
         SELECT
             c.cart_id AS cartId,
             c.user_id AS userId,
@@ -42,7 +42,7 @@
     </insert>
 
 
-    <delete id="deleteByCartId" parameterType="int">
+    <delete id="deleteByCartId" parameterType="Long">
         DELETE FROM cart WHERE cart_id = #{cartId}
     </delete>
 
@@ -58,12 +58,12 @@
     </delete>
 
 
-    <delete id="deleteAllByUserId" parameterType="int">
+    <delete id="deleteAllByUserId" parameterType="Long">
         DELETE FROM cart WHERE user_id = #{userId}
     </delete>
 
 
-    <select id="countByUserId" parameterType="int" resultType="int">
+    <select id="countByUserId" parameterType="Long" resultType="int">
         SELECT COUNT(*) FROM cart WHERE user_id = #{userId}
     </select>
 
@@ -102,8 +102,5 @@
         INSERT INTO cart (cart_id, user_id, item_id, item_option_id, quantity, added_at, created_at, updated_at)
         VALUES ( #{cartId},   #{userId}, #{itemId}, #{itemOptionId}, #{quantity}, NOW(), NOW(), NOW())
     </insert>
-
-
-
 
 </mapper>

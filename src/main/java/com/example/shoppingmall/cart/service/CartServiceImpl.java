@@ -17,9 +17,8 @@ public class CartServiceImpl implements CartService {
 
 
     @Override
-    public List<CartDto> getCartByUserId(int userId) {
+    public List<CartDto> getCartByUserId(Long userId) {
         try {
-            System.out.println("== Fighting  ==");
             return cartdao.selectCartByUserId(userId);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -28,7 +27,7 @@ public class CartServiceImpl implements CartService {
 
 
     @Override
-    public void updateQuantity(int cartId, int quantity) {
+    public void updateQuantity(Long cartId, int quantity) {
         try {
             CartDto cartDto = new CartDto();
             cartDto.setCartId(cartId);
@@ -40,7 +39,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public void deleteByCartId(int cartId) {
+    public void deleteByCartId(Long cartId) {
         try {
             cartdao.deleteByCartId(cartId);
         } catch (Exception e) {
@@ -49,7 +48,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public void deleteByCartIds(List<Integer> cartItemIds) {
+    public void deleteByCartIds(List<Long> cartItemIds) {
         try {
             cartdao.deleteByCartIds(cartItemIds);  // ✅ 한 번에 삭제
         } catch (Exception e) {
@@ -59,7 +58,7 @@ public class CartServiceImpl implements CartService {
 
 
     @Override
-    public void deleteAllByUserId(int userId) {
+    public void deleteAllByUserId(Long userId) {
         try {
             cartdao.deleteAllByUserId(userId);
         } catch (Exception e) {
@@ -69,7 +68,7 @@ public class CartServiceImpl implements CartService {
 
 
     @Override
-    public void addToWishlist(int userId, int itemId, int itemOptionId)  {
+    public void addToWishlist(Long userId, Long itemId, Long itemOptionId)  {
         try {
             cartdao.addToWishlist(userId, itemId, itemOptionId);
         } catch (Exception e) {
