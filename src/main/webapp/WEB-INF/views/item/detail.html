@@ -50,12 +50,14 @@
         <div class="product-info-section">
             <!-- Title and Badges -->
             <div class="product-header">
-                <div class="product-badges">
-                    <span th:if="${item.isBestSeller}" class="badge badge-bestseller">베스트셀러</span>
-                    <span class="badge badge-grade" th:text="${item.grade}">프리미엄</span>
+                <div class="product-title-row">
+                    <h1 class="product-title" th:text="${item.name}">상품명</h1>
+                    <div class="product-badges">
+                        <span th:if="${item.isBestSeller}" class="badge badge-bestseller">베스트셀러</span>
+                        <span class="badge badge-grade" th:text="${item.grade}">프리미엄</span>
+                    </div>
                 </div>
 
-                <h1 class="product-title" th:text="${item.name}">상품명</h1>
 
                 <div class="rating-section">
                     <div class="stars">
@@ -88,7 +90,7 @@
                     </div>
                     <div class="detail-item">
                         <span class="detail-label">상태:</span>
-                            <span class="detail-value">
+                        <span class="detail-value">
                             <span th:if="${item.status == 'ON_SALE'}">판매중</span>
                             <span th:if="${item.status == 'OUT_OF_STOCK'}">품절</span>
                             <span th:if="${item.status == 'ADDRESS_ISSUE' or item.status == 'QUALITY_CHECK' or item.status == 'WAREHOUSE_OVERLOAD'}">판매중지</span>

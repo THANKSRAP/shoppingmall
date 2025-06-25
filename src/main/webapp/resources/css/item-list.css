@@ -45,7 +45,7 @@ img {
 /* ===================== */
 /* 🏗️ Layout             */
 /* ===================== */
-.container {
+.main-container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 20px;
@@ -62,40 +62,6 @@ img {
     gap: 30px;
     padding: 20px 0;
     align-items: start;
-}
-
-/* ===================== */
-/* 🍞 Breadcrumb         */
-/* ===================== */
-.breadcrumb-section {
-    background: white;
-    border-bottom: 1px solid #e9ecef;
-    padding: 12px 0;
-}
-
-.breadcrumb {
-    display: flex;
-    align-items: center;
-    font-size: 14px;
-}
-
-.breadcrumb-item {
-    color: #6c757d;
-    transition: color 0.2s;
-}
-
-.breadcrumb-item:hover {
-    color: #007bff;
-}
-
-.breadcrumb-item.active {
-    color: #333;
-    font-weight: 500;
-}
-
-.breadcrumb-separator {
-    margin: 0 8px;
-    color: #adb5bd;
 }
 
 /* ===================== */
