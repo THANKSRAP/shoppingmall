@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+  <title>상품 문의 상세</title>
+
+  <link rel="stylesheet" th:href="@{/resources/css/item-question-detail.css}" />
+</head>
+<body>
+<div layout:fragment="content" class="item-question-form-wrapper">
+  <div class="item-question-form">
+    <h1 class="item-question-form-title">상품 문의 상세</h1>
+
+    <div th:if="${itemQuestion.isSecret}" class="secret-notice">
+      <strong>🔒 비밀글</strong> - 작성자만 열람할 수 있는 글입니다.
+    </div>
+
+    <div class="item-question-field"><label>문의 ID</label><span th:text="${itemQuestion.itemQuestionId}"></span></div>
+    <div class="item-question-field"><label>상품 ID</label><span th:text="${itemQuestion.itemId}"></span></div>
+    <div class="item-question-field"><label>사용자 ID</label><span th:text="${itemQuestion.userId}"></span></div>
+    <div class="item-question-field"><label>문의 제목</label><span th:text="${itemQuestion.title}"></span></div>
+    <div class="item-question-field">
+      <label>문의 내용</label>
+      <p th:text="${itemQuestion.content}"></p>
+    </div>
+    <div class="item-question-field"><label>유형</label><span th:switch="${itemQuestion.type}">
+      <span th:case="'SHIPPING'">배송 문의</span>
+          <span th:case="'PRODUCT'">상품 문의</span>
+          <span th:case="'OTHER'">기타 문의</span>
+          <span th:case="'SIZE'">사이즈 문의</span>
+          <span th:case="'DELIVERY'">배송 문의</span>
+    </span>
+    </div>
+    <div class="item-question-field"><label>비밀글 여부</label><span th:text="${itemQuestion.isSecret ? 'Y' : 'N'}"></span></div>
+    <div class="item-question-field"><label>작성일</label><span th:text="${#temporals.format(itemQuestion.createdAt, 'yyyy-MM-dd HH:mm')}"></span></div>
+
+    <div class="item-question-buttons">
+      <a class="item-question-link" th:href="@{/itemquestion/{id}/edit(id=${itemQuestion.itemQuestionId})}">수정</a>
+      <form th:action="@{/itemquestion/{id}/delete(id=${itemQuestion.itemQuestionId})}" method="post" style="display:inline;">
+        <button type="submit" class="item-question-form-button"
+                onclick="return confirm('정말 삭제하시겠습니까?')">삭제</button>>
+      </form>
+      <a class="item-question-link" th:href="@{/itemquestion}">목록으로</a>
+    </div>
+  </div>
+</div>
+</body>
+</html>

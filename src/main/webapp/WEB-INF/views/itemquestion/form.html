@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+  <title>상품 문의 작성</title>
+  <link rel="stylesheet" th:href="@{/resources/css/item-question-form.css}" />
+</head>
+<body>
+  <div layout:fragment="content" class="item-question-form-wrapper">
+    <h1 class="item-question-form-title"
+        th:text="${itemQuestion.itemQuestionId == null} ? '상품 문의 작성' : '상품 문의 수정'"></h1>
+
+    <form th:action="@{${itemQuestion.itemQuestionId == null} ? '/itemquestion/new' : '/itemquestion/' + ${itemQuestion.itemQuestionId} + '/edit'}"
+          th:object="${itemQuestion}"
+          method="post"
+          class="item-question-form">
+      <input type="hidden" th:field="*{itemQuestionId}"/>
+
+      <label>상품 ID:
+        <input type="number" th:field="*{itemId}" required class="item-question-input">
+      </label><br>
+
+      <label>사용자 ID:
+        <input type="number" th:field="*{userId}" required class="item-question-input">
+      </label><br>
+
+      <label>제목:
+        <input type="text" th:field="*{title}" required class="item-question-input">
+      </label><br>
+
+      <label>내용:
+        <textarea th:field="*{content}" class="item-question-textarea"></textarea>
+      </label><br>
+
+      <label>유형:
+        <select th:field="*{type}" class="item-question-select">
+          <option value="PRODUCT">상품</option>
+          <option value="SIZE">사이즈</option>
+          <option value="SHIPPING">배송</option>
+          <option value="EXCHANGE">교환/반품</option>
+          <option value="OTHER">기타</option>
+        </select>
+      </label><br>
+
+      <label class="item-question-checkbox">
+        <input type="checkbox" th:field="*{secret}" class="item-question-checkbox-input"/>
+        비밀글 설정
+      </label><br>
+
+      <button type="submit" class="item-question-form-button">저장</button>
+    </form>
+
+    <a th:href="@{/itemquestion}" class="item-question-back-link">목록으로</a>
+  </div>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+  <title>상품 문의 목록</title>
+  <link rel="stylesheet" th:href="@{/resources/css/item-question-list.css}" />
+</head>
+<body class="item-question-body">
+  <div layout:fragment="content" class="item-question-content">
+
+    <h1>상품 문의 목록</h1>
+    <div class="item-question-write-wrapper">
+      <a th:href="@{/itemquestion/new}" class="item-question-write-button">상품 문의 작성</a>
+    </div>
+
+    <table class="item-question-table">
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>상품 이름</th>
+        <th>작성자</th>
+        <th>문의 제목</th>
+        <th>유형</th>
+        <th>비밀글 여부</th>
+        <th>작성일</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="question : ${itemQuestions}">
+        <td th:text="${question.itemQuestionId}"></td>
+<!--        <td th:text="${question.itemId}"></td>-->
+        <td th:text="${question.itemName}"></td> <!-- 상품 이름 출력 -->
+        <td th:text="${question.userName}"></td>
+
+        <td>
+          <a th:href="@{/itemquestion/{id}(id=${question.itemQuestionId})}"
+             th:text="${question.isSecret ? '🔒 ' + question.title : question.title}"></a>
+        </td>
+        <td th:switch="${question.type}">
+          <span th:case="'SHIPPING'">배송 문의</span>
+          <span th:case="'PRODUCT'">상품 문의</span>
+          <span th:case="'OTHER'">기타 문의</span>
+          <span th:case="'SIZE'">사이즈 문의</span>
+          <span th:case="'DELIVERY'">배송 문의</span>
+        </td>
+        <td th:text="${question.isSecret == true ? 'Y' : 'N'}"></td>
+        <td th:text="${question.createdAt != null ? #temporals.format(question.createdAt, 'yyyy-MM-dd') : ''}"></td>
+      </tr>
+      </tbody>
+    </table>
+
+    <!-- ✅ 페이징 네비게이션 추가 -->
+    <div class="item-question-page-number" style="margin-top: 20px;">
+      <a th:if="${currentPage > 1}"
+         th:href="@{/itemquestion(page=${currentPage - 1})}">이전</a>
+
+      <span th:each="i : ${#numbers.sequence(1, totalPages)}">
+            <a th:href="@{/itemquestion(page=${i})}"
+               th:text="${i}"
+               th:classappend="${i == currentPage} ? 'active' : ''">1</a>
+
+        </span>
+
+      <a th:if="${currentPage < totalPages}"
+         th:href="@{/itemquestion(page=${currentPage + 1})}">다음</a>
+    </div>
+  </div>
+</body>
+</html>

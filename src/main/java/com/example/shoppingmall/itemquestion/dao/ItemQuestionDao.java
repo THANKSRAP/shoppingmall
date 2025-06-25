@@ -19,11 +19,14 @@ public interface ItemQuestionDao {
     int update(ItemQuestion itemQuestion);
 
     //삭제
-    int delete(Long id);
+    void delete(Long id);
 
     //페이징 목록 조회
     List<ItemQuestion> findPage(PageRequest pageRequest);
 
     //전체 공지사항 수 조회
     int count();
+
+    //작성자 이름 포함 목록 조회
+
 }
