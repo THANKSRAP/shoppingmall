@@ -47,7 +47,7 @@
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         <!-- <property name="basePackage" value="com.example.shoppingmall"/> -->
         <property name="basePackage"
-                  value="com.example.shoppingmall.user.dao, com.example.shoppingmall.item.dao, com.example.shoppingmall.notice.dao, com.example.shoppingmall.cart.dao, com.example.shoppingmall.review.dao, com.example.shoppingmall.itemquestion.dao, com.example.shoppingmall.admin.dao"/>
+                  value="com.example.shoppingmall.user.dao, com.example.shoppingmall.review.dao, com.example.shoppingmall.order.dao, com.example.shoppingmall.notice.dao, com.example.shoppingmall.itemquestion.dao, com.example.shoppingmall.item.dao, com.example.shoppingmall.cart.dao, com.example.shoppingmall.admin.dao"/>
     </bean>
 
     <!-- 트랜잭션 매니저 설정 -->
