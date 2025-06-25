@@ -91,9 +91,9 @@ public class WishlistController {
         log.info("user.getEmail(): {}", user.getEmail());
         log.info("user.getName(): {}", user.getName());
 
-        // user_id가 null인지 확인
+        // userId가 null인지 확인
         if (user.getUser_id() == null) {
-            log.error("❌ user_id가 null입니다!");
+            log.error("❌ userId가 null입니다!");
 
             // 강제로 이메일로 다시 조회
             String email = (String) session.getAttribute("email");
@@ -102,7 +102,7 @@ public class WishlistController {
             if (email != null) {
                 User freshUser = userDao.findByEmail(email);
                 log.info("DB에서 다시 조회한 User: {}", freshUser);
-                log.info("DB User의 user_id: {}", freshUser != null ? freshUser.getUser_id() : "null");
+                log.info("DB User의 userId: {}", freshUser != null ? freshUser.getUser_id() : "null");
 
                 if (freshUser != null && freshUser.getUser_id() != null) {
                     user = freshUser;
@@ -200,13 +200,13 @@ public class WishlistController {
     private User getUserFromSession(HttpSession session) {
         log.info("=== getUserFromSession 호출 ===");
 
-        // 1. user_id로 먼저 확인
-        Long userId = (Long) session.getAttribute("user_id");
-        log.info("session.getAttribute('user_id'): {}", userId);
+        // 1. userId로 먼저 확인
+        Long userId = (Long) session.getAttribute("userId");
+        log.info("session.getAttribute('userId'): {}", userId);
 
         if (userId != null) {
             User user = userDao.findById(userId);
-            log.info("DB에서 user_id로 조회한 User: {}", user);
+            log.info("DB에서 userId로 조회한 User: {}", user);
             if (user != null) {
                 return user;
             }
@@ -220,9 +220,9 @@ public class WishlistController {
             User user = userDao.findByEmail(email);
             log.info("DB에서 이메일로 조회한 User: {}", user);
             if (user != null) {
-                // 세션에 user_id 저장
-                session.setAttribute("user_id", user.getUser_id());
-                log.info("세션에 user_id 저장 완료: {}", user.getUser_id());
+                // 세션에 userId 저장
+                session.setAttribute("userId", user.getUser_id());
+                log.info("세션에 userId 저장 완료: {}", user.getUser_id());
                 return user;
             }
         }

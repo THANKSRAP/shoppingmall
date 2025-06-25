@@ -8,5 +8,5 @@ public class UserSignupDto {
     private String email;
     private String password;
     private String name;
-    private String phone_number;
+    private String phoneNumber;
 }

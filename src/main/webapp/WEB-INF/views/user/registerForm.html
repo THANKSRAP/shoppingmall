@@ -99,9 +99,9 @@
     <input class="input-field" type="text" id="residentRegistrationNumber" name="residentRegistrationNumber"
            th:value="${residentRegistrationNumber}" placeholder="000000-0000000" maxlength="14" required>
 
-    <label for="phone_number">전화번호 <span class="required">*</span></label>
-    <input class="input-field" type="tel" id="phone_number" name="phone_number"
-           th:value="${phone_number}" placeholder="010-0000-0000" required>
+    <label for="phoneNumber">전화번호 <span class="required">*</span></label>
+    <input class="input-field" type="tel" id="phoneNumber" name="phoneNumber"
+           th:value="${phoneNumber}" placeholder="010-0000-0000" required>
 
     <div class="gender-select">
         <label>성별 <span class="required">*</span></label>
@@ -169,15 +169,15 @@
             return false;
         }
 
-        if (!frm.phone_number.value.trim()) {
-            setMessage('전화번호를 입력해주세요.', frm.phone_number);
+        if (!frm.phoneNumber.value.trim()) {
+            setMessage('전화번호를 입력해주세요.', frm.phoneNumber);
             return false;
         }
 
         // 전화번호 형식 검증 (000-0000-0000)
         const phonePattern = /^\d{3}-\d{4}-\d{4}$/;
-        if (!phonePattern.test(frm.phone_number.value)) {
-            setMessage('전화번호는 000-0000-0000 형식으로 입력해주세요.', frm.phone_number);
+        if (!phonePattern.test(frm.phoneNumber.value)) {
+            setMessage('전화번호는 000-0000-0000 형식으로 입력해주세요.', frm.phoneNumber);
             return false;
         }
 

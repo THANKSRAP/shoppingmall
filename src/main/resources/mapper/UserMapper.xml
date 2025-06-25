@@ -54,9 +54,8 @@
             created_at,
             updated_at
         FROM user
-        WHERE user_id = #{user_id}
+        WHERE user_id = #{userId}
     </select>
-
 
 
     <select id="findByEmailAndPassword" parameterType="map" resultType="com.example.shoppingmall.user.domain.User">
@@ -64,15 +63,22 @@
             user_id,
             email,
             password,
+            pre_password,
             name,
+            resident_registration_number,
             phone_number,
-            customer_status,
-            role,
-            created_at,
-            updated_at,
+            gender,
             registration_at,
             user_id_creation_at,
-            is_withdrawal
+            sms_marketing_status,
+            email_marketing_status,
+            customer_status,
+            is_withdrawal,
+            withdrawal_at,
+            withdrawal_reason,
+            role,
+            created_at,
+            updated_at
         FROM user
         WHERE email = #{email}
           AND password = #{password}
@@ -81,104 +87,64 @@
     </select>
 
 
-    <!--    &lt;!&ndash; ✅ Map 파라미터로 수정 &ndash;&gt;-->
-<!--    <select id="findByEmailAndPassword" parameterType="map" resultType="com.example.shoppingmall.user.domain.User">-->
-<!--        SELECT-->
-<!--            user_id,-->
-<!--            email,-->
-<!--            password,-->
-<!--            pre_password,-->
-<!--            name,-->
-<!--            resident_registration_number,-->
-<!--            phone_number,-->
-<!--            gender,-->
-<!--            registration_at,-->
-<!--            user_id_creation_at,-->
-<!--            sms_marketing_status,-->
-<!--            email_marketing_status,-->
-<!--            customer_status,-->
-<!--            is_withdrawal,-->
-<!--            withdrawal_at,-->
-<!--            withdrawal_reason,-->
-<!--            role,-->
-<!--            created_at,-->
-<!--            updated_at-->
-<!--        FROM user-->
-<!--        WHERE email = #{email}-->
-<!--          AND password = #{password}-->
-<!--          AND (is_withdrawal IS NULL OR is_withdrawal = false)-->
-<!--          AND customer_status = 'ACTIVE'-->
-<!--    </select>-->
-
-
-<!--    &lt;!&ndash; ✅ Map 파라미터로 수정 &ndash;&gt;-->
-<!--    <select id="findByEmailAndPassword" parameterType="map" resultType="com.example.shoppingmall.user.domain.User">-->
-<!--        SELECT * FROM user-->
-<!--        WHERE email = #{email}-->
-<!--          AND password = #{password}-->
-<!--          AND (is_withdrawal IS NULL OR is_withdrawal = false)-->
-<!--          AND customer_status = 'ACTIVE'-->
-<!--    </select>-->
-
-
-
     <insert id="insert" parameterType="com.example.shoppingmall.user.domain.User">
         INSERT INTO user (
-                        user_id,
-                          email,
-                          password,
-
-                          name,
-                          phone_number,
-                          role,
-                          customer_status,
-                          created_at,
-                          updated_at,
-                          registration_at,
-
-                          is_withdrawal,
-                          user_id_creation_at,
-                          gender,
-                          resident_registration_number,
-                          sms_marketing_status,
-                          email_marketing_status
+            user_id,
+            email,
+            password,
+            pre_password,
+            name,
+            resident_registration_number,
+            phone_number,
+            gender,
+            registration_at,
+            user_id_creation_at,
+            sms_marketing_status,
+            email_marketing_status,
+            customer_status,
+            is_withdrawal,
+            withdrawal_at,
+            withdrawal_reason,
+            role,
+            created_at,
+            updated_at
         )
         VALUES (
-                   #{user_id}
+                   #{userId},
                    #{email},
                 #{password},
                 #{name},
-                #{phone_number},
+                #{phoneNumber},
                 #{role},
-                #{customer_status},
-                #{created_at},
-                #{updated_at},
-                #{registration_at},
+                #{customerStatus},
+                #{createdAt},
+                #{updatedAt},
+                #{registrationAt},
 
-                #{is_withdrawal},
-                #{user_id_creation_at},
+                #{isWithdrawal},
+                #{userIdCreationAt},
                 #{gender},
-                #{resident_registration_number},
-                #{sms_marketing_status},
-                #{email_marketing_status}
+                #{residentRegistrationNumber},
+                #{smsMarketingStatus},
+                #{emailMarketingStatus}
         )
     </insert>
 
     <update id="update" parameterType="com.example.shoppingmall.user.domain.User">
         UPDATE user
-        SET user_id = #{user_id},
+        SET user_id = #{userId},
             email = #{email},
             password = #{password},
             name = #{name},
-            phone_number = #{phone_number},
+            phone_number = #{phoneNumber},
             role = #{role},
-            customer_status = #{customer_status},
-            updated_at = #{updated_at}
-        WHERE user_id = #{user_id}
+            customer_status = #{customerStatus},
+            updated_at = #{updatedAt}
+        WHERE user_id = #{userId}
     </update>
 
     <delete id="delete" parameterType="long">
-        DELETE FROM user WHERE user_id = #{user_id}
+        DELETE FROM user WHERE user_id = #{userId}
     </delete>
 
 

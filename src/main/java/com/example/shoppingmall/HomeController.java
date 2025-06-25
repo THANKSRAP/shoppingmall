@@ -61,17 +61,17 @@ public class HomeController {
                         attributeValue != null ? attributeValue.getClass().getSimpleName() : "null");
             }
 
-            Long userId = (Long) httpSession.getAttribute("user_id");
+            Long userId = (Long) httpSession.getAttribute("userId");
             String email = (String) httpSession.getAttribute("email");
             Object user = httpSession.getAttribute("user");
 
             log.info("=== 로그인 관련 세션 속성 ===");
-            log.info("user_id: {} (타입: {})", userId, userId != null ? userId.getClass().getSimpleName() : "null");
+            log.info("userId: {} (타입: {})", userId, userId != null ? userId.getClass().getSimpleName() : "null");
             log.info("email: {} (타입: {})", email, email != null ? email.getClass().getSimpleName() : "null");
             log.info("user: {} (타입: {})", user, user != null ? user.getClass().getSimpleName() : "null");
 
             // header.html에서 사용하는 정확한 속성명으로 Map에 추가
-            session.put("user_id", userId);
+            session.put("userId", userId);
             session.put("email", email);
             session.put("user", user);
 
@@ -80,8 +80,8 @@ public class HomeController {
                 log.info("✅ 로그인 상태 확인됨 - 사용자: {} (ID: {})", email, userId);
                 model.addAttribute("isLoggedIn", true);
             } else {
-                log.warn("❌ 세션은 존재하지만 user_id 또는 email이 null");
-                log.warn("   - user_id null 여부: {}", userId == null);
+                log.warn("❌ 세션은 존재하지만 userId 또는 email이 null");
+                log.warn("   - userId null 여부: {}", userId == null);
                 log.warn("   - email null 여부: {}", email == null);
                 model.addAttribute("isLoggedIn", false);
             }
@@ -113,12 +113,12 @@ public class HomeController {
 
 //        //  디버깅: 세션 정보 확인
 //        System.out.println("=== HomeController 디버깅 ===");
-//        System.out.println("session.getAttribute('user_id'): " + session.getAttribute("user_id"));
+//        System.out.println("session.getAttribute('userId'): " + session.getAttribute("userId"));
 //        System.out.println("session.getAttribute('email'): " + session.getAttribute("email"));
 //        System.out.println("session.getAttribute('user'): " + session.getAttribute("user"));
 //
 //        //  모델에 세션 정보 강제로 추가
-//        Long userId = (Long) session.getAttribute("user_id");
+//        Long userId = (Long) session.getAttribute("userId");
 //        Object user = session.getAttribute("user");
 //
 //        if (userId != null || user != null) {
@@ -133,7 +133,7 @@ public class HomeController {
 
 
 //        // 세션 정보를 모델에 추가 (header.html에서 사용하기 위해)
-//        Long userId = (Long) session.getAttribute("user_id");
+//        Long userId = (Long) session.getAttribute("userId");
 //        String email = (String) session.getAttribute("email");
 //
 //        if (userId != null) {

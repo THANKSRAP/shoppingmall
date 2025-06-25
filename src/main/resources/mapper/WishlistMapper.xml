@@ -3,7 +3,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <!-- 네임스페이스 변경 -->
-<mapper namespace="WishlistMapper">
+<mapper namespace="com.example.shoppingmall.user.dao.WishlistDao">
 
 
     <select id="selectWishlist" parameterType="com.example.shoppingmall.user.domain.dto.WishlistSearchDto"

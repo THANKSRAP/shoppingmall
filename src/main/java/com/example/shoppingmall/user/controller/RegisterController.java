@@ -55,7 +55,7 @@ public class RegisterController {
                        @RequestParam String password,
                        @RequestParam String name,
                        @RequestParam String residentRegistrationNumber,  // required = false 제거
-                       @RequestParam String phone_number,
+                       @RequestParam String phoneNumber,
                        @RequestParam String gender,
                        @RequestParam(defaultValue = "false") boolean smsMarketingStatus,  // 체크박스는 기본값 설정
                        @RequestParam(defaultValue = "false") boolean emailMarketingStatus, // 체크박스는 기본값 설정
@@ -68,42 +68,42 @@ public class RegisterController {
             password = password != null ? password.trim() : "";
             name = name != null ? name.trim() : "";
             residentRegistrationNumber = residentRegistrationNumber != null ? residentRegistrationNumber.trim() : "";
-            phone_number = phone_number != null ? phone_number.trim() : "";
+            phoneNumber = phoneNumber != null ? phoneNumber.trim() : "";
             gender = gender != null ? gender.trim() : "";
 
             if (email.isEmpty()) {
                 model.addAttribute("error", "이메일은 필수 입력 사항입니다.");
-                setModelAttributes(model, email, name, residentRegistrationNumber, phone_number, gender, smsMarketingStatus, emailMarketingStatus);
+                setModelAttributes(model, email, name, residentRegistrationNumber, phoneNumber, gender, smsMarketingStatus, emailMarketingStatus);
                 return "user/registerForm";
             }
 
             if (password.isEmpty()) {
                 model.addAttribute("error", "비밀번호는 필수 입력 사항입니다.");
-                setModelAttributes(model, email, name, residentRegistrationNumber, phone_number, gender, smsMarketingStatus, emailMarketingStatus);
+                setModelAttributes(model, email, name, residentRegistrationNumber, phoneNumber, gender, smsMarketingStatus, emailMarketingStatus);
                 return "user/registerForm";
             }
 
             if (name.isEmpty()) {
                 model.addAttribute("error", "이름은 필수 입력 사항입니다.");
-                setModelAttributes(model, email, name, residentRegistrationNumber, phone_number, gender, smsMarketingStatus, emailMarketingStatus);
+                setModelAttributes(model, email, name, residentRegistrationNumber, phoneNumber, gender, smsMarketingStatus, emailMarketingStatus);
                 return "user/registerForm";
             }
 
             if (residentRegistrationNumber.isEmpty()) {
                 model.addAttribute("error", "주민등록번호는 필수 입력 사항입니다.");
-                setModelAttributes(model, email, name, residentRegistrationNumber, phone_number, gender, smsMarketingStatus, emailMarketingStatus);
+                setModelAttributes(model, email, name, residentRegistrationNumber, phoneNumber, gender, smsMarketingStatus, emailMarketingStatus);
                 return "user/registerForm";
             }
 
-            if (phone_number.isEmpty()) {
+            if (phoneNumber.isEmpty()) {
                 model.addAttribute("error", "전화번호는 필수 입력 사항입니다.");
-                setModelAttributes(model, email, name, residentRegistrationNumber, phone_number, gender, smsMarketingStatus, emailMarketingStatus);
+                setModelAttributes(model, email, name, residentRegistrationNumber, phoneNumber, gender, smsMarketingStatus, emailMarketingStatus);
                 return "user/registerForm";
             }
 
             if (gender.isEmpty()) {
                 model.addAttribute("error", "성별은 필수 선택 사항입니다.");
-                setModelAttributes(model, email, name, residentRegistrationNumber, phone_number, gender, smsMarketingStatus, emailMarketingStatus);
+                setModelAttributes(model, email, name, residentRegistrationNumber, phoneNumber, gender, smsMarketingStatus, emailMarketingStatus);
                 return "user/registerForm";
             }
 
@@ -111,35 +111,35 @@ public class RegisterController {
             // 이메일 형식 검증
             if (!EMAIL_PATTERN.matcher(email).matches()) {
                 model.addAttribute("error", "올바른 이메일 형식을 입력해주세요. (예: example@email.com)");
-                setModelAttributes(model, email, name, residentRegistrationNumber, phone_number, gender, smsMarketingStatus, emailMarketingStatus);
+                setModelAttributes(model, email, name, residentRegistrationNumber, phoneNumber, gender, smsMarketingStatus, emailMarketingStatus);
                 return "user/registerForm";
             }
 
             // 전화번호 형식 검증 (000-0000-0000)
-            if (!PHONE_PATTERN.matcher(phone_number).matches()) {
+            if (!PHONE_PATTERN.matcher(phoneNumber).matches()) {
                 model.addAttribute("error", "전화번호는 000-0000-0000 형식으로 '-'를 사용하여 입력해주세요.");
-                setModelAttributes(model, email, name, residentRegistrationNumber, phone_number, gender, smsMarketingStatus, emailMarketingStatus);
+                setModelAttributes(model, email, name, residentRegistrationNumber, phoneNumber, gender, smsMarketingStatus, emailMarketingStatus);
                 return "user/registerForm";
             }
 
             // 주민등록번호 형식 검증 (000000-0000000)
             if (!RESIDENT_NUMBER_PATTERN.matcher(residentRegistrationNumber).matches()) {
                 model.addAttribute("error", "주민등록번호는 000000-0000000 형식으로 '-'를 사용하여 입력해주세요.");
-                setModelAttributes(model, email, name, residentRegistrationNumber, phone_number, gender, smsMarketingStatus, emailMarketingStatus);
+                setModelAttributes(model, email, name, residentRegistrationNumber, phoneNumber, gender, smsMarketingStatus, emailMarketingStatus);
                 return "user/registerForm";
             }
 
             // === 3. 비밀번호 강도 검증 (보안 강화) ===
             if (password.length() < 8) {
                 model.addAttribute("error", "비밀번호는 8자 이상이어야 합니다.");
-                setModelAttributes(model, email, name, residentRegistrationNumber, phone_number, gender, smsMarketingStatus, emailMarketingStatus);
+                setModelAttributes(model, email, name, residentRegistrationNumber, phoneNumber, gender, smsMarketingStatus, emailMarketingStatus);
                 return "user/registerForm";
             }
 
             // === 4. 성별 값 검증 (보안 강화) ===
             if (!gender.equals("M") && !gender.equals("F")) {
                 model.addAttribute("error", "올바른 성별을 선택해주세요.");
-                setModelAttributes(model, email, name, residentRegistrationNumber, phone_number, gender, smsMarketingStatus, emailMarketingStatus);
+                setModelAttributes(model, email, name, residentRegistrationNumber, phoneNumber, gender, smsMarketingStatus, emailMarketingStatus);
                 return "user/registerForm";
             }
 
@@ -147,7 +147,7 @@ public class RegisterController {
             User existingUser = userService.getUserByEmail(email);
             if (existingUser != null) {
                 model.addAttribute("error", "이미 가입된 이메일입니다. 다른 이메일을 사용해주세요.");
-                setModelAttributes(model, email, name, residentRegistrationNumber, phone_number, gender, smsMarketingStatus, emailMarketingStatus);
+                setModelAttributes(model, email, name, residentRegistrationNumber, phoneNumber, gender, smsMarketingStatus, emailMarketingStatus);
                 return "user/registerForm";
             }
 
@@ -160,7 +160,7 @@ public class RegisterController {
             user.setPassword(password);
             user.setName(name);
             user.setResident_registration_number(residentRegistrationNumber);
-            user.setPhone_number(phone_number);
+            user.setPhoneNumber(phoneNumber);
             user.setGender(gender);
             user.setSms_marketing_status(smsMarketingStatus);
             user.setEmail_marketing_status(emailMarketingStatus);
@@ -176,6 +176,8 @@ public class RegisterController {
 
             // === 7. 회원가입 처리 ===
             userService.createUser(user);
+            System.out.println("회원가입 처리 완료");
+            System.out.println(user);
 
             // 성공 시 로그인 페이지로 이동 (성공 메시지 포함)
             return "redirect:/user/loginForm?signup=success";
@@ -183,7 +185,7 @@ public class RegisterController {
         } catch (Exception e) {
             // 예외 발생 시 에러 메시지와 함께 입력값 유지
             model.addAttribute("error", "회원가입 처리 중 오류가 발생했습니다: " + e.getMessage());
-            setModelAttributes(model, email, name, residentRegistrationNumber, phone_number, gender, smsMarketingStatus, emailMarketingStatus);
+            setModelAttributes(model, email, name, residentRegistrationNumber, phoneNumber, gender, smsMarketingStatus, emailMarketingStatus);
             return "user/registerForm";
         }
     }
@@ -192,11 +194,11 @@ public class RegisterController {
      * 모델에 입력값 다시 설정하는 헬퍼 메서드 (에러 발생 시 입력값 유지용)
      */
     private void setModelAttributes(Model model, String email, String name, String residentRegistrationNumber,
-                                    String phone_number, String gender, boolean smsMarketingStatus, boolean emailMarketingStatus) {
+                                    String phoneNumber, String gender, boolean smsMarketingStatus, boolean emailMarketingStatus) {
         model.addAttribute("email", email);
         model.addAttribute("name", name);
         model.addAttribute("residentRegistrationNumber", residentRegistrationNumber);
-        model.addAttribute("phone_number", phone_number);
+        model.addAttribute("phoneNumber", phoneNumber);
         model.addAttribute("gender", gender);
         model.addAttribute("smsMarketingStatus", smsMarketingStatus);
         model.addAttribute("emailMarketingStatus", emailMarketingStatus);
@@ -236,7 +238,7 @@ public class RegisterController {
 //                       @RequestParam String password,
 //                       @RequestParam String name,
 //                       @RequestParam String residentRegistrationNumber,
-//                       @RequestParam String phone_number,
+//                       @RequestParam String phoneNumber,
 //                       @RequestParam String gender,
 //                       @RequestParam(required = false) boolean smsMarketing,
 //                       @RequestParam(required = false) boolean emailMarketing) {
@@ -253,7 +255,7 @@ public class RegisterController {
 //        user.setPassword(password);
 //        user.setName(name);
 //        user.setResident_registration_number(residentRegistrationNumber);
-//        user.setPhone_number(phone_number);  // User 클래스의 setPhone() 메서드 사용
+//        user.setphoneNumber(phoneNumber);  // User 클래스의 setPhone() 메서드 사용
 //        user.setGender(gender);
 //        user.setSms_marketing_status(smsMarketing);
 //        user.setEmail_marketing_status(emailMarketing);
@@ -276,7 +278,7 @@ public class RegisterController {
 //        System.out.println("저장된 사용자 정보:");
 //        System.out.println("이메일: " + email);
 //        System.out.println("이름: " + name);
-//        System.out.println("전화번호: " + phone_number);
+//        System.out.println("전화번호: " + phoneNumber);
 //        System.out.println("성별: " + gender);
 //        System.out.println("SMS 마케팅 동의: " + smsMarketing);
 //        System.out.println("이메일 마케팅 동의: " + emailMarketing);

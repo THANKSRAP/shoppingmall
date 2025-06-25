@@ -48,7 +48,7 @@ public class LoginController {
 
         // 이미 로그인된 사용자는 메인 페이지로 리다이렉트
         HttpSession session = request.getSession(false);
-        if (session != null && session.getAttribute("user_id") != null) {
+        if (session != null && session.getAttribute("userId") != null) {
             return "redirect:/";
         }
 
@@ -120,22 +120,22 @@ public class LoginController {
             log.info("새 세션 생성: {}", session.getId());
 
             // 세션에 사용자 정보 저장
-            session.setAttribute("user_id", authenticatedUser.getUser_id());
+            session.setAttribute("userId", authenticatedUser.getUser_id());
             session.setAttribute("email", authenticatedUser.getEmail());
             session.setAttribute("user", authenticatedUser);
             session.setMaxInactiveInterval(30 * 60);
 
             log.info("=== 세션에 저장된 정보 ===");
             log.info("Session ID: {}", session.getId());
-            log.info("session.setAttribute('user_id'): {}", authenticatedUser.getUser_id());
+            log.info("session.setAttribute('userId'): {}", authenticatedUser.getUser_id());
             log.info("session.setAttribute('email'): {}", authenticatedUser.getEmail());
             log.info("session.setAttribute('user'): {}", authenticatedUser);
 
             // ✅ 세션 저장 후 즉시 확인
-            Long savedUserId = (Long) session.getAttribute("user_id");
+            Long savedUserId = (Long) session.getAttribute("userId");
             String savedEmail = (String) session.getAttribute("email");
             log.info("=== 세션 저장 확인 ===");
-            log.info("세션에서 다시 조회한 user_id: {}", savedUserId);
+            log.info("세션에서 다시 조회한 userId: {}", savedUserId);
             log.info("세션에서 다시 조회한 email: {}", savedEmail);
 
             // ✅ 5. 세션 쿠키 설정
@@ -306,7 +306,7 @@ public class LoginController {
      */
     public static boolean isLoggedIn(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
-        return session != null && session.getAttribute("user_id") != null;
+        return session != null && session.getAttribute("userId") != null;
     }
 
     /**
@@ -323,7 +323,7 @@ public class LoginController {
     public static Long getCurrentUserId(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         if (session != null) {
-            return (Long) session.getAttribute("user_id");
+            return (Long) session.getAttribute("userId");
         }
         return null;
     }
@@ -353,11 +353,11 @@ public class LoginController {
     @GetMapping("/mypage")
     public String mypage(HttpServletRequest request, Model model) {
         HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("user_id") == null) {
+        if (session == null || session.getAttribute("userId") == null) {
             return "redirect:/user/loginForm?msg=" + encodeMessage("로그인이 필요합니다.");
         }
 
-        Long userId = (Long) session.getAttribute("user_id");
+        Long userId = (Long) session.getAttribute("userId");
         model.addAttribute("userId", userId);
         return "user/mypage";
     }

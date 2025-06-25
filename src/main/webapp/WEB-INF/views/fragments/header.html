@@ -12,8 +12,8 @@
 
         <!-- User Menu -->
         <div class="navbar-nav ms-auto">
-            <!-- 세션 기반 인증 - 로그인 조건을 user_id 기준으로 통일 (기존 session.user 대신) -->
-            <div class="nav-item dropdown" th:if="${session.user_id != null}">
+            <!-- 세션 기반 인증 - 로그인 조건을 userId 기준으로 통일 (기존 session.user 대신) -->
+            <div class="nav-item dropdown" th:if="${session.userId != null}">
                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                     <i class="fas fa-user"></i> <span th:text="${session.email}">사용자</span>
                 </a>
@@ -31,7 +31,7 @@
             </div>
 
             <!-- 세션 기반 인증 (User로 로그인 상태가 아닐 시 나타나는 드롭다운 메뉴)-->
-            <div class="nav-item" th:if="${session.user_id == null}">
+            <div class="nav-item" th:if="${session.userId == null}">
                 <a class="nav-link" th:href="@{user/loginForm}">
                     <i class="fas fa-sign-in-alt"></i> 로그인
                 </a>

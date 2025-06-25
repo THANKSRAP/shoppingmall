@@ -177,7 +177,7 @@ public class UserController {
 //    public String signup(@RequestParam String email,
 //                         @RequestParam String password,
 //                         @RequestParam String name,
-//                         @RequestParam String phone_number,
+//                         @RequestParam String phoneNumber,
 //                         @RequestParam(defaultValue = "CUSTOMER") String role,                         // ← 🔥 role을 파라미터로 받기
 //                         Model model) {        // Model 파라미터 추가
 //
@@ -187,7 +187,7 @@ public class UserController {
 //        user.setEmail(email);
 //        user.setPassword(password);
 //        user.setName(name);
-//        user.setPhone_number(phone_number);
+//        user.setPhone_number(phoneNumber);
 //        user.setRole(role);
 //        user.setCustomer_status("ACTIVE");
 //

@@ -47,6 +47,7 @@ public class UserService {
 
     public User login(User user) {
         User foundUser = userDao.findByEmailAndPassword(user.getEmail(), user.getPassword());
+        System.out.println(foundUser);
         if (foundUser == null) {
             throw new LoginFailedException("이메일 또는 비밀번호가 일치하지 않습니다.");
         }
