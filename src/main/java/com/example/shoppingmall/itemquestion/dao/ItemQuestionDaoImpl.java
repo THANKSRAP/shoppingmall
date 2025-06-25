@@ -42,8 +42,8 @@ public class ItemQuestionDaoImpl implements ItemQuestionDao {
     }
     //삭제
     @Override
-    public int delete(Long id){
-        return sqlSession.update(namespace+"delete", id);
+    public void delete(Long id){
+        sqlSession.update(namespace+"delete", id);
     }
 
     @Override

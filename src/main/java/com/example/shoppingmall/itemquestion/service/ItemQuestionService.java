@@ -13,12 +13,6 @@ import java.util.List;
 public class ItemQuestionService {
 
     private final ItemQuestionDao itemQuestionDao;
-//    private final PageRequest pageRequest;
-
-//    public ItemQuestionService(ItemQuestionDao itemQuestionDao, PageRequest pageRequest) {
-//        this.itemQuestionDao = itemQuestionDao;
-//        // this.pageRequest = pageRequest;
-//    }
 
 
 
@@ -53,8 +47,8 @@ public class ItemQuestionService {
         return itemQuestionDao.update(itemQuestion);
     }
     //삭제
-    public int deleteItemQuestion(Long id){
-        return itemQuestionDao.delete(id);
+    public void deleteItemQuestion(Long id){
+        itemQuestionDao.delete(id);
     }
     //페이징 목록 조회
     public List<ItemQuestion> getPage(PageRequest pageRequest){

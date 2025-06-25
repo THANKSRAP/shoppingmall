@@ -1,0 +1,41 @@
+/* ===================== */
+/* 🛠 Notice            */
+/* ===================== */
+.notice-body {
+    background-color: white;
+    .notice-content {
+        width: 100%;
+        max-width: 1140px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 0 auto;
+
+        .write-button {
+            background-color: black;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            align-self: end;
+            text-decoration: none;
+            border-radius: 10px;
+        }
+        .notice-table {
+            width: 100%;
+            padding: 20px 0;
+            margin: 50px 0;
+            thead {
+                background-color: #eee;
+            }
+            tbody, td, tfoot, th, thead, tr {
+                border-bottom: 1px solid #ddd;
+                text-align: center;
+                padding: 20px 0;
+            }
+            td a {
+                color: black;
+                text-decoration: none;
+            }
+        }
+    }
+}

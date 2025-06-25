@@ -9,13 +9,13 @@
     <select id="findAll" resultType="com.example.shoppingmall.notice.domain.Notice">
         SELECT *
         FROM notice
-        ORDER BY is_pinned DESC, created_at DESC
+        ORDER BY is_pinned DESC, created_at DESC, notice_id DESC
     </select>
     <!-- 페이징 추가 -->
     <select id="findPage" resultType="com.example.shoppingmall.notice.domain.Notice">
         SELECT *
         FROM notice
-        ORDER BY is_pinned DESC, created_at DESC
+        ORDER BY is_pinned DESC, created_at DESC, notice_id DESC
             LIMIT #{limit} OFFSET #{offset}
     </select>
 
@@ -74,7 +74,7 @@
         WHERE notice_id = #{id}
     </delete>
         <!--6. 조회수 증가-->
-    <update id="increaseViewCount" parameterType="java.lang.Integer">
+    <update id="increaseViewCount" parameterType="com.example.shoppingmall.notice.domain.Notice">
         UPDATE notice
         SET view_count = view_count + 1
         where notice_id = #{noticeId}
