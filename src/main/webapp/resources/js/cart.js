@@ -6,32 +6,23 @@ function changeQuantity(cartId, delta) {
     if (currentQty < 1) currentQty = 1;
     qtyInput.value = currentQty;
 
-
     // ✅ 상품 금액 업데이트
     updateItemPrice(cartId, currentQty);
-
-
     // ✅ 전체 합계 업데이트
     updateSummary();
-
-
     // ✅ 서버에 PATCH 요청 (선택사항)
     updateCartQuantity(cartId, currentQty, null);
 }
-
 
 function updateItemPrice(cartId, quantity) {
     const totalPriceEl = document.querySelector(`#price_${cartId}`);
     if (!totalPriceEl) return;
 
-
     const unitPrice = parseInt(totalPriceEl.dataset.price);  // 단가 가져오기
     const totalPrice = unitPrice * quantity;
 
-
     totalPriceEl.innerText = totalPrice.toLocaleString() + '원';
 }
-
 
 function updateCartQuantity(cartId, quantity, optionDetail) {
     console.log("PATCH 요청 보냄:", {
@@ -46,7 +37,6 @@ function updateCartQuantity(cartId, quantity, optionDetail) {
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({quantity: quantity})
     })
-
 
         .then(async res => {
             const text = await res.text();
@@ -65,18 +55,13 @@ function updateCartQuantity(cartId, quantity, optionDetail) {
         });
 }
 
-
 function updateSummary() {
     const productTotalEls = document.querySelectorAll('[id^="price_"]');
     const checkboxes = document.querySelectorAll('.select-item');
 
-
     let totalPrice = 0;
-
-
     // 체크된 상품이 있는지 확인
     const anyChecked = Array.from(checkboxes).some(chk => chk.checked);
-
 
     if (anyChecked) {
         // 체크된 상품 가격만 합산
@@ -98,18 +83,13 @@ function updateSummary() {
         });
     }
 
-
     const shippingFee = totalPrice >= 100000 ? 0 : 3000;
     const totalAmount = totalPrice + shippingFee;
-
 
     document.getElementById('total').innerText = totalPrice.toLocaleString() + '원';
     document.getElementById('shippingFee').innerText = shippingFee.toLocaleString() + '원';
     document.getElementById('totalAmount').innerText = totalAmount.toLocaleString() + '원';
 }
-
-
-
 
 // 전체 선택 / 해제
 function selectAll(checked) {
@@ -119,23 +99,18 @@ function selectAll(checked) {
     updateSummary();
 }
 
-
 // 전체 상품 주문
 function orderAll() {
     const cartElements = document.querySelectorAll('.product-item');
     const carts = [];
     let itemsPrice = 0;
 
-
     cartElements.forEach(el => {
         const cartId = el.dataset.cartId;
         const price = parseFloat(el.dataset.price); // 👉 이게 더 정확
         const quantity = parseInt(document.getElementById('qty_' + cartId).value);
-
-
         const totalPrice = price * quantity;
         itemsPrice += totalPrice;
-
 
         carts.push({
             cart_id: parseInt(cartId),
@@ -143,16 +118,12 @@ function orderAll() {
         });
     });
 
-
     const deliveryFee = itemsPrice >= 100000 ? 0 : 3000;
-
-
     const payload = {
         carts: carts,
         items_price: itemsPrice,
         delivery_fee: deliveryFee
     };
-
 
     // 주문 데이터 서버에 전송
     fetch('/order', {
@@ -170,13 +141,6 @@ function orderAll() {
         .catch(() => alert('서버 오류'));
 }
 
-
-
-
-
-
-
-
 // 선택 상품 주문
 function orderSelected() {
     const checkedItems = Array.from(document.querySelectorAll('.select-item:checked'));
@@ -184,11 +148,8 @@ function orderSelected() {
         alert('주문할 상품을 선택하세요.');
         return;
     }
-
-
     const carts = [];
     let itemsPrice = 0;
-
 
     checkedItems.forEach(chk => {
         const itemEl = chk.closest('.product-item');
@@ -196,13 +157,10 @@ function orderSelected() {
         const price = parseFloat(itemEl.dataset.price);
         const quantity = parseInt(document.getElementById('qty_' + cartId).value);
 
-
         if (quantity < 1) {
             alert('상품 수량은 1 이상이어야 합니다.');
             return;
         }
-
-
         const total = price * quantity;
         itemsPrice += total;
 

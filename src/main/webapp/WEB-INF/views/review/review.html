@@ -11,7 +11,8 @@
 </head>
 <body>
 <div layout:fragment="content">
-    <div class="main-container">
+    <input type="hidden" id="reviewPageItemId" th:value="${itemId}">
+    <div class="container">
         <header class="review-header">
             <h1>상품 리뷰</h1>
             <div class="review-stats">
@@ -44,30 +45,21 @@
                     <div class="review-gallery">
                         <div class="gallery-main">
                             <img id="mainReviewImage" src="/placeholder.svg?height=400&width=400" alt="리뷰 이미지" />
-                            <!--                    <button class="gallery-nav prev-btn">‹</button>-->
-                            <!--                    <button class="gallery-nav next-btn">›</button>-->
                         </div>
-                        <!--                <div class="gallery-counter">-->
-                        <!--                    <span id="imageCounter">1 / 1</span>-->
-                        <!--                    <span id="imageCounter">1 / 1</span>-->
-                        <!--                </div>-->
-                        <!--                <div class="gallery-indicator">-->
-                        <!--                    <div class="indicator-bar">-->
-                        <!--                        <div class="indicator-progress"></div>-->
-                        <!--                    </div>-->
-                        <!--                </div>-->
                     </div>
 
 
                     <!-- 우측 상세정보 -->
                     <div class="review-details">
-                        <div class="product-summary">
-                            <img id="detailProductImage" src="/placeholder.svg?height=80&width=80" alt="상품 이미지" class="detail-product-thumb" />
+                        <div class="product-summary product-navigate" th:data-item-id="${itemId}">
+                        <img id="detailProductImage"
+                                     th:src="@{/placeholder.svg(height=80, width=80)}"
+                                     alt="상품 이미지"
+                                     class="detail-product-thumb" />
                             <div class="product-summary-info">
                                 <h3 id="detailProductName">상품명</h3>
                                 <div class="product-price-info">
                                     <span id="detailProductPrice">0원</span>
-                                    <button class="product-detail-btn">상품 상세 보기</button>
                                 </div>
                             </div>
                         </div>

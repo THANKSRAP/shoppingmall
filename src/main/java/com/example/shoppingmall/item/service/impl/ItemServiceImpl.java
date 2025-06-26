@@ -24,6 +24,9 @@ public class ItemServiceImpl implements ItemService {
         item.setCategoryId(itemDto.getCategoryId());
         item.setName(itemDto.getName());
         item.setImage(itemDto.getImage());
+        item.setAverageRating(itemDto.getAverageRating());
+        item.setReviewCount(itemDto.getReviewCount());
+        item.setImage(itemDto.getImage());
         item.setDescription(itemDto.getDescription());
         item.setPrice(itemDto.getPrice());
         item.setStatus(itemDto.getStatus());
@@ -41,6 +44,8 @@ public class ItemServiceImpl implements ItemService {
         itemDto.setCategoryId(item.getCategoryId());
         itemDto.setName(item.getName());
         itemDto.setImage(item.getImage());
+        itemDto.setAverageRating(item.getAverageRating());
+        itemDto.setReviewCount(item.getReviewCount());
         itemDto.setDescription(item.getDescription());
         itemDto.setPrice(item.getPrice());
         itemDto.setStatus(item.getStatus());
@@ -111,4 +116,41 @@ public class ItemServiceImpl implements ItemService {
         List<Item> items = itemDao.findItemsByCategory(majorId, middleId, minorId);
         return items.stream().map(this::toDto).collect(Collectors.toList());
     }
+
+    @Override
+    public ItemDto getItemWithReviewSummary(Long itemId) {
+        return itemDao.selectItemWithReviewSummary(itemId);
+    }
+
+    @Override
+    public List<ItemDto> getBestSellersWithReviewSummary() {
+        List<ItemDto> items = getBestSellers(); // 기존 메서드 사용
+
+        for (ItemDto item : items) {
+            ItemDto reviewSummary = itemDao.selectItemWithReviewSummary(item.getItemId());
+            if (reviewSummary != null) {
+                item.setAverageRating(reviewSummary.getAverageRating());
+                item.setReviewCount(reviewSummary.getReviewCount());
+            }
+        }
+
+        return items;
+    }
+
+    @Override
+    public List<ItemDto> getNewItemsWithReviewSummary() {
+        List<ItemDto> items = getNewItems();
+
+        for (ItemDto item : items) {
+            ItemDto reviewSummary = itemDao.selectItemWithReviewSummary(item.getItemId());
+            if (reviewSummary != null) {
+                item.setAverageRating(reviewSummary.getAverageRating());
+                item.setReviewCount(reviewSummary.getReviewCount());
+            }
+        }
+
+        return items;
+    }
+
+
 }
