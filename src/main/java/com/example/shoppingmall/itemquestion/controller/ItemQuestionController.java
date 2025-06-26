@@ -8,6 +8,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Controller
@@ -49,8 +51,9 @@ public class ItemQuestionController {
 
     //상세조회
     @GetMapping("/{id}")
-    public String detailItemQuestion(Model model, @PathVariable("id") Long id, @RequestParam(required = false) Long userId){
+    public String detailItemQuestion(Model model, @PathVariable("id") Long id, HttpSession session){
         ItemQuestion question = itemQuestionService.getItemQuestionById(id);
+        Long userId = (Long)session.getAttribute("userId");
 
         // 비밀글 접근 권한 검사 - 본인이 작성한 글만 볼 수 있음
         if(question.isSecret()) {
@@ -65,34 +68,57 @@ public class ItemQuestionController {
     }
     //작성 폼 이동
     @GetMapping("/new")
-    public String createdItemQuestionForm(Model model){
+    public String createdItemQuestionForm(Model model, HttpSession session){
+        Long userId = (Long)session.getAttribute("userId");
+        if (userId == null) {
+            return "redirect:/user/loginForm";
+        }
         model.addAttribute("itemQuestion", new ItemQuestion());
         return "itemquestion/form";
     }
 
     //작성 처리
     @PostMapping("/new")
-    public String createdItemQuestion(ItemQuestion itemQuestion){
+    public String createdItemQuestion(ItemQuestion itemQuestion, HttpSession session){
+        Long userId = (Long)session.getAttribute("userId");
+        itemQuestion.setUserId(userId);
         itemQuestionService.createItemQuestion(itemQuestion);
         return "redirect:/itemquestion";
     }
     //수정 폼 이동
     @GetMapping("/{id}/edit")
-    public String updateItemQuestion(Model model,@PathVariable("id") Long id){
+    public String updateItemQuestion(Model model,@PathVariable("id") Long id, HttpSession session){
+        Long userId = (Long)session.getAttribute("userId");
+        if (userId == null) {
+            return "redirect:/user/loginForm";
+        }
+
         ItemQuestion question = itemQuestionService.getItemQuestionById(id);
         model.addAttribute("itemQuestion", question);
         return "itemquestion/form";
     }
     //수정 처리
     @PostMapping("/{id}/edit")
-    public String updateItemQuestion(@PathVariable("id") Long id, @ModelAttribute ItemQuestion itemQuestion ){
+    public String updateItemQuestion(@PathVariable("id") Long id, @ModelAttribute ItemQuestion itemQuestion){
         itemQuestion.setItemQuestionId(id);
         itemQuestionService.updateItemQuestion(itemQuestion);
         return "redirect:/itemquestion/" + id;
     }
 
     @PostMapping("/{id}/delete")
-    public String deleteItemQuestion(@PathVariable("id") Long id){
+    public String deleteItemQuestion(@PathVariable("id") Long id, HttpServletRequest request, HttpSession session){
+        Long userId = (Long)session.getAttribute("userId");
+        if (userId == null) {
+            return "redirect:/user/loginForm";
+        }
+
+        ItemQuestion itemQuestion = itemQuestionService.getItemQuestionById(id);
+        if (!userId.equals(itemQuestion.getUserId())){
+            String currentUri = request.getRequestURI();
+            String redirectUri = currentUri.replaceAll("/delete$", "");
+            return "redirect:" + redirectUri;
+        }
+
         itemQuestionService.deleteItemQuestion(id);
         return "redirect:/itemquestion";
     }

@@ -68,9 +68,9 @@ public class CartServiceImpl implements CartService {
 
 
     @Override
-    public void addToWishlist(Long userId, Long itemId, Long itemOptionId)  {
+    public void addToWishlist(Long userId, Long itemId)  {
         try {
-            cartdao.addToWishlist(userId, itemId, itemOptionId);
+            cartdao.addToWishlist(userId, itemId);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
