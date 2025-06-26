@@ -60,9 +60,12 @@
 
 
                 <div class="rating-section" th:onclick="'goToItemReviewPage(' + ${item.itemId} + ')'">
-                <div class="stars">
-                        <!-- 별점을 반복해서 표시 -->
-                        <span th:each="i : ${#numbers.sequence(1, 5)}" class="star" th:text="${i <= T(java.lang.Math).round(item.averageRating) ? '&#9733;' : ''}"></span>
+                    <div class="stars">
+                        <i class="fa-star" th:classappend="${item.averageRating >= 1} ? 'fas' : 'far'"></i>
+                        <i class="fa-star" th:classappend="${item.averageRating >= 2} ? 'fas' : 'far'"></i>
+                        <i class="fa-star" th:classappend="${item.averageRating >= 3} ? 'fas' : 'far'"></i>
+                        <i class="fa-star" th:classappend="${item.averageRating >= 4} ? 'fas' : 'far'"></i>
+                        <i class="fa-star" th:classappend="${item.averageRating >= 5} ? 'fas' : 'far'"></i>
                     </div>
                     <span class="rating-text">(<span th:text="${item.averageRating != null ? item.averageRating : 0.0}"></span>) 리뷰 <span th:text="${item.reviewCount != null ? item.reviewCount : 0}"></span>개</span>
                 </div>

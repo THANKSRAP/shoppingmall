@@ -5,10 +5,6 @@ const mainReviewImage = document.getElementById("mainReviewImage")
 const imageCounter = document.getElementById("imageCounter")
 const indicatorProgress = document.querySelector(".indicator-progress")
 
-// let currentImageIndex = 0
-// let currentReviewImages = []
-
-// 상세 리뷰 모달 열기 (Version 3)
 function openReviewDetail(reviewId) {
     fetch(`/review/detail?reviewId=${reviewId}`)
         .then(res => {
@@ -33,7 +29,7 @@ function openReviewDetail(reviewId) {
                 .map(line => `<p>${line}</p>`)
                 .join("");
 
-            document.getElementById("detailRating").textContent = "⭐".repeat(review.rating);
+            document.getElementById("detailRating").innerHTML = renderStars(review.rating);
             document.getElementById("detailProductName").textContent = review.productName;
             const formattedPrice = Number(review.productPrice).toLocaleString("ko-KR");
             document.getElementById("detailProductPrice").textContent = `${formattedPrice}원`;
@@ -67,6 +63,12 @@ function openReviewDetail(reviewId) {
             console.error("❌ 리뷰 상세 불러오기 실패:", err);
             alert("리뷰 정보를 불러오는 데 실패했습니다.");
         });
+}
+
+function renderStars(rating) {
+    const fullStar = '<i class="fas fa-star"></i>'; // 채워진 별
+    const emptyStar = '<i class="far fa-star"></i>'; // 빈 별
+    return fullStar.repeat(rating) + emptyStar.repeat(5 - rating);
 }
 
 
@@ -145,7 +147,7 @@ document.addEventListener("DOMContentLoaded", () => {
                      <div class="review-footer">
                        <div class="user-info">
                          <span class="username">${obfuscatedUsername}</span>
-                         <div class="rating">${"⭐".repeat(review.rating)}</div>
+                         <div class="rating">${renderStars(review.rating)}</div>
                        </div>
                        <div class="product-info">
                          <img src="${review.productImage || '/placeholder.svg?height=40&width=40'}" alt="상품 이미지" class="product-thumb">

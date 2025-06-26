@@ -692,3 +692,10 @@ body {
         right: 10px;
     }
 }
+
+
+i.fa-star {
+    color: gold;
+    margin-right: 2px;
+    font-size: 16px;
+}

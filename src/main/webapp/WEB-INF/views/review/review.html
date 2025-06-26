@@ -8,6 +8,7 @@
     <meta charset="UTF-8">
     <title>리뷰</title>
     <link rel="stylesheet" th:href="@{/resources/css/review.css}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 <div layout:fragment="content">
@@ -66,7 +67,7 @@
 
 
                         <div class="review-rating-info">
-                            <div class="rating-stars" id="detailRating">⭐⭐⭐⭐⭐</div>
+                            <div class="rating-stars" id="detailRating" data-rating="0"></div>
                             <span class="view-count" id="detailViewCount">조회 0</span>
                         </div>
 
