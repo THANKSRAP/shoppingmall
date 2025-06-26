@@ -5,7 +5,7 @@
     font-family: Arial, sans-serif;
     background-color: #fafafa;
     margin: 0;
-    padding: 20px;
+    padding: 0;
 }
 .item-question-write-wrapper {
     text-align: right;
@@ -16,7 +16,8 @@
     padding: 30px;
     border: 1px solid #ddd;
     border-radius: 6px;
-    max-width: 1140px;
+    width: 100%;
+    max-width: none;
     margin: 50px auto 40px;
 }
 
