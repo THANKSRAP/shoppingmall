@@ -98,14 +98,14 @@ public class CartController {
 
     @PostMapping("/wishlist")
     @ResponseBody
-    public ResponseEntity<String> addToWishlist(@RequestBody Map<String, Object> data) {
+    public ResponseEntity<String> addToWishlist(@RequestBody Map<String, Object> data, HttpSession session) {
 
         System.out.println("💬 받은 데이터: " + data);
         System.out.println("✅ itemId: " + data.get("itemId"));
         System.out.println("✅ itemOptionId: " + data.get("itemOptionId"));
 
         try {
-            Long userId = Long.parseLong(data.get("userId").toString());
+            Long userId = (Long) session.getAttribute("user_id");
             Long itemId = Long.parseLong(data.get("itemId").toString());
             Long itemOptionId = Long.parseLong(data.get("itemOptionId").toString());
 

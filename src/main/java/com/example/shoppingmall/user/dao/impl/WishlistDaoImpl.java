@@ -30,12 +30,14 @@ public class WishlistDaoImpl implements WishlistDao {
         return sqlSession.selectOne(NAMESPACE + "countWishlist", userId);
     }
 
+    // 특정 상품+옵션 조합으로 삭제
     @Override
-    public void deleteWishlistItem(Long id, Long userId) {
+    public void deleteWishlistByItemAndOption(Long userId, Long itemId, Long itemOptionId) {
         Map<String, Object> params = new HashMap<>();
-        params.put("id", id);
         params.put("userId", userId);
-        sqlSession.delete(NAMESPACE + "deleteWishlistItem", params);
+        params.put("itemId", itemId);
+        params.put("itemOptionId", itemOptionId);
+        sqlSession.delete(NAMESPACE + "deleteWishlistByItemAndOption", params);
     }
 
     @Override
@@ -44,20 +46,21 @@ public class WishlistDaoImpl implements WishlistDao {
     }
 
     @Override
-    public void insertWishlistItem(Long userId, Long itemId) {
+    public void insertWishlistItem(Long userId, Long itemId, Long itemOptionId) {
         Map<String, Object> params = new HashMap<>();
         params.put("userId", userId);
         params.put("itemId", itemId);
+        params.put("itemOptionId", itemOptionId);
         sqlSession.insert(NAMESPACE + "insertWishlistItem", params);
     }
 
     @Override
-    public boolean existsWishlistItem(Long userId, Long itemId) {
+    public boolean existsWishlistItem(Long userId, Long itemId, Long itemOptionId) {
         Map<String, Object> params = new HashMap<>();
         params.put("userId", userId);
         params.put("itemId", itemId);
+        params.put("itemOptionId", itemOptionId);
         Boolean result = sqlSession.selectOne(NAMESPACE + "existsWishlistItem", params);
         return result != null && result;
     }
-
 }

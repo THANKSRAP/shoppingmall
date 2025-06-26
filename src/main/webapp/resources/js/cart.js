@@ -394,7 +394,7 @@ document.getElementById('delete-all-link').addEventListener('click', function (e
         });
 });
 
-
+// 관심상품 추가
 document.querySelectorAll('.wishlist-btn').forEach(btn => {
     btn.addEventListener('click', function () {
         const itemId = this.dataset.itemId;
@@ -402,17 +402,22 @@ document.querySelectorAll('.wishlist-btn').forEach(btn => {
         console.log('itemId: ' + itemId);
         console.log('itemOptionId: ' + itemOptionId);
 
-        const userId = 1; // 로그인 구현 전이니 일단 고정
+        // const userId = 1; // 로그인 구현 전이니 일단 고정
 
-        fetch('/cart/wishlist', {
+        fetch('/wishlist/add', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userId, itemId, itemOptionId })
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `itemId=${itemId}&itemOptionId=${itemOptionId || ''}`
         })
             .then(res => res.text())
             .then(text => {
                 if (text === 'success') {
                     alert('관심상품으로 추가되었습니다');
+                } else if (text === 'already_exists') {
+                    alert('이미 관심목록에 있는 상품입니다');
+                } else if (text === 'login_required') {
+                    alert('로그인이 필요합니다');
+                    location.href = '/user/loginForm';
                 } else {
                     alert('요청 처리에 실패했습니다');
                 }
@@ -421,10 +426,8 @@ document.querySelectorAll('.wishlist-btn').forEach(btn => {
                 console.error('찜 실패:', err);
                 alert('서버 오류');
             });
-
     });
 });
-
 
 
 

@@ -11,11 +11,12 @@
         SELECT
             w.wish_list_id as id,
             w.user_id as userId,
-            w.item_id as productId,
-            COALESCE(i.name, '상품명') as productName,
-            COALESCE(i.image, '/images/no-image.jpg') as productImage,
-            COALESCE(i.description, '상품 설명이 없습니다.') as productDescription,
-            COALESCE(i.price, 0) as productPrice
+            w.item_id as itemId,
+            COALESCE(i.name, '상품명') as name,
+            COALESCE(i.image, '/images/no-image.jpg') as image,
+            COALESCE(i.description, '상품 설명이 없습니다.') as description,
+            COALESCE(i.price, 0) as price
+
         FROM wish_list w
                  LEFT JOIN item i ON w.item_id = i.item_id
         WHERE w.user_id = #{userId}
@@ -31,22 +32,45 @@
 
     <!-- 관심목록에 상품 추가 -->
     <insert id="insertWishlistItem" parameterType="map">
-        INSERT INTO wish_list (user_id, item_id, created_at)
-        VALUES (#{userId}, #{itemId}, NOW())
+        INSERT INTO wish_list (
+            user_id,
+            item_id,
+            created_at,
+            added_at,
+            updated_at
+        )
+        VALUES (
+                   #{userId},
+                   #{itemId},
+                   NOW(),
+                   NOW(),
+                   NOW()
+               )
     </insert>
 
-    <!-- 관심목록에 이미 있는 상품인지 확인   - parameterType 추가 -->
-    <select id="existsWishlistItem" resultType="boolean">
+    <!-- 관심목록에 이미 있는 상품인지 확인 -->
+    <select id="existsWishlistItem" parameterType="map" resultType="boolean">
         SELECT COUNT(*) > 0
         FROM wish_list
-        WHERE user_id = #{userId} AND item_id = #{itemId}
+        WHERE user_id = #{userId}
+        AND item_id = #{itemId}
     </select>
 
+    <!-- 관심목록에서 특정 항목 삭제 -->
     <delete id="deleteWishlistItem" parameterType="map">
         DELETE FROM wish_list
         WHERE wish_list_id = #{id} AND user_id = #{userId}
     </delete>
 
+    <!-- 특정 상품으로 삭제 -->
+    <delete id="deleteWishlistByItemAndOption" parameterType="map">
+        DELETE FROM wish_list
+        WHERE user_id = #{userId}
+          AND item_id = #{itemId}
+    </delete>
+
+
+    <!-- 전체 관심목록 삭제 추가 -->
     <delete id="deleteAllWishlist" parameterType="long">
         DELETE FROM wish_list
         WHERE user_id = #{userId}

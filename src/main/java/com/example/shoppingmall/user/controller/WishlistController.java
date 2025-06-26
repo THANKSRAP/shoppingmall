@@ -84,38 +84,20 @@ public class WishlistController {
             return "login_required";
         }
 
-        // ✅ 디버깅 로그 추가
         log.info("=== 사용자 정보 디버깅 ===");
         log.info("user 객체: {}", user);
         log.info("user.getUser_id(): {}", user.getUser_id());
         log.info("user.getEmail(): {}", user.getEmail());
         log.info("user.getName(): {}", user.getName());
 
-        // userId가 null인지 확인
-        if (user.getUser_id() == null) {
-            log.error("❌ userId가 null입니다!");
-
-            // 강제로 이메일로 다시 조회
-            String email = (String) session.getAttribute("email");
-            log.info("세션 이메일: {}", email);
-
-            if (email != null) {
-                User freshUser = userDao.findByEmail(email);
-                log.info("DB에서 다시 조회한 User: {}", freshUser);
-                log.info("DB User의 userId: {}", freshUser != null ? freshUser.getUser_id() : "null");
-
-                if (freshUser != null && freshUser.getUser_id() != null) {
-                    user = freshUser;
-                    session.setAttribute("user", user); // 세션 업데이트
-                } else {
-                    return "error";
-                }
-            } else {
-                return "error";
-            }
-        }
-
         try {
+            // 중복 체크 (itemOptionId 제거)
+            if (wishlistService.isItemInWishlist(user.getUser_id(), itemId)) {
+                log.info("이미 관심목록에 있는 상품 - 사용자: {}, 상품ID: {}", user.getEmail(), itemId);
+                return "already_exists";
+            }
+
+            // 관심목록 추가 (itemOptionId 제거)
             wishlistService.addToWishlist(user.getUser_id(), itemId);
             log.info("관심목록 추가 완료 - 사용자: {}, 상품ID: {}", user.getEmail(), itemId);
             return "success";
@@ -127,12 +109,16 @@ public class WishlistController {
     }
 
 
+    /**
+     * 관심목록 아이템 삭제 (선택 삭제 & 개별 삭제)
+     * 배열 파라미터를 콤마 구분 문자열로 받도록 수정
+     */
 
     @PostMapping("/delete")
     @ResponseBody
-    public String deleteWishlistItems(@RequestParam("ids") List<Long> ids,
+    public String deleteWishlistItems(@RequestParam("itemIds") String itemIdsStr,
                                       HttpSession session) {
-        log.info("관심목록 아이템 삭제 요청: {}", ids);
+        log.info("관심목록 아이템 삭제 요청 - itemIds: {}", itemIdsStr);
 
         User user = getUserFromSession(session);
         if (user == null) {
@@ -141,14 +127,24 @@ public class WishlistController {
         }
 
         try {
-            wishlistService.deleteWishlistItems(ids, user.getUser_id());
-            log.info("관심목록 아이템 삭제 완료: {} (사용자: {})", ids, user.getEmail());
+            // 콤마로 구분된 문자열을 배열로 변환
+            String[] itemIdArray = itemIdsStr.split(",");
+
+            // 각 상품 삭제
+            for (String itemIdStr : itemIdArray) {
+                Long itemId = Long.parseLong(itemIdStr.trim());
+                wishlistService.deleteWishlistByItem(user.getUser_id(), itemId);
+            }
+
+            log.info("관심목록 아이템 삭제 완료 (사용자: {})", user.getEmail());
             return "success";
         } catch (Exception e) {
             log.error("관심목록 아이템 삭제 중 오류 발생: ", e);
             return "error";
         }
     }
+
+
 
     @PostMapping("/deleteAll")
     @ResponseBody
@@ -170,6 +166,35 @@ public class WishlistController {
             return "error";
         }
     }
+
+
+    /**
+     * 세션에서 사용자 정보 가져오기 (정리된 버전)
+     */
+    private User getUserFromSession(HttpSession session) {
+        // 1. userId로 조회
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId != null) {
+            User user = userDao.findById(userId);
+            if (user != null) {
+                return user;
+            }
+        }
+
+        // 2. 이메일로 조회 (기존 세션 호환성)
+        String email = (String) session.getAttribute("email");
+        if (email != null) {
+            User user = userDao.findByEmail(email);
+            if (user != null) {
+                // 세션에 userId 저장
+                session.setAttribute("userId", user.getUser_id());
+                return user;
+            }
+        }
+
+        return null;
+    }
+
 
     /**
      * 세션에서 사용자 정보 가져오기
@@ -194,45 +219,6 @@ public class WishlistController {
 //
 //        return null;
 //    }
-
-
-        //  ---->   디버깅 테스트 로그용
-    private User getUserFromSession(HttpSession session) {
-        log.info("=== getUserFromSession 호출 ===");
-
-        // 1. userId로 먼저 확인
-        Long userId = (Long) session.getAttribute("userId");
-        log.info("session.getAttribute('userId'): {}", userId);
-
-        if (userId != null) {
-            User user = userDao.findById(userId);
-            log.info("DB에서 userId로 조회한 User: {}", user);
-            if (user != null) {
-                return user;
-            }
-        }
-
-        // 2. 이메일로 조회 (기존 세션 호환성)
-        String email = (String) session.getAttribute("email");
-        log.info("session.getAttribute('email'): {}", email);
-
-        if (email != null) {
-            User user = userDao.findByEmail(email);
-            log.info("DB에서 이메일로 조회한 User: {}", user);
-            if (user != null) {
-                // 세션에 userId 저장
-                session.setAttribute("userId", user.getUser_id());
-                log.info("세션에 userId 저장 완료: {}", user.getUser_id());
-                return user;
-            }
-        }
-
-        log.warn("getUserFromSession에서 사용자를 찾을 수 없음");
-        return null;
-    }
-
-
-
 
 
     /**

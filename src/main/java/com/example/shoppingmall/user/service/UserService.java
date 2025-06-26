@@ -53,4 +53,14 @@ public class UserService {
         }
         return foundUser;
     }
+
+    public void updatePassword(Long userId, String newPassword) {
+        User user = userDao.findById(userId);
+        if (user != null) {
+            user.setPassword(newPassword);
+            user.setUpdatedAt(LocalDateTime.now());
+            userDao.update(user);
+        }
+    }
+
 }
