@@ -112,21 +112,23 @@
         VALUES (
                    #{userId},
                    #{email},
-                #{password},
-                #{name},
-                #{phoneNumber},
-                #{role},
-                #{customerStatus},
-                #{createdAt},
-                #{updatedAt},
-                #{registrationAt},
-
-                #{isWithdrawal},
-                #{userIdCreationAt},
-                #{gender},
-                #{residentRegistrationNumber},
-                #{smsMarketingStatus},
-                #{emailMarketingStatus}
+                   #{password},
+                   #{prePassword},
+                   #{name},
+                   #{residentRegistrationNumber},
+                   #{phoneNumber},
+                   #{gender},
+                   #{registrationAt},
+                   #{userIdCreationAt},
+                   #{smsMarketingStatus},
+                   #{emailMarketingStatus},
+                   #{customerStatus},
+                   #{isWithdrawal},
+                   #{withdrawalAt},
+                   #{withdrawalReason},
+                   #{role},
+                   #{createdAt},
+                   #{updatedAt}
         )
     </insert>
 
