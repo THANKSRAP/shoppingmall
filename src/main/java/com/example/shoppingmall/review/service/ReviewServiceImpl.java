@@ -37,5 +37,4 @@ public class ReviewServiceImpl implements ReviewService {
         return reviewDao.selectReviewsByItemId(itemId);
     }
 
-
 }

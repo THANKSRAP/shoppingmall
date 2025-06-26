@@ -162,7 +162,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function formatPrice(price) {
         return new Intl.NumberFormat('ko-KR').format(price);
     }
-
     // 이벤트 리스너
     colorSelect.addEventListener('change', updateSelection);
     sizeSelect.addEventListener('change', updateSelection);
@@ -281,3 +280,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+
+function goToItemReviewPage(itemId) {
+    window.location.href = `/review/list?itemId=${itemId}`;
+}

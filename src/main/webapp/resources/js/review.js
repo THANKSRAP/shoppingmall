@@ -5,15 +5,8 @@ const mainReviewImage = document.getElementById("mainReviewImage")
 const imageCounter = document.getElementById("imageCounter")
 const indicatorProgress = document.querySelector(".indicator-progress")
 
-
 // let currentImageIndex = 0
 // let currentReviewImages = []
-
-
-// Version 2 → Version 3 연결: 리뷰 카드 클릭 이벤트
-
-
-
 
 // 상세 리뷰 모달 열기 (Version 3)
 function openReviewDetail(reviewId) {
@@ -26,14 +19,12 @@ function openReviewDetail(reviewId) {
         })
         .then(review => {
             console.log("📦 불러온 리뷰 데이터:", review);
-            console.log("상품 아이디 출력!!!!!!!!!!!!", review.itemId);
+            console.log("상품 아이디 출력", review.itemId);
             console.log("🖼️ 상품 이미지 URL:", review.productImage);
-
 
             // 이미지 관련 변수
             currentReviewImages = review.image ? [review.image] : [];
             currentImageIndex = 0;
-
 
             // 모달 내용 채우기
             document.getElementById("detailReviewTitle").textContent = review.title;
@@ -42,13 +33,11 @@ function openReviewDetail(reviewId) {
                 .map(line => `<p>${line}</p>`)
                 .join("");
 
-
             document.getElementById("detailRating").textContent = "⭐".repeat(review.rating);
             document.getElementById("detailProductName").textContent = review.productName;
             const formattedPrice = Number(review.productPrice).toLocaleString("ko-KR");
             document.getElementById("detailProductPrice").textContent = `${formattedPrice}원`;
             document.getElementById("detailViewCount").textContent = `조회 ${review.view}`;
-
 
             // 이미지가 있다면 설정
             document.getElementById("mainReviewImage").src =
@@ -59,25 +48,16 @@ function openReviewDetail(reviewId) {
                 ? review.productImage
                 : "/placeholder.svg?height=80&width=80";
 
-
+            //
             document.getElementById("detailProductImage").src = productImageUrl;
-            // ✅ 버튼이 이제 DOM에 생겼으므로, 이벤트 연결 가능
-            document.querySelector(".product-detail-btn").addEventListener("click", () => {
-                if (review.itemId) {
-                    window.location.href = `/shoppingmall/item/${review.itemId}`;
-                } else {
-                    alert("상품 정보가 없습니다.");
-                }
-            });
-
-
-
-
-            // // 이미지 관련 갤러리 업데이트 함수 (선택 사항)
-            // if (typeof updateGalleryImage === "function") {
-            //     updateGalleryImage();
-            // }
-
+            // // ✅ 버튼이 이제 DOM에 생겼으므로, 이벤트 연결 가능
+            // document.querySelector(".product-detail-btn").addEventListener("click", () => {
+            //     if (review.itemId) {
+            //         window.location.href = `/shoppingmall/item/${review.itemId}`;
+            //     } else {
+            //         alert("상품 정보가 없습니다.");
+            //     }
+            // });
 
             // 모달 열기
             document.getElementById("reviewDetailModal").style.display = "block";
@@ -88,21 +68,6 @@ function openReviewDetail(reviewId) {
             alert("리뷰 정보를 불러오는 데 실패했습니다.");
         });
 }
-
-
-// // 갤러리 이미지 및 카운터 업데이트
-// function updateGalleryImage() {
-//     if (currentReviewImages.length > 0) {
-//         mainReviewImage.src = currentReviewImages[currentImageIndex]
-//         imageCounter.textContent = `${currentImageIndex + 1} / ${currentReviewImages.length}`
-//
-//         // 진행 표시기 업데이트
-//         const progressPercent = ((currentImageIndex + 1) / currentReviewImages.length) * 100
-//         indicatorProgress.style.width = `${progressPercent}%`
-//     }
-// }
-
-
 
 
 // 상세 리뷰 모달 닫기
@@ -121,21 +86,19 @@ reviewDetailModal.addEventListener("click", (e) => {
 })
 
 
-
-
-
-
 document.addEventListener("DOMContentLoaded", () => {
     console.log("✅✅✅✅✅ DOMContentLoaded 시작"); // DOM 로드 확인
 
-
     const reviewGrid = document.getElementById("reviewGrid");
+    const itemIdInput = document.getElementById("reviewPageItemId"); // <-- 여기 주석을 풀어줘!
+    const itemId = itemIdInput ? parseInt(itemIdInput.value) : null; // <-- 여기도 주석을 풀어줘!
 
+    console.log("itemIditemIditemId: " + itemId); // 이제 itemId 값이 잘 찍힐 거야!
 
-    console.log("📡 /review/list fetch 요청 시작");
+    const url = `/review/api/list${itemId ? `?itemId=${itemId}` : ''}`;
+    console.log("📡 리뷰 fetch URL:", url);
 
-
-    fetch("/review/list")
+    fetch(url)
         .then(res => {
             if (!res.ok) {
                 throw new Error(`서버 응답 오류: ${res.status}`);
@@ -194,6 +157,32 @@ document.addEventListener("DOMContentLoaded", () => {
                      </div>
                    </div>
                `;
+
+                // const navigatableElems = card.querySelectorAll('.product-navigate');
+                // navigatableElems.forEach(elem => {
+                //     elem.style.cursor = 'pointer'; // 클릭 가능한 UI처럼
+                //     elem.addEventListener('click', function () {
+                //         const itemId = this.dataset.itemId;
+                //         if (itemId) {
+                //             // contextPath 자동 판별
+                //             const contextPath = window.location.pathname.includes('/shoppingmall') ? '/shoppingmall' : '';
+                //             window.location.href = `${contextPath}/item/${itemId}`;
+                //         }
+                //     });
+                // });
+
+                document.addEventListener("click", (e) => {
+                    const productElem = e.target.closest(".product-navigate");
+                    if (productElem) {
+                        const itemId = document.getElementById("reviewPageItemId").value;
+                        console.log("🧭 이동할 itemId:", itemId);
+                        if (itemId) {
+                            const contextPath = window.location.pathname.includes('/shoppingmall') ? '/shoppingmall' : '';
+                            window.location.href = `${contextPath}/item/${itemId}`;
+                        }
+                    }
+                });
+
 
 
                 reviewGrid.appendChild(card);
