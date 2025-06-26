@@ -166,6 +166,14 @@
                                             <h3 class="product-name" th:text="${item.name}">상품명</h3>
                                             <p class="product-description" th:text="${item.description}">상품 설명</p>
 
+                                            <div class="stars">
+                                                <i class="fa-star" th:classappend="${item.averageRating >= 1} ? 'fas' : 'far'"></i>
+                                                <i class="fa-star" th:classappend="${item.averageRating >= 2} ? 'fas' : 'far'"></i>
+                                                <i class="fa-star" th:classappend="${item.averageRating >= 3} ? 'fas' : 'far'"></i>
+                                                <i class="fa-star" th:classappend="${item.averageRating >= 4} ? 'fas' : 'far'"></i>
+                                                <i class="fa-star" th:classappend="${item.averageRating >= 5} ? 'fas' : 'far'"></i>
+                                            </div>
+
                                             <div class="product-meta">
                                                 <span class="product-country" th:text="${item.manufactureCountry}">Korea</span>
                                             </div>

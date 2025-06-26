@@ -59,6 +59,19 @@ public class ItemViewController {
         List<ItemDto> items = (majorId == null && middleId == null && minorId == null)
                 ? itemService.getAllItems()
                 : itemService.getItemsByCategory(majorId, middleId, minorId);
+
+        for (ItemDto item : items) {
+            ItemDto summary = itemService.getItemWithReviewSummary(item.getItemId());
+            if (summary != null) {
+                item.setAverageRating(summary.getAverageRating());
+                item.setReviewCount(summary.getReviewCount());
+            }
+
+            System.out.println("📦 아이템 ID: " + item.getItemId());
+            System.out.println("⭐ 평균 별점: " + item.getAverageRating());
+            System.out.println("📝 리뷰 수: " + item.getReviewCount());
+        }
+
         model.addAttribute("items", items);
 
         // [추가] 대분류 카테고리 리스트를 Model에 담아 전달

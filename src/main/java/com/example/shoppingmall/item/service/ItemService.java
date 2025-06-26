@@ -28,5 +28,4 @@ public interface ItemService {
     List<ItemDto> getBestSellersWithReviewSummary();
 
     List<ItemDto> getNewItemsWithReviewSummary();
-
 }
