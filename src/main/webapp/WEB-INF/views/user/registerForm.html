@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -10,7 +11,7 @@
 
         form {
             width:400px;
-            height:750px;
+            height:850px; /* 높이 증가 */
             display : flex;
             flex-direction: column;
             align-items:center;
@@ -53,6 +54,73 @@
             margin : 20px 0 30px 0;
         }
 
+        /* 이메일 인증 관련 스타일 */
+        .email-verification {
+            width: 300px;
+            margin-bottom: 15px;
+        }
+
+        .email-input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .email-input-group input {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        .email-input-group button {
+            width: 100px;
+            height: 40px;
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .verification-code-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .verification-code-group input {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        .verification-code-group button {
+            width: 80px;
+            height: 40px;
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .verification-status {
+            font-size: 14px;
+            margin-bottom: 10px;
+            padding: 5px;
+            border-radius: 3px;
+        }
+
+        .verification-success {
+            color: green;
+            background-color: #f0f8f0;
+            border: 1px solid green;
+        }
+
+        .verification-error {
+            color: red;
+            background-color: #fff0f0;
+            border: 1px solid red;
+        }
+
+        .verification-pending {
+            color: orange;
+            background-color: #fff8f0;
+            border: 1px solid orange;
+        }
+
         .title {
             font-size : 50px;
             margin: 40px 0 30px 0;
@@ -75,6 +143,12 @@
             width: 300px;
             margin-bottom: 10px;
         }
+
+        /* 비활성화된 버튼 스타일 */
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
     </style>
     <title>Register</title>
 </head>
@@ -83,9 +157,23 @@
     <div class="title">Register</div>
     <div id="msg" class="msg" th:if="${error}" th:text="${error}"></div>
 
-    <label for="email">이메일 <span class="required">*</span></label>
-    <input class="input-field" type="email" id="email" name="email"
-           th:value="${email}" placeholder="example@email.com" required autofocus>
+    <!-- 이메일 인증 섹션 -->
+    <div class="email-verification">
+        <label for="email">이메일 <span class="required">*</span></label>
+        <div class="email-input-group">
+            <input class="input-field" type="email" id="email" name="email"
+                   th:value="${email}" placeholder="example@email.com" required autofocus>
+            <button type="button" id="sendVerificationBtn" onclick="sendVerificationEmail()">인증요청</button>
+        </div>
+
+        <div class="verification-code-group" id="verificationCodeGroup" style="display: none;">
+            <input class="input-field" type="text" id="verificationCode"
+                   placeholder="인증번호 6자리" maxlength="6">
+            <button type="button" id="verifyBtn" onclick="verifyEmail()">확인</button>
+        </div>
+
+        <div id="verificationStatus" class="verification-status" style="display: none;"></div>
+    </div>
 
     <label for="password">비밀번호 <span class="required">*</span></label>
     <input class="input-field" type="password" id="password" name="password"
@@ -119,14 +207,141 @@
                       th:checked="${emailMarketingStatus}"/> 이메일 마케팅 수신 동의</label>
     </div>
 
-    <button type="submit">회원가입</button>
+    <button type="submit" id="submitBtn" disabled>회원가입</button>
     <div>
         <a th:href="@{/user/loginForm}">로그인 페이지로</a>
     </div>
 </form>
 
 <script th:inline="javascript">
+    let isEmailVerified = /*[[${emailVerified}]]*/ false; // 이메일 인증 상태
+    const verificationMessage = /*[[${verificationMessage}]]*/ '';
+
+    // 페이지 로드 시 인증 상태 복원
+    document.addEventListener('DOMContentLoaded', function() {
+        if (isEmailVerified) {
+            // 인증 완료 상태로 UI 설정
+            showVerificationStatus(verificationMessage || '이메일 인증이 완료되었습니다.', 'success');
+            document.getElementById('submitBtn').disabled = false;
+
+            // 인증 완료 후 UI 정리
+            document.getElementById('email').readOnly = true;
+            document.getElementById('sendVerificationBtn').style.display = 'none';
+            document.getElementById('verificationCodeGroup').style.display = 'none';
+        }
+    });
+
+
+    // 이메일 인증 요청
+    function sendVerificationEmail() {
+        const email = document.getElementById('email').value;
+        const sendBtn = document.getElementById('sendVerificationBtn');
+
+        if (!email) {
+            showVerificationStatus('이메일을 입력해주세요.', 'error');
+            return;
+        }
+
+        // 이메일 형식 검증
+        const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+        if (!emailPattern.test(email)) {
+            showVerificationStatus('올바른 이메일 형식이 아닙니다.', 'error');
+            return;
+        }
+
+        // 버튼 비활성화 및 로딩 표시
+        sendBtn.disabled = true;
+        sendBtn.textContent = '발송중...';
+
+        fetch('/register/sendVerification', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: 'email=' + encodeURIComponent(email)
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showVerificationStatus(data.message, 'pending');
+                    document.getElementById('verificationCodeGroup').style.display = 'flex';
+                    sendBtn.textContent = '재발송';
+
+                    // 30초 후 재발송 가능
+                    setTimeout(() => {
+                        sendBtn.disabled = false;
+                    }, 30000);
+                } else {
+                    showVerificationStatus(data.message, 'error');
+                    sendBtn.disabled = false;
+                    sendBtn.textContent = '인증요청';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showVerificationStatus('네트워크 오류가 발생했습니다.', 'error');
+                sendBtn.disabled = false;
+                sendBtn.textContent = '인증요청';
+            });
+    }
+
+    // 이메일 인증 확인
+    function verifyEmail() {
+        const email = document.getElementById('email').value;
+        const code = document.getElementById('verificationCode').value;
+        const verifyBtn = document.getElementById('verifyBtn');
+
+        if (!code) {
+            showVerificationStatus('인증번호를 입력해주세요.', 'error');
+            return;
+        }
+
+        verifyBtn.disabled = true;
+        verifyBtn.textContent = '확인중...';
+
+        fetch('/register/verifyEmail', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: 'email=' + encodeURIComponent(email) + '&code=' + encodeURIComponent(code)
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showVerificationStatus(data.message, 'success');
+                    isEmailVerified = true;
+                    document.getElementById('submitBtn').disabled = false;
+
+                    // 인증 완료 후 UI 정리
+                    document.getElementById('email').readOnly = true;
+                    document.getElementById('sendVerificationBtn').style.display = 'none';
+                    document.getElementById('verificationCodeGroup').style.display = 'none';
+                } else {
+                    showVerificationStatus(data.message, 'error');
+                    verifyBtn.disabled = false;
+                    verifyBtn.textContent = '확인';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showVerificationStatus('네트워크 오류가 발생했습니다.', 'error');
+                verifyBtn.disabled = false;
+                verifyBtn.textContent = '확인';
+            });
+    }
+
+    // 인증 상태 표시
+    function showVerificationStatus(message, type) {
+        const statusDiv = document.getElementById('verificationStatus');
+        statusDiv.textContent = message;
+        statusDiv.className = 'verification-status verification-' + type;
+        statusDiv.style.display = 'block';
+    }
+
     function formCheck(frm) {
+        // 이메일 인증 확인
+        if (!isEmailVerified) {
+            setMessage('이메일 인증을 완료해주세요.');
+            return false;
+        }
+
         // 필수 입력 검증
         if (!frm.email.value.trim()) {
             setMessage('이메일을 입력해주세요.', frm.email);
@@ -195,7 +410,6 @@
             element.select();
         }
     }
-
 </script>
 </body>
 </html>

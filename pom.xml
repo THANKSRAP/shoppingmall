@@ -145,6 +145,21 @@
       <scope>runtime</scope>
     </dependency>
 
+    <!-- 이메일 발송을 위한 Spring Mail 의존성 -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context-support</artifactId>
+      <version>5.3.21</version>
+    </dependency>
+
+    <!-- JavaMail API(이메일 인증 기능 - 이메일 발송 라이브러리 -->
+    <dependency>
+      <groupId>com.sun.mail</groupId>
+      <artifactId>javax.mail</artifactId>
+      <version>1.6.2</version>
+    </dependency>
+
+
     <!-- MySQL JDBC Driver -->
     <dependency>
       <groupId>mysql</groupId>

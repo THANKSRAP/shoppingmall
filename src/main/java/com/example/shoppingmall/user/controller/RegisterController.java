@@ -4,15 +4,16 @@ import com.example.shoppingmall.user.domain.User;
 import com.example.shoppingmall.user.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.URLEncoder;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
+
+import com.example.shoppingmall.user.service.EmailService;
 
 
 @Controller
@@ -20,15 +21,19 @@ import java.util.regex.Pattern;
 public class RegisterController {
 
     private final UserService userService;
+    private final EmailService emailService;
 
     // 정규식 패턴 상수 정의 (보안 및 성능 향상)
     private static final Pattern PHONE_PATTERN = Pattern.compile("^\\d{3}-\\d{4}-\\d{4}$"); // 전화번호 형식: 010-1234-5678
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"); // 이메일 형식 검증
     private static final Pattern RESIDENT_NUMBER_PATTERN = Pattern.compile("^\\d{6}-\\d{7}$"); // 주민번호 형식: 123456-1234567
 
-    public RegisterController(UserService userService) {
+
+    public RegisterController(UserService userService, EmailService emailService) {
         this.userService = userService;
+        this.emailService = emailService;
     }
+
 
     /**
      * 회원가입 폼 페이지 - 로그인 사용자 체크 추가
@@ -46,6 +51,107 @@ public class RegisterController {
         }
         return "user/registerForm";
     }
+
+    /**
+     * 실시간 이메일 중복 확인
+     */
+    @PostMapping("/checkEmail")
+    @ResponseBody
+    public Map<String, Object> checkEmailDuplicate(@RequestParam String email) {
+        Map<String, Object> result = new HashMap<>();
+
+        // 이메일 형식 검증
+        if (!EMAIL_PATTERN.matcher(email).matches()) {
+            result.put("available", false);
+            result.put("message", "올바른 이메일 형식이 아닙니다.");
+            return result;
+        }
+
+        // 중복 확인
+        User existingUser = userService.getUserByEmail(email);
+        if (existingUser != null) {
+            result.put("available", false);
+            result.put("message", "이미 사용 중인 이메일입니다.");
+        } else {
+            result.put("available", true);
+            result.put("message", "사용 가능한 이메일입니다.");
+        }
+
+        return result;
+    }
+
+
+    /**
+     * 이메일 인증 코드 발송
+     */
+    @PostMapping("/sendVerification")
+    @ResponseBody
+    public Map<String, Object> sendVerificationEmail(@RequestParam String email) {
+        Map<String, Object> result = new HashMap<>();
+
+        try {
+            // 이메일 형식 검증
+            if (!EMAIL_PATTERN.matcher(email).matches()) {
+                result.put("success", false);
+                result.put("message", "올바른 이메일 형식이 아닙니다.");
+                return result;
+            }
+
+            // 중복 확인
+            User existingUser = userService.getUserByEmail(email);
+            if (existingUser != null) {
+                result.put("success", false);
+                result.put("message", "이미 가입된 이메일입니다.");
+                return result;
+            }
+
+            // 인증 코드 발송
+            boolean sent = emailService.sendVerificationEmail(email);
+
+            if (sent) {
+                result.put("success", true);
+                result.put("message", "인증 코드가 발송되었습니다. 이메일을 확인해주세요.");
+            } else {
+                result.put("success", false);
+                result.put("message", "이메일 발송에 실패했습니다. 다시 시도해주세요.");
+            }
+
+        } catch (Exception e) {
+            result.put("success", false);
+            result.put("message", "인증 코드 발송 중 오류가 발생했습니다.");
+        }
+
+        return result;
+    }
+
+    /**
+     * 이메일 인증 코드 확인
+     */
+    @PostMapping("/verifyEmail")
+    @ResponseBody
+    public Map<String, Object> verifyEmailCode(@RequestParam String email,
+                                               @RequestParam String code) {
+        Map<String, Object> result = new HashMap<>();
+
+        try {
+            boolean isValid = emailService.verifyCode(email, code);
+
+            if (isValid) {
+                result.put("success", true);
+                result.put("message", "이메일 인증이 완료되었습니다.");
+            } else {
+                result.put("success", false);
+                result.put("message", "인증 코드가 올바르지 않거나 만료되었습니다.");
+            }
+
+        } catch (Exception e) {
+            result.put("success", false);
+            result.put("message", "인증 확인 중 오류가 발생했습니다.");
+        }
+
+        return result;
+    }
+
 
     /**
      * 회원가입 처리 - 모든 파라미터를 필수로 변경, 강화된 검증 기능
@@ -202,9 +308,22 @@ public class RegisterController {
         model.addAttribute("gender", gender);
         model.addAttribute("smsMarketingStatus", smsMarketingStatus);
         model.addAttribute("emailMarketingStatus", emailMarketingStatus);
+
+        // 🎯 이메일 인증 상태 확인 및 전달
+        if (email != null && !email.trim().isEmpty()) {
+            try {
+                boolean isVerified = emailService.isEmailVerified(email);
+                model.addAttribute("emailVerified", isVerified);
+
+                if (isVerified) {
+                    model.addAttribute("verificationMessage", "이메일 인증이 완료되었습니다.");
+                }
+            } catch (Exception e) {
+                model.addAttribute("emailVerified", false);
+            }
+        }
     }
 }
-
 
 
 //package com.example.shoppingmall.user.controller;

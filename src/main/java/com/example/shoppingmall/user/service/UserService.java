@@ -4,6 +4,7 @@ import com.example.shoppingmall.user.dao.UserDao;
 import com.example.shoppingmall.user.domain.User;
 import com.example.shoppingmall.user.exception.LoginFailedException;
 import com.example.shoppingmall.user.exception.UserNotFoundException;
+import java.time.LocalDateTime;
 import org.springframework.stereotype.Service;
 
 @Service
