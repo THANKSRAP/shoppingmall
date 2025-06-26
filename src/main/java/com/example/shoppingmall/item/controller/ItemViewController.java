@@ -30,6 +30,15 @@ public class ItemViewController {
     @GetMapping("/{id}")
     public String detail(@PathVariable Long id, Model model) {
         ItemDto item = itemService.getItemById(id);
+
+        ItemDto ratingSummary = itemService.getItemWithReviewSummary(id);
+        if (ratingSummary != null) {
+            item.setAverageRating(ratingSummary.getAverageRating());
+            item.setReviewCount(ratingSummary.getReviewCount());
+        } else {
+            System.out.println("별점 요약 정보가 없습니다.");
+        }
+
         CategoryDto category = categoryService.getCategoryByItemId(id);
         List<ItemOptionDto> options = itemOptionService.getItemOptionsWithInventory(id); // 서비스 계층에서 옵션+재고 조회
         List<ItemOptionDto> sizeOptions = itemOptionService.getSizeOptions(id);
@@ -50,6 +59,19 @@ public class ItemViewController {
         List<ItemDto> items = (majorId == null && middleId == null && minorId == null)
                 ? itemService.getAllItems()
                 : itemService.getItemsByCategory(majorId, middleId, minorId);
+
+        for (ItemDto item : items) {
+            ItemDto summary = itemService.getItemWithReviewSummary(item.getItemId());
+            if (summary != null) {
+                item.setAverageRating(summary.getAverageRating());
+                item.setReviewCount(summary.getReviewCount());
+            }
+
+            System.out.println("📦 아이템 ID: " + item.getItemId());
+            System.out.println("⭐ 평균 별점: " + item.getAverageRating());
+            System.out.println("📝 리뷰 수: " + item.getReviewCount());
+        }
+
         model.addAttribute("items", items);
 
         // [추가] 대분류 카테고리 리스트를 Model에 담아 전달

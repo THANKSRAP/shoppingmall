@@ -15,6 +15,6 @@ public interface CartService {
 
     void deleteAllByUserId(Long userId);
 
-    void addToWishlist(Long userId, Long itemId, Long itemOptionId);
+    void addToWishlist(Long userId, Long itemId);
     void insertCart(CartDto cartDto);
 }

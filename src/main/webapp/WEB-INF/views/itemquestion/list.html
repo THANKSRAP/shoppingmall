@@ -6,6 +6,7 @@
   <title>상품 문의 목록</title>
   <link rel="stylesheet" th:href="@{/resources/css/item-question-list.css}" />
 </head>
+
 <body class="item-question-body">
   <div layout:fragment="content" class="item-question-content">
 
@@ -13,6 +14,31 @@
     <div class="item-question-write-wrapper">
       <a th:href="@{/itemquestion/new}" class="item-question-write-button">상품 문의 작성</a>
     </div>
+
+    <!-- 검색 헤더 -->
+    <!-- 검색 폼 -->
+    <div class="search-form-wrapper">
+      <form th:action="@{/itemquestion}" method="get" class="search-form" autocomplete="off">
+        <div class="search-input-group">
+          <div class="search-input-wrapper">
+            <i class="fas fa-search search-icon"></i>
+            <input type="search"
+                   name="keyword"
+                   class="search-input"
+                   placeholder="제목, 상품명, 작성자, 유형(배송/상품/기타/사이즈) 검색"
+                   th:value="${keyword}">
+            <button type="button" class="clear-btn" id="clearBtn" style="display: none;">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <button type="submit" class="search-btn">
+            <i class="fas fa-search"></i>
+            검색
+          </button>
+        </div>
+      </form>
+    </div>
+
 
     <table class="item-question-table">
       <thead>

@@ -24,10 +24,14 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="notice : ${notices}">
+        <tr th:each="notice : ${notices}"
+            th:classappend="${notice.isPinned} ? 'pinned-row' : ''">
             <td th:text="${notice.noticeId}">1</td>
             <td>
-                <a th:href="@{/notice/{id}(id=${notice.noticeId})}" th:text="${notice.title}">제목</a>
+                <a th:href="@{/notice/{id}(id=${notice.noticeId})}">
+                    <span th:if="${notice.isPinned}" class="pin-icon">📌</span>
+                    <span th:text="${notice.title}">제목</span>
+                </a>
             </td>
 
             <td th:text="${#temporals.format(notice.createdAt, 'yyyy-MM-dd')}">2025-06-20</td>

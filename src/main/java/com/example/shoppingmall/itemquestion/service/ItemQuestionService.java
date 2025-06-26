@@ -57,4 +57,12 @@ public class ItemQuestionService {
     public int getTotalCount(){
         return itemQuestionDao.count();
     }
+
+    public List<ItemQuestion> search(String keyword, int page, int pageSize) {
+        int offset = (page - 1) * pageSize;
+        return itemQuestionDao.findByKeyword(keyword, pageSize, offset);
+    }
+    public int countSearch(String keyword) {
+        return itemQuestionDao.countByKeyword(keyword);
+    }
 }

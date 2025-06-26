@@ -37,8 +37,12 @@ public class CartController {
 
     // ✅ [1] HTML 장바구니 페이지
     @GetMapping
-    public String cartPage(Model model) {
-        Long userId = 1L; // 로그인 미적용 상태
+    public String cartPage(Model model, HttpSession session) {
+        Long userId = (Long)session.getAttribute("userId");
+        if (userId == null) {
+            return "redirect:user/loginForm";
+        }
+
         List<CartDto> cartList = cartService.getCartByUserId(userId);
 
 
@@ -76,7 +80,7 @@ public class CartController {
     @DeleteMapping("/all")
     @ResponseBody
     public ResponseEntity<Void> deleteAllItems(HttpSession session) {
-        Long userId = 1L; // 로그인 미적용 상태
+        Long userId = (Long)session.getAttribute("userId");
         cartService.deleteAllByUserId(userId);
         return ResponseEntity.ok().build();
     }
@@ -102,16 +106,13 @@ public class CartController {
 
         System.out.println("💬 받은 데이터: " + data);
         System.out.println("✅ itemId: " + data.get("itemId"));
-        System.out.println("✅ itemOptionId: " + data.get("itemOptionId"));
 
         try {
-            Long userId = (Long) session.getAttribute("user_id");
+            Long userId = (Long)session.getAttribute("userId");
             Long itemId = Long.parseLong(data.get("itemId").toString());
-            Long itemOptionId = Long.parseLong(data.get("itemOptionId").toString());
-
             System.out.println("🔥 itemId: " + itemId);
 
-            cartService.addToWishlist(userId, itemId, itemOptionId);
+            cartService.addToWishlist(userId, itemId);
             return ResponseEntity.ok("success");
         } catch (Exception e) {
             e.printStackTrace(); // 콘솔에 전체 에러 출력
@@ -125,8 +126,7 @@ public class CartController {
                             @RequestParam("quantity") int quantity,
                             HttpSession session) {
 
-        // 아직 로그인 기능 없으므로 임시 userId 지정
-        Long userId = 1L;
+        Long userId = (Long)session.getAttribute("userId");
 
         CartDto cartDto = new CartDto();
         cartDto.setUserId(userId);
@@ -145,7 +145,7 @@ public class CartController {
                                       @RequestParam("quantity") int quantity,
                                       HttpSession session) {
         try {
-            Long userId = 1L;
+            Long userId = (Long)session.getAttribute("userId");
 
             Item item = itemDao.findById(itemId);
             System.out.println("itemId: "+item.getItemId());

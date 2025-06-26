@@ -122,8 +122,8 @@
 
 
     <insert id="addToWishlist" parameterType="map">
-        INSERT INTO wish_list (user_id, item_id, item_option_id, added_at, created_at, updated_at)
-        VALUES (#{userId}, #{itemId}, #{itemOptionId}, NOW(), NOW(), NOW())
+        INSERT INTO wish_list (user_id, item_id, added_at, created_at, updated_at)
+        VALUES (#{userId}, #{itemId}, NOW(), NOW(), NOW())
     </insert>
 
     <insert id="insertCart" parameterType="com.example.shoppingmall.cart.domain.CartDto" useGeneratedKeys="true" keyProperty="cartId">

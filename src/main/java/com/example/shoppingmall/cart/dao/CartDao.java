@@ -31,7 +31,7 @@ public interface CartDao {
     // ✅ 새로 추가한 메서드 (수량만 바꾸는)
     void updateQuantity(@Param("cartId") Long cartId, @Param("quantity") int quantity) throws Exception;
     //관심상품에 추가
-    void addToWishlist(@Param("userId") Long userId, @Param("itemId") Long itemId, @Param("itemOptionId") Long itemOptionId) throws Exception;
+    void addToWishlist(@Param("userId") Long userId, @Param("itemId") Long itemId) throws Exception;
     //장바구니 추가
     void insertCart(CartDto cartDto);
     CartDto selectExistingCartItem(CartDto cartDto);

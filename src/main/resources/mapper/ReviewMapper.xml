@@ -71,4 +71,8 @@
         ORDER BY r.created_at DESC
     </select>
 
+    <select id="findReviewsByItemId" parameterType="int" resultType="com.example.shoppingmall.review.domain.ReviewDto">
+        SELECT * FROM review WHERE item_id = #{itemId}
+    </select>
+
 </mapper>

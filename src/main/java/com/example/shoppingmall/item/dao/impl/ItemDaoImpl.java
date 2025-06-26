@@ -2,6 +2,7 @@ package com.example.shoppingmall.item.dao.impl;
 
 import com.example.shoppingmall.item.dao.ItemDao;
 import com.example.shoppingmall.item.domain.Item;
+import com.example.shoppingmall.item.domain.dto.ItemDto;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
@@ -67,5 +68,10 @@ public class ItemDaoImpl implements ItemDao {
         params.put("middleId", middleId);
         params.put("minorId", minorId);
         return sqlSession.selectList(NAMESPACE + "findItemsByCategory", params);
+    }
+
+    @Override
+    public ItemDto selectItemWithReviewSummary(Long itemId) {
+        return sqlSession.selectOne(NAMESPACE + "selectItemWithReviewSummary", itemId);
     }
 }

@@ -81,13 +81,13 @@
 
                                 <div class="product-rating">
                                     <div class="stars">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
+                                        <i class="fa-star" th:classappend="${item.averageRating >= 1} ? 'fas' : 'far'"></i>
+                                        <i class="fa-star" th:classappend="${item.averageRating >= 2} ? 'fas' : 'far'"></i>
+                                        <i class="fa-star" th:classappend="${item.averageRating >= 3} ? 'fas' : 'far'"></i>
+                                        <i class="fa-star" th:classappend="${item.averageRating >= 4} ? 'fas' : 'far'"></i>
+                                        <i class="fa-star" th:classappend="${item.averageRating >= 5} ? 'fas' : 'far'"></i>
                                     </div>
-                                    <span class="rating-count">(128)</span>
+                                    <span class="rating-count" th:text="'(' + ${item.reviewCount} + ')'">(0)</span>
                                 </div>
 
                                 <div class="product-meta">
@@ -141,13 +141,13 @@
 
                                 <div class="product-rating">
                                     <div class="stars">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="far fa-star"></i>
+                                        <i class="fa-star" th:classappend="${item.averageRating >= 1} ? 'fas' : 'far'"></i>
+                                        <i class="fa-star" th:classappend="${item.averageRating >= 2} ? 'fas' : 'far'"></i>
+                                        <i class="fa-star" th:classappend="${item.averageRating >= 3} ? 'fas' : 'far'"></i>
+                                        <i class="fa-star" th:classappend="${item.averageRating >= 4} ? 'fas' : 'far'"></i>
+                                        <i class="fa-star" th:classappend="${item.averageRating >= 5} ? 'fas' : 'far'"></i>
                                     </div>
-                                    <span class="rating-count">(45)</span>
+                                    <span class="rating-count" th:text="'(' + ${item.reviewCount} + ')'">(0)</span>
                                 </div>
 
                                 <div class="product-meta">

@@ -109,6 +109,66 @@
     </update>
 
 
+    <!-- 키워드(제목, 상품명, 작성자, 유형) 검색 + 페이징 -->
+    <select id="findByKeyword" resultType="com.example.shoppingmall.itemquestion.domain.ItemQuestion">
+        SELECT
+        iq.item_question_id AS itemQuestionId,
+        iq.item_id AS itemId,
+        i.name AS itemName,
+        iq.user_id AS userId,
+        u.name AS userName,
+        iq.image,
+        iq.type,
+        iq.title,
+        iq.content,
+        iq.is_secret AS isSecret,
+        iq.created_at AS createdAt,
+        iq.updated_at AS updatedAt,
+        iq.deleted_at AS deletedAt
+        FROM item_question iq
+        LEFT JOIN user u ON iq.user_id = u.user_id
+        LEFT JOIN item i ON iq.item_id = i.item_id
+        WHERE iq.deleted_at IS NULL
+        <if test="keyword != null and keyword != ''">
+            AND (
+            iq.title LIKE CONCAT('%', #{keyword}, '%')
+            OR i.name LIKE CONCAT('%', #{keyword}, '%')
+            OR u.name LIKE CONCAT('%', #{keyword}, '%')
+            OR (
+            (#{keyword} = '배송' AND iq.type IN ('SHIPPING', 'DELIVERY'))
+            OR (#{keyword} = '상품' AND iq.type = 'PRODUCT')
+            OR (#{keyword} = '기타' AND iq.type = 'OTHER')
+            OR (#{keyword} = '사이즈' AND iq.type = 'SIZE')
+            )
+            )
+        </if>
+        ORDER BY iq.created_at DESC, iq.item_question_id DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 검색 결과 개수 -->
+    <select id="countByKeyword" resultType="int">
+        SELECT COUNT(*)
+        FROM item_question iq
+        LEFT JOIN user u ON iq.user_id = u.user_id
+        LEFT JOIN item i ON iq.item_id = i.item_id
+        WHERE iq.deleted_at IS NULL
+        <if test="keyword != null and keyword != ''">
+            AND (
+            iq.title LIKE CONCAT('%', #{keyword}, '%')
+            OR i.name LIKE CONCAT('%', #{keyword}, '%')
+            OR u.name LIKE CONCAT('%', #{keyword}, '%')
+            OR (
+            (#{keyword} = '배송' AND iq.type IN ('SHIPPING', 'DELIVERY'))
+            OR (#{keyword} = '상품' AND iq.type = 'PRODUCT')
+            OR (#{keyword} = '기타' AND iq.type = 'OTHER')
+            OR (#{keyword} = '사이즈' AND iq.type = 'SIZE')
+            )
+            )
+        </if>
+    </select>
+
+
 
 </mapper>
 
