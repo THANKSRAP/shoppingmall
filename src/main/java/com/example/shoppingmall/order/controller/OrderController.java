@@ -70,8 +70,7 @@ public class OrderController {
             return "redirect:/cart";
         }
 
-        // TODO: 로그인 사용자로 교체 예정
-        Long userId = 1L;
+        Long userId = (Long)session.getAttribute("userId");
 
         // 배송지 및 장바구니 아이템 조회
         List<DeliveryAddressDto> deliveryAddresses = deliveryAddressService.getActiveAddresses(userId);
@@ -95,8 +94,7 @@ public class OrderController {
             @RequestBody OrderRequestDto orderRequest,
             HttpSession session
     ) {
-        // TODO: 로그인 사용자로 교체 예정
-        Long userId = 1L;
+        Long userId = (Long)session.getAttribute("userId");
 
         OrderResponseDto response = orderService.processOrder(userId, orderRequest);
 

@@ -358,14 +358,11 @@ document.querySelectorAll('.wishlist-btn').forEach(btn => {
         const itemId = this.dataset.itemId;
         const itemOptionId = this.dataset.itemOptionId;
         console.log('itemId: ' + itemId);
-        console.log('itemOptionId: ' + itemOptionId);
-
-        const userId = 1; // 로그인 구현 전이니 일단 고정
 
         fetch('/cart/wishlist', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userId, itemId, itemOptionId })
+            body: JSON.stringify({ itemId })
         })
             .then(res => res.text())
             .then(text => {
