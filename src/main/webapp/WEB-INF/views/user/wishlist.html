@@ -190,11 +190,26 @@
             background-color: #f8f9fa;
             border-radius: 8px;
         }
+
+        /* CSS: 상품 클릭 영역 스타일 */
+        .product-clickable {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .product-clickable:hover .product-name {
+            color: #007bff;
+        }
+
+        .product-clickable:hover .product-image {
+            transform: scale(1.02);
+            border-color: #007bff;
+        }
     </style>
 </head>
 <body>
 <!-- Header -->
-<div th:replace="fragments/header :: header"></div>
+<div th:replace="~{fragments/header :: header}" ></div>
 
 <div class="container">
     <div class="wishlist-container">
@@ -241,8 +256,9 @@
                     <!-- 체크박스 -->
                     <div class="checkbox-container">
                         <input class="form-check-input item-checkbox" type="checkbox"
-                               name="selectedItems" th:value="${item.id}"
-                               th:id="'item_' + ${item.id}">
+                               name="selectedItems" th:value="${item.itemId}"
+                               th:id="'item_' + ${item.id}"
+                               th:data-item-id="${item.itemId}">
                         <label class="form-check-label" th:for="'item_' + ${item.id}">
                             선택
                         </label>
@@ -252,24 +268,27 @@
                     <div class="wishlist-row">
                         <!-- 상품 ID -->
                         <div class="product-id">
-                            ID: <span th:text="${item.productId}">1</span>
+                            ID: <span th:text="${item.itemId}">1</span>
                         </div>
 
-                        <!-- 상품 사진 -->
-                        <div>
-                            <img th:src="${item.productImage}"
-                                 th:alt="${item.productName}"
+                        <!-- 상품 사진 - 링크로 감쌈 -->
+                        <div class="product-clickable" th:onclick="'goToProductDetail(' + ${item.itemId} + ')'">
+                            <img th:src="${item.image}"
+                                 th:alt="${item.name}"
                                  class="product-image"
                                  onerror="this.src='/images/no-image.jpg'">
                         </div>
 
-                        <!-- 상품 이름과 설명 -->
-                        <div class="product-content">
-                            <div class="product-name" th:text="${item.productName}">
+                        <!-- 상품 이름과 설명 - 링크로 감쌈 -->
+                        <div class="product-content product-clickable" th:onclick="'goToProductDetail(' + ${item.itemId} + ')'">
+                            <div class="product-name" th:text="${item.name}">
                                 상품명
                             </div>
-                            <div class="product-description" th:text="${item.productDescription}">
+                            <div class="product-description" th:text="${item.description}">
                                 상품에 대한 간략한 설명
+                            </div>
+                            <div class="product-price">
+                                <span th:text="${#numbers.formatInteger(item.price, 3, 'COMMA')}">0</span>원
                             </div>
                         </div>
                     </div>
@@ -333,6 +352,11 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
+    // 상품 상세페이지로 이동(실무에서 많이 쓰는 방식)
+    function goToProductDetail(itemId) {
+        window.location.href = '/item/' + itemId;
+    }
+
     // 전체 선택 기능
     document.getElementById('selectAll').addEventListener('change', function() {
         const checkboxes = document.querySelectorAll('.item-checkbox');
@@ -355,25 +379,27 @@
 
     // 선택된 항목 삭제
     function deleteSelected() {
-        const selectedItems = [];
+        const selectedItemIds = [];
         document.querySelectorAll('input[name="selectedItems"]:checked').forEach(checkbox => {
-            selectedItems.push(checkbox.value);
+            selectedItemIds.push(checkbox.getAttribute('data-item-id'));
         });
 
-        if (selectedItems.length === 0) {
+        if (selectedItemIds.length === 0) {
             alert('삭제할 항목을 선택해주세요.');
             return;
         }
 
-        if (confirm(`선택한 ${selectedItems.length}개 항목을 삭제하시겠습니까?`)) {
-            const formData = new FormData();
-            selectedItems.forEach(id => {
-                formData.append('ids', id);
-            });
+        if (confirm(`선택한 ${selectedItemIds.length}개 항목을 삭제하시겠습니까?`)) {
+            // URLSearchParams로 변경 (FormData 대신)
+            const params = new URLSearchParams();
+            params.append('itemIds', selectedItemIds.join(','));
 
             fetch('/wishlist/delete', {
                 method: 'POST',
-                body: formData
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: params
             })
                 .then(response => response.text())
                 .then(result => {
@@ -394,8 +420,22 @@
         }
     }
 
-    // 전체 삭제
+    // 전체 삭제 함수 - 모든 항목 선택 조건 추가
     function deleteAll() {
+        const allCheckboxes = document.querySelectorAll('.item-checkbox');
+        const checkedBoxes = document.querySelectorAll('.item-checkbox:checked');
+
+        // 모든 항목이 선택되어야만 전체 삭제 가능
+        if (checkedBoxes.length !== allCheckboxes.length) {
+            alert('전체 삭제를 위해서는 모든 항목을 선택해주세요.');
+            return;
+        }
+
+        if (allCheckboxes.length === 0) {
+            alert('삭제할 항목이 없습니다.');
+            return;
+        }
+
         if (confirm('전체 관심목록을 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.')) {
             fetch('/wishlist/deleteAll', {
                 method: 'POST'
@@ -410,6 +450,7 @@
                         location.href = '/user/loginForm';
                     } else {
                         alert('삭제 중 오류가 발생했습니다.');
+                        console.error('Server response:', result);
                     }
                 })
                 .catch(error => {

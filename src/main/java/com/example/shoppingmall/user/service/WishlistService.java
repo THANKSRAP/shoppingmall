@@ -26,20 +26,30 @@ public class WishlistService {
      * 관심목록에 상품 추가
      */
     public void addToWishlist(Long userId, Long itemId) {
-        wishlistDao.insertWishlistItem(userId, itemId);
+        wishlistDao.insertWishlistItem(userId, itemId, null);
     }
 
     /**
      * 관심목록에 이미 있는 상품인지 확인
      */
     public boolean isItemInWishlist(Long userId, Long itemId) {
-        return wishlistDao.existsWishlistItem(userId, itemId);
+        return wishlistDao.existsWishlistItem(userId, itemId, null);
     }
 
-    public void deleteWishlistItems(List<Long> ids, Long userId) {
-        for (Long id : ids) {
-            wishlistDao.deleteWishlistItem(id, userId);
+    /**
+     * 특정 상품들을 삭제
+     */
+    public void deleteWishlistItems(List<WishlistDto> wishlistItems, Long userId) {
+        for (WishlistDto item : wishlistItems) {
+            wishlistDao.deleteWishlistByItemAndOption(userId, item.getItemId(), null);
         }
+    }
+
+    /**
+     * 단일 상품 삭제
+     */
+    public void deleteWishlistByItem(Long userId, Long itemId) {
+        wishlistDao.deleteWishlistByItemAndOption(userId, itemId, null);
     }
 
     public void deleteAllWishlist(Long userId) {

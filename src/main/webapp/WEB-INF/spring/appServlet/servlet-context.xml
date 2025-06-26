@@ -46,4 +46,7 @@
     <!-- Component Scan -->
     <context:component-scan base-package="com.example.shoppingmall"/>
 
+    <!-- Properties 파일 로더 추가 -->
+    <context:property-placeholder location="classpath:mail.properties"/>
+
 </beans:beans>

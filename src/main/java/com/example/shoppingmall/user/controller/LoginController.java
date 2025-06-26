@@ -7,10 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -312,14 +309,6 @@ public class LoginController {
     /**
      * 현재 로그인한 사용자 정보 가져오기
      */
-//    public static User getCurrentUser(HttpServletRequest request) {
-//        HttpSession session = request.getSession(false);
-//        if (session != null) {
-//            return (User) session.getAttribute("user");
-//        }
-//        return null;
-//    }
-
     public static Long getCurrentUserId(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         if (session != null) {
@@ -327,7 +316,6 @@ public class LoginController {
         }
         return null;
     }
-
 
 
     /**
@@ -342,7 +330,6 @@ public class LoginController {
         }
         return null;
     }
-
 
 
 

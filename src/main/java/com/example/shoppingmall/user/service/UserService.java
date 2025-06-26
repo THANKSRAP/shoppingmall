@@ -4,6 +4,7 @@ import com.example.shoppingmall.user.dao.UserDao;
 import com.example.shoppingmall.user.domain.User;
 import com.example.shoppingmall.user.exception.LoginFailedException;
 import com.example.shoppingmall.user.exception.UserNotFoundException;
+import java.time.LocalDateTime;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -53,4 +54,14 @@ public class UserService {
         }
         return foundUser;
     }
+
+    public void updatePassword(Long userId, String newPassword) {
+        User user = userDao.findById(userId);
+        if (user != null) {
+            user.setPassword(newPassword);
+            user.setUpdatedAt(LocalDateTime.now());
+            userDao.update(user);
+        }
+    }
+
 }

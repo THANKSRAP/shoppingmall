@@ -266,17 +266,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 폼 제출 전 검증
     document.querySelector('.options-form').addEventListener('submit', (e) => {
-        if (!itemOptionIdInput.value) {
-            e.preventDefault();
-            alert('색상과 사이즈를 선택해주세요.');
-            return;
-        }
+        const targetButton = e.submitter;
 
-        const quantity = Number(quantityInput.value);
-        if (quantity < 1) {
-            e.preventDefault();
-            alert('수량을 확인해주세요.');
-            return;
+        // 장바구니나 주문 버튼인 경우에만 옵션 선택 확인
+        if (targetButton && (targetButton.id === 'cart-btn' || targetButton.id === 'order-btn')) {
+            if (!itemOptionIdInput.value) {
+                e.preventDefault();
+                alert('색상과 사이즈를 선택해주세요.');
+                return;
+            }
+
+            const quantity = Number(quantityInput.value);
+            if (quantity < 1) {
+                e.preventDefault();
+                alert('수량을 확인해주세요.');
+                return;
+            }
         }
     });
 });
