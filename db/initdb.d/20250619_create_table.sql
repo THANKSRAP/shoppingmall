@@ -175,7 +175,7 @@ CREATE TABLE wish_list
     created_at   TIMESTAMP NOT NULL,
     updated_at   TIMESTAMP NOT NULL,
     FOREIGN KEY (user_id) REFERENCES user (user_id),
-    FOREIGN KEY (item_id) REFERENCES item (item_id),
+    FOREIGN KEY (item_id) REFERENCES item (item_id)
 );
 -- cart
 CREATE TABLE cart
