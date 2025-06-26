@@ -17,25 +17,35 @@ public class ItemQuestionController {
 
     private final ItemQuestionService itemQuestionService;
 
-    //공지사항 목록 조회
-    //페이징 기능 추가
+    // 공지사항 목록 조회 + 검색 + 페이징
     @GetMapping
-    public String ListItemQuestions(
+    public String list(
+            @RequestParam(value = "keyword", required = false) String keyword,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
             Model model
-    ){
-        PageRequest pageRequest = new PageRequest(page, size);
+    ) {
+        List<ItemQuestion> questions;
+        int totalCount;
 
-        List<ItemQuestion> questions = itemQuestionService.getPage(pageRequest);
-        int totalCount = itemQuestionService.getTotalCount();
-        int totalPages = (int) Math.ceil((double)totalCount / size);
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            questions = itemQuestionService.search(keyword, page, size);
+            totalCount = itemQuestionService.countSearch(keyword);
+            model.addAttribute("keyword", keyword);
+        } else {
+            PageRequest pageRequest = new PageRequest(page, size);
+            questions = itemQuestionService.getPage(pageRequest);
+            totalCount = itemQuestionService.getTotalCount();
+        }
+        int totalPages = (int) Math.ceil((double) totalCount / size);
+
         model.addAttribute("itemQuestions", questions);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", totalPages);
 
         return "itemquestion/list";
     }
+
 
     //상세조회
     @GetMapping("/{id}")
