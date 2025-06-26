@@ -200,14 +200,69 @@ document.addEventListener('DOMContentLoaded', () => {
         updateQuantityButtons();
     });
 
-    // 위시리스트 버튼
+// 관심목록 버튼 클릭 이벤트
     wishlistBtn.addEventListener('click', () => {
-        isWishlist = !isWishlist;
-        wishlistBtn.classList.toggle('active', isWishlist);
+        const itemId = document.querySelector('input[name="itemId"]').value;
 
-        // 여기에 위시리스트 API 호출 로직 추가
-        console.log('위시리스트 상태:', isWishlist);
+        console.log('관심목록 추가 요청:', itemId);
+
+        fetch('/wishlist/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'itemId=' + itemId
+        })
+            .then(response => {
+                console.log('응답 상태:', response.status);
+                return response.text();
+            })
+            .then(result => {
+                console.log('서버 응답:', result);
+                handleWishlistResponseDetail(result);
+            })
+            .catch(error => {
+                console.error('관심목록 추가 오류:', error);
+                alert('네트워크 오류가 발생했습니다.');
+            });
     });
+
+    function handleWishlistResponseDetail(result) {
+        const wishlistBtn = document.getElementById('wishlist-btn');
+
+        switch(result) {
+            case 'success':
+                alert('관심목록에 추가되었습니다.');
+                // 버튼 스타일 변경
+                wishlistBtn.style.color = '#e74c3c';
+                wishlistBtn.classList.add('active');
+                break;
+            case 'already_exists':
+                alert('이미 관심목록에 있는 상품입니다.');
+                wishlistBtn.style.color = '#e74c3c';
+                wishlistBtn.classList.add('active');
+                break;
+            case 'login_required':
+                alert('로그인이 필요합니다.');
+                window.location.href = '/user/loginForm';
+                break;
+            default:
+                alert('관심목록 추가에 실패했습니다.');
+                break;
+        }
+    }
+
+
+    // // 위시리스트 버튼
+    // wishlistBtn.addEventListener('click', () => {
+    //     isWishlist = !isWishlist;
+    //     wishlistBtn.classList.toggle('active', isWishlist);
+    //
+    //     // 여기에 위시리스트 API 호출 로직 추가
+    //     console.log('위시리스트 상태:', isWishlist);
+    // });
+
+
 
     // 폼 제출 전 검증
     document.querySelector('.options-form').addEventListener('submit', (e) => {

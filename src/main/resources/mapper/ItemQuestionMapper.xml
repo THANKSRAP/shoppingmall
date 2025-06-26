@@ -1,0 +1,118 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.shoppingmall.itemquestion.dao.ItemQuestionDao">
+
+    <!-- 1. 목록 조회 -->
+    <!-- 작성자 이름 가져오는 조인문-->
+    <select id="findAll" resultType="com.example.shoppingmall.itemquestion.domain.ItemQuestion">
+        SELECT
+            item_question_id AS itemQuestionId,
+            iq.item_id AS itemId,
+            i.name AS itemName,
+            iq.user_id AS userId,
+            u.name AS userName,
+            image,
+            type,
+            title,
+            content,
+            is_secret AS isSecret,
+            created_at AS createdAt,
+            updated_at AS updatedAt,
+            deleted_at AS deletedAt
+        FROM item_question iq
+                 LEFT JOIN user u ON iq.user_id = u.user_id
+                LEFT JOIN item i ON iq.item_id = i.item_id
+        WHERE iq.deleted_at IS NULL
+        ORDER BY iq.created_at DESC, iq.item_question_id DESC
+    </select>
+
+    <!-- 페이징 추가 -->
+    <select id="findPage" resultType="com.example.shoppingmall.itemquestion.domain.ItemQuestion">
+        SELECT
+        iq.item_question_id AS itemQuestionId,
+        iq.item_id AS itemId,
+        i.name AS itemName,
+        iq.user_id AS userId,
+        u.name AS userName,
+        iq.image,
+        iq.type,
+        iq.title,
+        iq.content,
+        iq.is_secret AS isSecret,
+        iq.created_at AS createdAt,
+        iq.updated_at AS updatedAt,
+        iq.deleted_at AS deletedAt
+    FROM item_question iq
+    LEFT JOIN user u ON iq.user_id = u.user_id
+    LEFT JOIN item i ON iq.item_id = i.item_id
+    WHERE iq.deleted_at IS NULL
+    ORDER BY iq.created_at DESC, iq.item_question_id DESC
+    LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 전체 항목수 조회 (페이지 수 계산용) -->
+    <select id="count" resultType="int">
+        SELECT COUNT(*) FROM item_question
+    </select>
+
+    <!--2. 상세 조회 -->
+    <select id="findById" parameterType="Long" resultType="com.example.shoppingmall.itemquestion.domain.ItemQuestion">
+        SELECT *
+        FROM item_question
+        WHERE item_question_id = #{id}
+          AND deleted_at IS NULL
+    </select>
+
+    <!--3. 등록 -->
+    <insert id="insert" parameterType="com.example.shoppingmall.itemquestion.domain.ItemQuestion">
+        INSERT INTO item_question(item_id,
+                                  user_id,
+                                  image,
+                                  type,
+                                  title,
+                                  content,
+                                  is_secret,
+                                  created_at,
+                                  updated_at)
+        VALUES (#{itemId},
+                #{userId},
+                #{image},
+                #{type},
+                #{title},
+                #{content},
+                #{isSecret},
+                NOW(),
+                NOW())
+    </insert>
+
+    <!--4. 수정 -->
+    <update id="update" parameterType="com.example.shoppingmall.itemquestion.domain.ItemQuestion">
+        UPDATE item_question
+        SET
+            image = #{image},
+            type = #{type},
+            title = #{title},
+            content = #{content},
+            is_secret = #{isSecret},
+            updated_at = NOW()
+        WHERE item_question_id = #{itemQuestionId}
+          AND deleted_at IS NULL
+    </update>
+
+    <!--5. 삭제 -->
+    <update id="delete" parameterType="long">
+        UPDATE item_question
+        SET deleted_at = NOW()
+        WHERE item_question_id = #{id}
+    </update>
+
+
+
+</mapper>
+
+
+
+
+

@@ -23,7 +23,7 @@ public class LoginHistoryRepository {
         LoginHistory history = new LoginHistory();
         history.setId(rs.getLong("id"));
         history.setRole(rs.getString("role"));
-        history.setUserId(rs.getString("user_id"));
+        history.setUserId(rs.getString("userId"));
         history.setName(rs.getString("name"));
         history.setLoginDateTime(rs.getTimestamp("login_date_time").toLocalDateTime());
         history.setUserRole(rs.getString("user_role"));

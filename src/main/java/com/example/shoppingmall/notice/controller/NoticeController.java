@@ -43,6 +43,7 @@ public class NoticeController {
         Notice notice = noticeService.getNoticeById(id);
 
         model.addAttribute("notice", notice);
+        noticeService.increaseViewCount(id);
 
         return "notice/detail";
     }
@@ -86,10 +87,4 @@ public class NoticeController {
         noticeService.deleteNotice(id);
         return "redirect:/notice";
     }
-    //조회수 증가
-    @PostMapping("/{id}/increaseViewCount")
-    public int increaseViewCount(Integer noticeId){
-        return noticeService.increaseViewCount(noticeId);
-    }
-
 }

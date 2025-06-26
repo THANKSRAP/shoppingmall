@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserResponseDto {
-    private Long user_id;
+    private Long userId;
     private String password;
     private String name;
     private String email;
@@ -20,7 +20,7 @@ public class UserResponseDto {
     // User 엔티티를 DTO로 변환
     public static UserResponseDto from(User user) {
         return UserResponseDto.builder()
-                .user_id(user.getUser_id())
+                .userId(user.getUser_id())
                 .password(user.getPassword())
                 .name(user.getName())
                 .email(user.getEmail())

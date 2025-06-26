@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<head>
+  <title>공지사항 작성</title>
+  <link rel="stylesheet" th:href="@{/resources/css/notice-form.css}" />
+</head>
+
+<body>
+<div layout:fragment="content" class="notice-content">
+
+  <div  class="notice-form-wrapper">
+    <div class="notice-form">
+      <h1 class="notice-form-title" th:text="${#strings.isEmpty(notice.noticeId) ? '공지사항 작성' : '공지사항 수정'}"></h1>
+
+      <form th:action="@{${#strings.isEmpty(notice.noticeId) ? '/notice/new' : '/notice/' + notice.noticeId + '/edit'}}" method="post">
+        <div class="notice-form-field">
+          <label for="title">제목</label>
+          <input type="text" id="title" name="title" th:value="${notice.title}" required />
+        </div>
+
+        <div class="notice-form-field">
+          <label for="content">내용</label>
+          <textarea id="content" name="content" rows="10" th:text="${notice.content}"></textarea>
+        </div>
+
+        <div class="notice-form-buttons">
+          <button type="submit" class="notice-form-button">저장</button>
+          <a th:href="@{/notice}" class="notice-form-link">목록으로</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -12,24 +12,26 @@
 
         <!-- User Menu -->
         <div class="navbar-nav ms-auto">
-            <!-- 세션 기반 인증 (User로 로그인 시 나타나는 드롭다운 메뉴)-->
-            <div class="nav-item dropdown" th:if="${session.user != null}">
+            <!-- 세션 기반 인증 - 로그인 조건을 userId 기준으로 통일 (기존 session.user 대신) -->
+            <div class="nav-item dropdown" th:if="${session.userId != null}">
                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                    <i class="fas fa-user"></i> <span th:text="${session.user.name}">사용자</span>
+                    <i class="fas fa-user"></i> <span th:text="${session.email}">사용자</span>
                 </a>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" th:href="@{/mypage}"><i class="fas fa-user-circle"></i> 마이페이지</a></li>
+                    <li><a class="dropdown-item" th:href="@{/user/mypage}"><i class="fas fa-user-circle"></i> 마이페이지</a></li>
                     <li><a class="dropdown-item" th:href="@{/orders}"><i class="fas fa-shopping-bag"></i> 주문내역</a></li>
+                    <li><a class="dropdown-item" th:href="@{/wishlist}"><i class="fas fa-heart"></i> 관심목록</a></li>
                     <li><a class="dropdown-item" th:href="@{/reviews/my}"><i class="fas fa-star"></i> 내 리뷰</a></li>
                     <li>
                         <hr class="dropdown-divider">
                     </li>
-                    <li><a class="dropdown-item" th:href="@{/logout}"><i class="fas fa-sign-out-alt"></i> 로그아웃</a></li>
+                    <!-- 수정: /logout -> /user/logout -->
+                    <li><a class="dropdown-item" th:href="@{/user/logout}"><i class="fas fa-sign-out-alt"></i> 로그아웃</a></li>
                 </ul>
             </div>
 
             <!-- 세션 기반 인증 (User로 로그인 상태가 아닐 시 나타나는 드롭다운 메뉴)-->
-            <div class="nav-item" th:if="${session.user == null}">
+            <div class="nav-item" th:if="${session.userId == null}">
                 <a class="nav-link" th:href="@{user/loginForm}">
                     <i class="fas fa-sign-in-alt"></i> 로그인
                 </a>
@@ -48,9 +50,35 @@
                     <i class="fas fa-magnifying-glass"></i> 검색
                 </a>
             </div>
+
+            <!-- Community Dropdown Menu -->
+            <div class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="communityDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-comments"></i> 커뮤니티
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="communityDropdown">
+                    <li>
+                        <a class="dropdown-item" th:href="@{/notice}">
+                            <i class="fas fa-bullhorn"></i> 공지사항
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" th:href="@{/itemquestion}">
+                            <i class="fas fa-question-circle"></i> 문의
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" th:href="@{/review}">
+                            <i class="fas fa-star"></i> 리뷰
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
         </div>
     </div>
 </nav>
+
 
 <!-- Admin Navigation (Admin으로 로그인 시 보여줄 네비게이션 바) -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark"

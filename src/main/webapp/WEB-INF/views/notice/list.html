@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<head>
+    <title>공지사항 목록</title>
+    <link rel="stylesheet" th:href="@{/resources/css/notice-list.css}" />
+</head>
+
+<body class="notice-body">
+<div layout:fragment="content" class="notice-content">
+
+    <h1>공지사항</h1>
+    <a th:href="@{/notice/new}" class="write-button">글쓰기</a>
+
+    <table class="notice-table">
+        <thead>
+        <tr>
+            <th>번호</th>
+            <th>제목</th>
+            <th>작성일</th>
+            <th>조회수</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="notice : ${notices}">
+            <td th:text="${notice.noticeId}">1</td>
+            <td>
+                <a th:href="@{/notice/{id}(id=${notice.noticeId})}" th:text="${notice.title}">제목</a>
+            </td>
+
+            <td th:text="${#temporals.format(notice.createdAt, 'yyyy-MM-dd')}">2025-06-20</td>
+            <td th:text="${notice.viewCount}">${notice.viewCount}</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- ✅ 페이징 네비게이션 추가 -->
+    <div class="pagination" style="margin-top: 20px;">
+        <a th:if="${currentPage > 1}"
+           th:href="@{/notice(page=${currentPage - 1})}">이전</a>
+
+        <span th:each="i : ${#numbers.sequence(1, totalPages)}">
+            <a th:href="@{/notice(page=${i})}"
+               th:text="${i}"
+               th:classappend="${i == currentPage} ? 'active' : ''">1</a>
+        </span>
+
+        <a th:if="${currentPage < totalPages}"
+           th:href="@{/notice(page=${currentPage + 1})}">다음</a>
+    </div>
+
+</div>
+</body>
+</html>

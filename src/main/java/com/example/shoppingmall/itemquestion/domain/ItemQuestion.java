@@ -6,6 +6,8 @@ public class ItemQuestion {
     private Long itemQuestionId;
     private Long itemId;
     private Long userId;
+    private String userName;
+    private String itemName;
     private String image;
     private String type;
     private String title;
@@ -34,6 +36,12 @@ public class ItemQuestion {
     public void setUserId(Long userId) {
         this.userId = userId;
     }
+    public String getUserName() {
+        return userName;
+    }
+    public String getItemName(){return itemName;}
+    public void setItemName(){this.itemName=itemName;}
+
     public String getImage() {
         return image;
     }

@@ -1,5 +1,6 @@
 package com.example.shoppingmall.user.controller;
 
+import com.example.shoppingmall.user.dao.UserDao;
 import com.example.shoppingmall.user.domain.User;
 import com.example.shoppingmall.user.service.UserService;
 import org.springframework.stereotype.Controller;
@@ -9,14 +10,18 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 
+
+
 @Controller
 @RequestMapping("/user")
 public class UserController {
 
     private final UserService userService;
+    private final UserDao userDao;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, UserDao userDao) {
         this.userService = userService;
+        this.userDao = userDao;
     }
 
     /**
@@ -44,7 +49,8 @@ public class UserController {
             return "redirect:/user/loginForm";
         }
 
-        User currentUser = LoginController.getCurrentUser(request);
+        Long userId = LoginController.getCurrentUserId(request);
+        User currentUser = userDao.findById(userId);  // ← DB에서 최신 정보 조회
         model.addAttribute("user", currentUser);
         return "user/editForm";
     }
@@ -171,7 +177,7 @@ public class UserController {
 //    public String signup(@RequestParam String email,
 //                         @RequestParam String password,
 //                         @RequestParam String name,
-//                         @RequestParam String phone_number,
+//                         @RequestParam String phoneNumber,
 //                         @RequestParam(defaultValue = "CUSTOMER") String role,                         // ← 🔥 role을 파라미터로 받기
 //                         Model model) {        // Model 파라미터 추가
 //
@@ -181,7 +187,7 @@ public class UserController {
 //        user.setEmail(email);
 //        user.setPassword(password);
 //        user.setName(name);
-//        user.setPhone_number(phone_number);
+//        user.setPhone_number(phoneNumber);
 //        user.setRole(role);
 //        user.setCustomer_status("ACTIVE");
 //

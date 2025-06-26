@@ -5,7 +5,7 @@
 
 
 <mapper namespace="com.example.shoppingmall.cart.dao.CartDao">
-    <select id="selectCartByUserId" parameterType="int" resultType="com.example.shoppingmall.cart.domain.CartDto">
+    <select id="selectCartByUserId" parameterType="Long" resultType="com.example.shoppingmall.cart.domain.CartDto">
         SELECT
             c.cart_id AS cartId,
             c.user_id AS userId,
@@ -36,13 +36,13 @@
 
 
 
-    <insert id="insert" parameterType="com.example.shoppingmall.cart.domain.CartDto">
+    <insert id="insert" parameterType="com.example.shoppingmall.cart.domain.CartDto" useGeneratedKeys="true" keyProperty="cartId">
         INSERT INTO cart (user_id, item_id, item_option_id, quantity, added_at, created_at, updated_at)
         VALUES (#{userId}, #{itemId}, #{itemOptionId}, #{quantity}, NOW(), NOW(), NOW())
     </insert>
 
 
-    <delete id="deleteByCartId" parameterType="int">
+    <delete id="deleteByCartId" parameterType="Long">
         DELETE FROM cart WHERE cart_id = #{cartId}
     </delete>
 
@@ -58,12 +58,12 @@
     </delete>
 
 
-    <delete id="deleteAllByUserId" parameterType="int">
+    <delete id="deleteAllByUserId" parameterType="Long">
         DELETE FROM cart WHERE user_id = #{userId}
     </delete>
 
 
-    <select id="countByUserId" parameterType="int" resultType="int">
+    <select id="countByUserId" parameterType="Long" resultType="int">
         SELECT COUNT(*) FROM cart WHERE user_id = #{userId}
     </select>
 
@@ -86,6 +86,34 @@
         WHERE cart_id = #{cartId}
     </update>
 
+    <select id="selectCartsByIds" parameterType="list" resultType="com.example.shoppingmall.cart.domain.CartDto">
+        SELECT
+        c.cart_id AS cartId,
+        c.user_id AS userId,
+        c.item_id AS itemId,
+        c.item_option_id AS itemOptionId,
+        c.quantity,
+        c.added_at AS addedAt,
+        c.created_at AS createdAt,
+        c.updated_at AS updatedAt,
+
+        i.name AS itemName,
+        i.image AS itemImage,
+        i.price AS price,
+
+        color.value AS colorOptionName,
+        size.value AS sizeOptionName,
+        io.additional_price AS additionalPrice
+        FROM cart c
+        JOIN item_option io ON c.item_option_id = io.item_option_id AND c.item_id = io.item_id
+        JOIN item i ON c.item_id = i.item_id
+        JOIN `option` color ON io.color_option_id = color.option_id
+        JOIN `option` size ON io.size_option_id = size.option_id
+        WHERE c.cart_id IN
+        <foreach collection="list" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
 
     <insert id="insertToWishList">
         INSERT INTO wish_list (user_id, item_id, item_option_id, added_at, created_at, updated_at)
@@ -98,12 +126,9 @@
         VALUES (#{userId}, #{itemId}, #{itemOptionId}, NOW(), NOW(), NOW())
     </insert>
 
-    <insert id="insertCart" parameterType="com.example.shoppingmall.cart.domain.CartDto">
-        INSERT INTO cart (cart_id, user_id, item_id, item_option_id, quantity, added_at, created_at, updated_at)
-        VALUES ( #{cartId},   #{userId}, #{itemId}, #{itemOptionId}, #{quantity}, NOW(), NOW(), NOW())
+    <insert id="insertCart" parameterType="com.example.shoppingmall.cart.domain.CartDto" useGeneratedKeys="true" keyProperty="cartId">
+        INSERT INTO cart (user_id, item_id, item_option_id, quantity, added_at, created_at, updated_at)
+        VALUES (#{userId}, #{itemId}, #{itemOptionId}, #{quantity}, NOW(), NOW(), NOW())
     </insert>
-
-
-
 
 </mapper>

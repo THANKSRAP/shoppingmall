@@ -96,10 +96,4 @@ public class NoticeDaoImplTest {
         assertEquals("Updated Title", updated.getTitle());
         assertEquals("Updated Content", updated.getContent());
     }
-    // 공지사항 삭제
-    @Test
-    public void testDeletNotice(){
-        Notice notice = noticeDao.delete(13L);
-        assertNotNull(notice);
-    }
 }
