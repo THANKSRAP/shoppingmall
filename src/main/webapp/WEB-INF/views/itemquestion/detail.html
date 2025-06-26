@@ -39,7 +39,7 @@
       <a class="item-question-link" th:href="@{/itemquestion/{id}/edit(id=${itemQuestion.itemQuestionId})}">수정</a>
       <form th:action="@{/itemquestion/{id}/delete(id=${itemQuestion.itemQuestionId})}" method="post" style="display:inline;">
         <button type="submit" class="item-question-form-button"
-                onclick="return confirm('정말 삭제하시겠습니까?')">삭제</button>>
+                onclick="return confirm('정말 삭제하시겠습니까?')">삭제</button>
       </form>
       <a class="item-question-link" th:href="@{/itemquestion}">목록으로</a>
     </div>
