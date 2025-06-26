@@ -77,15 +77,17 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public void insertCart(CartDto cartDto) {
+    public Long insertCart(CartDto cartDto) {
         try {
             CartDto existingCartItem = cartdao.selectExistingCartItem(cartDto);
             if (existingCartItem != null) {
                 int newQuantity = existingCartItem.getQuantity() + cartDto.getQuantity();
                 existingCartItem.setQuantity(newQuantity);
                 cartdao.updateItemQuantity(existingCartItem);
+                return existingCartItem.getCartId();
             } else {
                 cartdao.insertCart(cartDto);
+                return cartDto.getCartId();
             }
         } catch (Exception e) {
             throw new RuntimeException(e);

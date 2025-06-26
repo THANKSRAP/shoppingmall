@@ -156,10 +156,10 @@ public class CartController {
             cartDto.setItemOptionId(itemOptionId);
             cartDto.setQuantity(quantity);
 
-            cartService.insertCart(cartDto);
+            Long cartId = cartService.insertCart(cartDto);
             System.out.println(cartDto);
             OrderPageRequestDto.CartItem cartItem = new OrderPageRequestDto.CartItem();
-            cartItem.setCartId(cartDto.getCartId());
+            cartItem.setCartId(cartId);
             cartItem.setPrice(item.getPrice().multiply(new BigDecimal(cartDto.getQuantity()))); // 가격 * 수량 계산
 
             OrderPageRequestDto orderPageRequestDto = new OrderPageRequestDto();
