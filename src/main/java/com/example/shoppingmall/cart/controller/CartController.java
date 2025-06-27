@@ -127,6 +127,9 @@ public class CartController {
                             HttpSession session) {
 
         Long userId = (Long)session.getAttribute("userId");
+        if (userId == null) {
+            return "redirect:/user/loginForm";
+        }
 
         CartDto cartDto = new CartDto();
         cartDto.setUserId(userId);
@@ -146,6 +149,9 @@ public class CartController {
                                       HttpSession session) {
         try {
             Long userId = (Long)session.getAttribute("userId");
+            if (userId == null) {
+                return "redirect:/user/loginForm";
+            }
 
             Item item = itemDao.findById(itemId);
             System.out.println("itemId: "+item.getItemId());
@@ -157,7 +163,6 @@ public class CartController {
             cartDto.setQuantity(quantity);
 
             Long cartId = cartService.insertCart(cartDto);
-            System.out.println(cartDto);
             OrderPageRequestDto.CartItem cartItem = new OrderPageRequestDto.CartItem();
             cartItem.setCartId(cartId);
             cartItem.setPrice(item.getPrice().multiply(new BigDecimal(cartDto.getQuantity()))); // 가격 * 수량 계산

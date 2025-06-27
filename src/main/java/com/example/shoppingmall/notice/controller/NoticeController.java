@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -49,7 +50,11 @@ public class NoticeController {
     }
     //공지사항 등록으로 이동
     @GetMapping("/new")
-    public String createNotice(Model model){
+    public String createNotice(Model model, HttpSession session){
+        Long userId = (Long)session.getAttribute("userId");
+        if (userId == null) {
+            return "redirect:/user/loginForm";
+        }
         model.addAttribute("notice", new Notice());
         return "notice/form";
     }
