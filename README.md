@@ -63,7 +63,7 @@
    ↓
 [Thymeleaf 기반 웹 페이지]
    ↓ (폼 전송 / 요청)
-[Spring Boot + MyBatis 서버]
+[Spring + MyBatis 서버]
    ↓ (쿼리 실행)
 [MySQL DB]
 
