@@ -1,5 +1,5 @@
 ---
-name: fix-template
+name: fix template
 about: 에러 수정
 title: "[Fix] 제목"
 labels: fix
