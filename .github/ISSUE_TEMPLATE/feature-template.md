@@ -1,6 +1,6 @@
 ---
 name: feature template
-about: 새로운 기능에 대해서 자세하게 작성해주세요
+about: 새로운 기능 추가
 title: "[Feature] 제목"
 labels: feat
 assignees: ''
