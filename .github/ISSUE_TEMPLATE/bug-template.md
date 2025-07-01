@@ -1,6 +1,6 @@
 ---
 name: bug template
-about: 발생한 버그에 대해서 자세하게 작성해주세요
+about: 발생한 버그
 title: "[Bug] 제목"
 labels: bug
 assignees: ''
