@@ -1,5 +1,5 @@
 ---
-name: Refactor
+name: refactor template
 about: 리팩토링 이슈
 title: "[Refactor] 제목"
 labels: refactor
