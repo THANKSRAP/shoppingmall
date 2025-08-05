@@ -1,186 +1,106 @@
 package com.example.shoppingmall.cart.controller;
 
+import java.util.Map;
+
+import javax.servlet.http.HttpSession;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.example.shoppingmall.cart.domain.CartDto;
 import com.example.shoppingmall.cart.service.CartService;
-import com.example.shoppingmall.item.dao.ItemDao;
-import com.example.shoppingmall.item.domain.Item;
-import com.example.shoppingmall.order.domain.request.OrderPageRequestDto;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
-import javax.servlet.http.HttpSession;
-import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-
-@Controller
-@RequestMapping("/cart")
+@RestController
+@RequestMapping("/api/cart")
+@RequiredArgsConstructor
+@Slf4j
 public class CartController {
 
+    private final CartService cartService;
 
-    @Autowired
-    private CartService cartService;
-
-    @Autowired
-    private ItemDao itemDao;
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
-    // ✅ [1] HTML 장바구니 페이지
-    @GetMapping
-    public String cartPage(Model model, HttpSession session) {
-        Long userId = (Long)session.getAttribute("userId");
-        if (userId == null) {
-            return "redirect:user/loginForm";
-        }
-
-        List<CartDto> cartList = cartService.getCartByUserId(userId);
-
-
-        int totalCount = cartList.stream().mapToInt(CartDto::getQuantity).sum();
-        model.addAttribute("cartList", cartList);
-        model.addAttribute("cartItemCount", totalCount);
-
-        return "cart/cart";
-    }
-
-
-    // ✅ [2] 수량 변경 API (PATCH)
-    @PatchMapping("/item/{id}")
-    @ResponseBody
-    public ResponseEntity<String> updateQuantity(@PathVariable("id") Long cartId,
-                                                 @RequestBody Map<String, Object> payload) {
-        System.out.println("✅ PATCH 요청 받음: cartId=" + cartId);
-        int quantity = (int) payload.get("quantity");
-        cartService.updateQuantity(cartId, quantity);
-        return ResponseEntity.ok("업데이트 성공");
-    }
-
-
-    // ✅ [3] 선택 삭제 API (DELETE)
-    @DeleteMapping("/items")
-    @ResponseBody
-    public ResponseEntity<Void> deleteSelectedItems(@RequestBody Map<String, List<Long>> body) {
-        List<Long> cartItemIds = body.get("cartItemIds");
-        cartService.deleteByCartIds(cartItemIds);
-        return ResponseEntity.ok().build();
-    }
-
-
-    // ✅ [4] 전체 삭제 API (DELETE)
-    @DeleteMapping("/all")
-    @ResponseBody
-    public ResponseEntity<Void> deleteAllItems(HttpSession session) {
-        Long userId = (Long)session.getAttribute("userId");
-        cartService.deleteAllByUserId(userId);
-        return ResponseEntity.ok().build();
-    }
-
-    @DeleteMapping("/item/{cartId}")
-    @ResponseBody
-    public ResponseEntity<Void> deleteCartItem(@PathVariable("cartId") Long cartId) {
-        cartService.deleteByCartId(cartId); // 서비스 계층에서 단일 삭제 메서드 호출
-        return ResponseEntity.ok().build();
-    }
-
-
-    @PostMapping("/order")
-    public String handleOrder(@RequestBody Map<String, Object> orderData, HttpSession session) {
-        session.setAttribute("orderData", orderData);
-        return "redirect:/order/";
-    }
-
-
-    @PostMapping("/wishlist")
-    @ResponseBody
-    public ResponseEntity<String> addToWishlist(@RequestBody Map<String, Object> data, HttpSession session) {
-
-        System.out.println("💬 받은 데이터: " + data);
-        System.out.println("✅ itemId: " + data.get("itemId"));
-
-        try {
-            Long userId = (Long)session.getAttribute("userId");
-            Long itemId = Long.parseLong(data.get("itemId").toString());
-            System.out.println("🔥 itemId: " + itemId);
-
-            cartService.addToWishlist(userId, itemId);
-            return ResponseEntity.ok("success");
-        } catch (Exception e) {
-            e.printStackTrace(); // 콘솔에 전체 에러 출력
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류 발생");
-        }
-    }
-
+    /**
+     * 장바구니에 상품 추가
+     */
     @PostMapping("/add")
-    public String addToCart(@RequestParam("itemId") Long itemId,
-                            @RequestParam("itemOptionId") Long itemOptionId,
-                            @RequestParam("quantity") int quantity,
-                            HttpSession session) {
-
-        Long userId = (Long)session.getAttribute("userId");
-        if (userId == null) {
-            return "redirect:/user/loginForm";
-        }
-
-        CartDto cartDto = new CartDto();
-        cartDto.setUserId(userId);
-        cartDto.setItemId(itemId);
-        cartDto.setItemOptionId(itemOptionId);
-        cartDto.setQuantity(quantity);
-
-        cartService.insertCart(cartDto);
-
-        return "redirect:/cart";
-    }
-
-    @PostMapping("/order/create")
-    public String createOrderFromItem(@RequestParam("itemId") Long itemId,
-                                      @RequestParam("itemOptionId") Long itemOptionId,
-                                      @RequestParam("quantity") int quantity,
-                                      HttpSession session) {
+    public ResponseEntity<String> addToCart(@RequestBody Map<String, Object> data, HttpSession session) {
         try {
-            Long userId = (Long)session.getAttribute("userId");
+            Long userId = (Long) session.getAttribute("userId");
             if (userId == null) {
-                return "redirect:/user/loginForm";
+                log.warn("로그인하지 않은 사용자가 장바구니 추가 시도");
+                return ResponseEntity.badRequest().body("로그인이 필요합니다.");
             }
 
-            Item item = itemDao.findById(itemId);
-            System.out.println("itemId: "+item.getItemId());
+            Long itemId = Long.valueOf(data.get("itemId").toString());
+            Integer quantity = Integer.valueOf(data.get("quantity").toString());
 
             CartDto cartDto = new CartDto();
             cartDto.setUserId(userId);
             cartDto.setItemId(itemId);
-            cartDto.setItemOptionId(itemOptionId);
             cartDto.setQuantity(quantity);
-
-            Long cartId = cartService.insertCart(cartDto);
-            OrderPageRequestDto.CartItem cartItem = new OrderPageRequestDto.CartItem();
-            cartItem.setCartId(cartId);
-            cartItem.setPrice(item.getPrice().multiply(new BigDecimal(cartDto.getQuantity()))); // 가격 * 수량 계산
-
-            OrderPageRequestDto orderPageRequestDto = new OrderPageRequestDto();
-            orderPageRequestDto.setItemsPrice(cartItem.getPrice());
-            orderPageRequestDto.setDeliveryFee(orderPageRequestDto.getItemsPrice().compareTo(new BigDecimal(100000)) >= 0 ? BigDecimal.ZERO : new BigDecimal(3000)); // 배송비 계산
-
-            orderPageRequestDto.setCarts(Collections.singletonList(cartItem));
-            System.out.println(cartDto);
-            String json = objectMapper.writeValueAsString(orderPageRequestDto);
-            session.setAttribute("orderData", json);
-
-            return "redirect:/order";
-
+            
+            cartService.insertCart(cartDto);
+            log.info("장바구니 추가 완료: 사용자={}, 상품={}, 수량={}", userId, itemId, quantity);
+            return ResponseEntity.ok("장바구니에 추가되었습니다.");
+            
         } catch (Exception e) {
-            e.printStackTrace();
-            return "error";
+            log.error("장바구니 추가 실패", e);
+            return ResponseEntity.badRequest().body("장바구니 추가에 실패했습니다.");
+        }
+    }
+
+    /**
+     * 장바구니 상품 수량 변경
+     */
+    @PatchMapping("/{cartId}")
+    public ResponseEntity<String> updateCartItem(@PathVariable Long cartId,
+                                               @RequestBody Map<String, Object> data,
+                                               HttpSession session) {
+        try {
+            Long userId = (Long) session.getAttribute("userId");
+            if (userId == null) {
+                log.warn("로그인하지 않은 사용자가 장바구니 수량 변경 시도");
+                return ResponseEntity.badRequest().body("로그인이 필요합니다.");
+            }
+
+            Integer quantity = Integer.valueOf(data.get("quantity").toString());
+            cartService.updateQuantity(cartId, quantity);
+            log.info("장바구니 수량 변경: 장바구니ID={}, 수량={}", cartId, quantity);
+            return ResponseEntity.ok("수량이 변경되었습니다.");
+            
+        } catch (Exception e) {
+            log.error("장바구니 수량 변경 실패: 장바구니ID={}", cartId, e);
+            return ResponseEntity.badRequest().body("수량 변경에 실패했습니다.");
+        }
+    }
+
+    /**
+     * 장바구니에서 상품 삭제
+     */
+    @DeleteMapping("/{cartId}")
+    public ResponseEntity<String> removeFromCart(@PathVariable Long cartId, HttpSession session) {
+        try {
+            Long userId = (Long) session.getAttribute("userId");
+            if (userId == null) {
+                log.warn("로그인하지 않은 사용자가 장바구니 삭제 시도");
+                return ResponseEntity.badRequest().body("로그인이 필요합니다.");
+            }
+
+            cartService.deleteByCartId(cartId);
+            log.info("장바구니 상품 삭제: 장바구니ID={}", cartId);
+            return ResponseEntity.ok("상품이 삭제되었습니다.");
+            
+        } catch (Exception e) {
+            log.error("장바구니 상품 삭제 실패: 장바구니ID={}", cartId, e);
+            return ResponseEntity.badRequest().body("상품 삭제에 실패했습니다.");
         }
     }
 }

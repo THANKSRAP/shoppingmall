@@ -1,77 +1,75 @@
 package com.example.shoppingmall.itemquestion.dao;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import com.example.shoppingmall.itemquestion.domain.ItemQuestion;
-import com.example.shoppingmall.notice.domain.dto.PageRequest;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
-import java.util.List;
+import com.example.shoppingmall.common.dto.PageRequest;
+import com.example.shoppingmall.itemquestion.domain.ItemQuestion;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Repository
+@RequiredArgsConstructor
+@Slf4j
 public class ItemQuestionDaoImpl implements ItemQuestionDao {
+    
     private final SqlSession sqlSession;
-    private static final String namespace = "ItemQuestionMapper";
+    private static final String NAMESPACE = "ItemQuestionMapper.";
 
-    public ItemQuestionDaoImpl(SqlSession sqlSession) {
-        this.sqlSession = sqlSession;
-    }
-
-    //전체조회
     @Override
     public List<ItemQuestion> findAll() {
-        return sqlSession.selectList(namespace + "findAll");
+        return sqlSession.selectList(NAMESPACE + "findAll");
     }
 
-    //단건조회
     @Override
     public ItemQuestion findById(Long id) {
-        return sqlSession.selectOne(namespace + "findById", id);
+        return sqlSession.selectOne(NAMESPACE + "findById", id);
     }
 
-    //등록
     @Override
     public void insert(ItemQuestion itemQuestion) {
-        sqlSession.insert(namespace + "insert", itemQuestion);
+        sqlSession.insert(NAMESPACE + "insert", itemQuestion);
     }
 
-    //수정
     @Override
     public int update(ItemQuestion itemQuestion) {
-        return sqlSession.update(namespace + "update", itemQuestion);
+        return sqlSession.update(NAMESPACE + "update", itemQuestion);
     }
 
-    //삭제
     @Override
     public void delete(Long id) {
-        sqlSession.update(namespace + "delete", id);
+        sqlSession.update(NAMESPACE + "delete", id);
     }
 
     @Override
     public List<ItemQuestion> findPage(PageRequest pageRequest) {
-        var params = new java.util.HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
         params.put("offset", pageRequest.getOffset());
         params.put("limit", pageRequest.getLimit());
-        return sqlSession.selectList(namespace + "findPage", params);
+        return sqlSession.selectList(NAMESPACE + "findPage", params);
     }
 
     @Override
     public int count() {
-        return sqlSession.selectOne(namespace + "count");
+        return sqlSession.selectOne(NAMESPACE + "count");
     }
 
     @Override
     public List<ItemQuestion> findByKeyword(String keyword, int limit, int offset) {
-        var params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
         params.put("keyword", keyword);
         params.put("limit", limit);
         params.put("offset", offset);
-        return sqlSession.selectList(namespace + "findByKeyword", params);
+        return sqlSession.selectList(NAMESPACE + "findByKeyword", params);
     }
 
     @Override
     public int countByKeyword(String keyword) {
-        return sqlSession.selectOne(namespace + "countByKeyword", keyword);
+        return sqlSession.selectOne(NAMESPACE + "countByKeyword", keyword);
     }
 }

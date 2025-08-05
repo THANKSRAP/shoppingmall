@@ -1,18 +1,19 @@
 
 package com.example.shoppingmall.user.service;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.stereotype.Service;
-
 import java.security.SecureRandom;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.stereotype.Service;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
@@ -24,13 +25,12 @@ public class EmailService {
     // 인증 코드 저장소 (실제 운영에서는 Redis 사용 권장)
     private final ConcurrentHashMap<String, String> verificationCodes = new ConcurrentHashMap<>();
 
-    // 인증 완료 상태 저장소 추가
+    // 인증 완료 상태 저장소
     private final ConcurrentHashMap<String, Boolean> verifiedEmails = new ConcurrentHashMap<>();
 
     // 인증 코드 만료 시간 관리
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
-    // 일반 키(Spring Boot X)
     @Value("${mail.username:noreply@shoppingmall.com}")
     private String fromEmail;
 
@@ -57,36 +57,16 @@ public class EmailService {
             mailSender.send(message);
             log.info("이메일 인증 코드 발송 완료: {}", toEmail);
 
-            // 개발 확인용 콘솔 출력
-            System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-            System.out.println("📧 [Gmail 발송 완료!] " + toEmail);
-            System.out.println("🔐 인증코드: " + verificationCode);
-            System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-
             return true;
 
         } catch (Exception e) {
-            log.error("❌ 이메일 발송 실패: {}", toEmail, e);
-
-            // 실패 시에도 개발용으로 콘솔 출력
-            String backupCode = generateVerificationCode();
-            verificationCodes.put(toEmail, backupCode);
-            scheduler.schedule(() -> verificationCodes.remove(toEmail), 5, TimeUnit.MINUTES);
-
-            System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-            System.out.println("⚠️ [Gmail 발송 실패 - 개발용 출력]");
-            System.out.println("📬 수신자: " + toEmail);
-            System.out.println("🔐 인증코드: " + backupCode);
-            System.out.println("📄 오류: " + e.getMessage());
-            System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-
-            return true; // 개발용으로는 성공 처리
+            log.error("이메일 발송 실패: {}", toEmail, e);
+            return false;
         }
     }
 
-
     /**
-     * 인증 코드 검증 + 인증 완료 상태 저장 추가
+     * 인증 코드 검증
      */
     public boolean verifyCode(String email, String inputCode) {
         String storedCode = verificationCodes.get(email);
@@ -102,7 +82,7 @@ public class EmailService {
             // 인증 성공 시 코드 삭제
             verificationCodes.remove(email);
 
-            // 🎯 인증 완료 상태 저장 (5분 유지)
+            // 인증 완료 상태 저장 (5분 유지)
             verifiedEmails.put(email, true);
             scheduler.schedule(() -> verifiedEmails.remove(email), 5, TimeUnit.MINUTES);
 
@@ -113,7 +93,6 @@ public class EmailService {
 
         return isValid;
     }
-
 
     /**
      * 6자리 숫자 인증 코드 생성
@@ -147,10 +126,9 @@ public class EmailService {
     }
 
     /**
-     *  이메일 인증 완료 상태 확인
+     * 이메일 인증 완료 상태 확인
      */
     public boolean isEmailVerified(String email) {
         return verifiedEmails.getOrDefault(email, false);
     }
-
 }
