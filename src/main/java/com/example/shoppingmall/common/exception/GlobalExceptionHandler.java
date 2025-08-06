@@ -3,6 +3,7 @@ package com.example.shoppingmall.common.exception;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -52,27 +53,23 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * 일반적인 예외 처리
+     * 일반적인 예외 처리 (응답 타입에 따라 JSON 또는 뷰 반환)
      */
     @ExceptionHandler(Exception.class)
-    @SuppressWarnings("unchecked")
-    public ResponseEntity<ApiResponse<Object>> handleException(Exception e) {
+    public Object handleException(Exception e, HttpServletRequest request) {
         log.error("예상치 못한 예외 발생", e);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body((ApiResponse<Object>) ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), "시스템 오류가 발생했습니다."));
-    }
 
-    /**
-     * 뷰 렌더링 중 발생하는 예외 처리
-     */
-    @ExceptionHandler(Exception.class)
-    public ModelAndView handleViewException(Exception e, HttpServletRequest request) {
-        log.error("뷰 렌더링 중 예외 발생: {}", request.getRequestURI(), e);
-
-        ModelAndView mav = new ModelAndView();
-        mav.setViewName("error/error");
-        mav.addObject("errorMessage", "페이지를 불러오는 중 오류가 발생했습니다.");
-        mav.addObject("errorCode", "500");
-        return mav;
+        String accept = request.getHeader("Accept");
+        if (accept != null && accept.contains(MediaType.APPLICATION_JSON_VALUE)) {
+            // 요청이 JSON 타입을 요구할 경우, JSON 응답 반환
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body((ApiResponse<Object>) ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), "시스템 오류가 발생했습니다."));
+        } else {
+            // 뷰 렌더링 (HTML 응답) 반환
+            ModelAndView mav = new ModelAndView("error/error");
+            mav.addObject("errorMessage", "페이지를 불러오는 중 오류가 발생했습니다.");
+            mav.addObject("errorCode", "500");
+            return mav;
+        }
     }
 }
