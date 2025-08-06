@@ -1,4 +1,6 @@
-package com.example.shoppingmall;
+package com.example.shoppingmall.common.config;
+
+import java.util.Properties;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -7,13 +9,10 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
-import java.util.Properties;
-
 @Configuration
 @PropertySource("classpath:mail.properties")
 public class MailConfig {
 
-    // Spring MVC 사용
     @Value("${mail.host:smtp.gmail.com}")
     private String host;
 
@@ -39,7 +38,7 @@ public class MailConfig {
         props.put("mail.transport.protocol", "smtp");
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.debug", "true"); // 운영에서는 false로 설정
+        props.put("mail.debug", "false"); // 운영환경에서는 false
 
         return mailSender;
     }

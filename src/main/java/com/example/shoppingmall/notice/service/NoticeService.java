@@ -2,7 +2,7 @@ package com.example.shoppingmall.notice.service;
 
 import com.example.shoppingmall.notice.dao.NoticeDao;
 import com.example.shoppingmall.notice.domain.Notice;
-import com.example.shoppingmall.notice.domain.dto.PageRequest;
+import com.example.shoppingmall.common.dto.PageRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List;

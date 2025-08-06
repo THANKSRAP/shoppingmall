@@ -2,7 +2,7 @@ package com.example.shoppingmall.itemquestion.controller;
 
 import com.example.shoppingmall.itemquestion.domain.ItemQuestion;
 import com.example.shoppingmall.itemquestion.service.ItemQuestionService;
-import com.example.shoppingmall.notice.domain.dto.PageRequest;
+import com.example.shoppingmall.common.dto.PageRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

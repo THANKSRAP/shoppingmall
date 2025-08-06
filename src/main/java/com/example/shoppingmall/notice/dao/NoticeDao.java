@@ -1,8 +1,7 @@
 package com.example.shoppingmall.notice.dao;
 
 import com.example.shoppingmall.notice.domain.Notice;
-import com.example.shoppingmall.notice.domain.dto.PageRequest;
-import org.apache.ibatis.annotations.Param;
+import com.example.shoppingmall.common.dto.PageRequest;
 
 import java.util.List;
 

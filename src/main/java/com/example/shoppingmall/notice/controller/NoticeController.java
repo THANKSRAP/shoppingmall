@@ -1,7 +1,7 @@
 package com.example.shoppingmall.notice.controller;
 
 import com.example.shoppingmall.notice.domain.Notice;
-import com.example.shoppingmall.notice.domain.dto.PageRequest;
+import com.example.shoppingmall.common.dto.PageRequest;
 import com.example.shoppingmall.notice.service.NoticeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
