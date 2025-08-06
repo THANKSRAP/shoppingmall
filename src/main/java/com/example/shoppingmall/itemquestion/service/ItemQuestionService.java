@@ -1,6 +1,6 @@
 package com.example.shoppingmall.itemquestion.service;
 
-import com.example.shoppingmall.notice.domain.dto.PageRequest;
+import com.example.shoppingmall.common.dto.PageRequest;
 import com.example.shoppingmall.itemquestion.dao.ItemQuestionDao;
 import com.example.shoppingmall.itemquestion.domain.ItemQuestion;
 import lombok.RequiredArgsConstructor;

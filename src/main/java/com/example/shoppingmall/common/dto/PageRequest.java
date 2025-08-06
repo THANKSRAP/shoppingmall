@@ -1,4 +1,4 @@
-package com.example.shoppingmall.notice.domain.dto;
+package com.example.shoppingmall.common.dto;
 
 public class PageRequest {
     private final int page;

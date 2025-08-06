@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+    <settings>
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+    </settings>
+
+    <typeAliases>
+        <package name="com.example.shoppingmall.user.domain"/>
+        <package name="com.example.shoppingmall.review.domain"/>
+        <package name="com.example.shoppingmall.order.domain"/>
+        <package name="com.example.shoppingmall.notice.domain"/>
+        <package name="com.example.shoppingmall.itemquestion.domain"/>
+        <package name="com.example.shoppingmall.item.domain"/>
+        <package name="com.example.shoppingmall.cart.domain"/>
+        <package name="com.example.shoppingmall.admin.domain"/>
+    </typeAliases>
+
+    <mappers>
+        <package name="com.example.shoppingmall"/>
+    </mappers>
+
+</configuration>
