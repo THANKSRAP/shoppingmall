@@ -2,7 +2,7 @@ package com.example.shoppingmall.itemquestion.controller;
 
 import com.example.shoppingmall.itemquestion.domain.ItemQuestion;
 import com.example.shoppingmall.itemquestion.service.ItemQuestionService;
-import com.example.shoppingmall.common.dto.PageRequest;
+import com.example.shoppingmall.common.dto.PageRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,8 +35,8 @@ public class ItemQuestionController {
             totalCount = itemQuestionService.countSearch(keyword);
             model.addAttribute("keyword", keyword);
         } else {
-            PageRequest pageRequest = new PageRequest(page, size);
-            questions = itemQuestionService.getPage(pageRequest);
+            PageRequestDto pageRequestDto = new PageRequestDto(page, size);
+            questions = itemQuestionService.getPage(pageRequestDto);
             totalCount = itemQuestionService.getTotalCount();
         }
         int totalPages = (int) Math.ceil((double) totalCount / size);

@@ -4,13 +4,13 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class PageResult<T> {
+public class PageResultDto<T> {
     private List<T> data;
     private int totalCount;
     private int totalPages;
     private int pageSize;
 
-    public PageResult(List<T> data, int totalCount, int pageSize) {
+    public PageResultDto(List<T> data, int totalCount, int pageSize) {
         this.data = data;
         this.totalCount = totalCount;
         this.pageSize = pageSize;

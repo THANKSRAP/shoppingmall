@@ -1,7 +1,7 @@
 package com.example.shoppingmall.itemquestion.dao;
 
 import com.example.shoppingmall.itemquestion.domain.ItemQuestion;
-import com.example.shoppingmall.common.dto.PageRequest;
+import com.example.shoppingmall.common.dto.PageRequestDto;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -23,7 +23,7 @@ public interface ItemQuestionDao {
     void delete(Long id);
 
     //페이징 목록 조회
-    List<ItemQuestion> findPage(PageRequest pageRequest);
+    List<ItemQuestion> findPage(PageRequestDto pageRequestDto);
 
     //전체 공지사항 수 조회
     int count();

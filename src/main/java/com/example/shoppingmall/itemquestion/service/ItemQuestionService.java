@@ -1,6 +1,6 @@
 package com.example.shoppingmall.itemquestion.service;
 
-import com.example.shoppingmall.common.dto.PageRequest;
+import com.example.shoppingmall.common.dto.PageRequestDto;
 import com.example.shoppingmall.itemquestion.dao.ItemQuestionDao;
 import com.example.shoppingmall.itemquestion.domain.ItemQuestion;
 import lombok.RequiredArgsConstructor;
@@ -51,8 +51,8 @@ public class ItemQuestionService {
         itemQuestionDao.delete(id);
     }
     //페이징 목록 조회
-    public List<ItemQuestion> getPage(PageRequest pageRequest){
-        return itemQuestionDao.findPage(pageRequest);
+    public List<ItemQuestion> getPage(PageRequestDto pageRequestDto){
+        return itemQuestionDao.findPage(pageRequestDto);
     }
     public int getTotalCount(){
         return itemQuestionDao.count();

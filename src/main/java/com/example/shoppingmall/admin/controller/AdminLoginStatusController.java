@@ -3,7 +3,7 @@ package com.example.shoppingmall.admin.controller;
 import com.example.shoppingmall.admin.dto.LoginHistoryDto;
 import com.example.shoppingmall.admin.dto.LoginStatusSearchDto;
 import com.example.shoppingmall.admin.service.AdminLoginStatusService;
-import com.example.shoppingmall.common.dto.PageResult;
+import com.example.shoppingmall.common.dto.PageResultDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -45,7 +45,7 @@ public class AdminLoginStatusController {
         searchDto.setPageSize(pageSize);
 
         // 데이터 조회
-        PageResult<LoginHistoryDto> result = adminLoginStatusService.getLoginHistories(searchDto);
+        PageResultDto<LoginHistoryDto> result = adminLoginStatusService.getLoginHistories(searchDto);
 
         // 페이지네이션 계산
         int totalPages = result.getTotalPages();

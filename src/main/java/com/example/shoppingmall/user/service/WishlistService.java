@@ -1,6 +1,6 @@
 package com.example.shoppingmall.user.service;
 
-import com.example.shoppingmall.common.dto.PageResult;
+import com.example.shoppingmall.common.dto.PageResultDto;
 import com.example.shoppingmall.user.dao.WishlistDao;
 import com.example.shoppingmall.user.domain.dto.WishlistDto;
 import com.example.shoppingmall.user.domain.dto.WishlistSearchDto;
@@ -15,11 +15,11 @@ public class WishlistService {
 
     private final WishlistDao wishlistDao;
 
-    public PageResult<WishlistDto> getWishlistPage(WishlistSearchDto searchDto) {
+    public PageResultDto<WishlistDto> getWishlistPage(WishlistSearchDto searchDto) {
         List<WishlistDto> wishlist = wishlistDao.selectWishlist(searchDto);
         int totalCount = wishlistDao.countWishlist(searchDto.getUserId());
 
-        return new PageResult<>(wishlist, totalCount, searchDto.getPageSize());
+        return new PageResultDto<>(wishlist, totalCount, searchDto.getPageSize());
     }
 
     /**

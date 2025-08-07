@@ -1,6 +1,6 @@
 package com.example.shoppingmall.user.controller;
 
-import com.example.shoppingmall.common.dto.PageResult;
+import com.example.shoppingmall.common.dto.PageResultDto;
 import com.example.shoppingmall.user.dao.UserDao;
 import com.example.shoppingmall.user.domain.User;
 import com.example.shoppingmall.user.domain.dto.WishlistDto;
@@ -16,7 +16,6 @@ import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 @Slf4j
 @Controller
@@ -50,7 +49,7 @@ public class WishlistController {
         searchDto.setPageSize(10); // 한 페이지에 10개
 
         // 관심목록 조회 (빈 목록도 정상 처리)
-        PageResult<WishlistDto> wishlistPage = wishlistService.getWishlistPage(searchDto);
+        PageResultDto<WishlistDto> wishlistPage = wishlistService.getWishlistPage(searchDto);
 
         // 페이지네이션 정보 계산
         int totalPages = wishlistPage.getTotalPages();

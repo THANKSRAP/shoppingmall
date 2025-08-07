@@ -2,7 +2,7 @@ package com.example.shoppingmall.itemquestion.dao;
 
 
 import com.example.shoppingmall.itemquestion.domain.ItemQuestion;
-import com.example.shoppingmall.common.dto.PageRequest;
+import com.example.shoppingmall.common.dto.PageRequestDto;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
@@ -49,10 +49,10 @@ public class ItemQuestionDaoImpl implements ItemQuestionDao {
     }
 
     @Override
-    public List<ItemQuestion> findPage(PageRequest pageRequest) {
+    public List<ItemQuestion> findPage(PageRequestDto pageRequestDto) {
         var params = new java.util.HashMap<String, Object>();
-        params.put("offset", pageRequest.getOffset());
-        params.put("limit", pageRequest.getLimit());
+        params.put("offset", pageRequestDto.getOffset());
+        params.put("limit", pageRequestDto.getLimit());
         return sqlSession.selectList(namespace + "findPage", params);
     }
 

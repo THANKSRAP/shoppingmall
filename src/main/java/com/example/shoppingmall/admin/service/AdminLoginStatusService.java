@@ -3,7 +3,7 @@ package com.example.shoppingmall.admin.service;
 import com.example.shoppingmall.admin.dao.AdminLoginStatusDao;
 import com.example.shoppingmall.admin.dto.LoginHistoryDto;
 import com.example.shoppingmall.admin.dto.LoginStatusSearchDto;
-import com.example.shoppingmall.common.dto.PageResult;
+import com.example.shoppingmall.common.dto.PageResultDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +19,7 @@ public class AdminLoginStatusService {
         this.adminLoginStatusDao = adminLoginStatusDao;
     }
 
-    public PageResult<LoginHistoryDto> getLoginHistories(LoginStatusSearchDto searchDto) {
+    public PageResultDto<LoginHistoryDto> getLoginHistories(LoginStatusSearchDto searchDto) {
         List<LoginHistoryDto> histories = adminLoginStatusDao.selectLoginHistories(searchDto);
         int totalCount = adminLoginStatusDao.countLoginHistories(searchDto);
 
@@ -29,7 +29,7 @@ public class AdminLoginStatusService {
             histories.get(i).setRowNumber(startRowNumber - i);
         }
 
-        return new PageResult<>(histories, totalCount, searchDto.getPageSize());
+        return new PageResultDto<>(histories, totalCount, searchDto.getPageSize());
     }
 
     public int getActiveUserCount() {

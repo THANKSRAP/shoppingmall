@@ -1,7 +1,7 @@
 package com.example.shoppingmall.notice.controller;
 
 import com.example.shoppingmall.notice.domain.Notice;
-import com.example.shoppingmall.common.dto.PageRequest;
+import com.example.shoppingmall.common.dto.PageRequestDto;
 import com.example.shoppingmall.notice.service.NoticeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -26,9 +26,9 @@ public class NoticeController {
             @RequestParam(defaultValue = "10") int size,
             Model model
     ) {
-        PageRequest pageRequest = new PageRequest(page, size);
+        PageRequestDto pageRequestDto = new PageRequestDto(page, size);
 
-        List<Notice> notices = noticeService.getPage(pageRequest);
+        List<Notice> notices = noticeService.getPage(pageRequestDto);
         int totalCount = noticeService.getTotalCount();
         int totalPages = (int) Math.ceil((double)totalCount / size);
 

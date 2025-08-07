@@ -2,7 +2,7 @@ package com.example.shoppingmall.notice.service;
 
 import com.example.shoppingmall.notice.dao.NoticeDao;
 import com.example.shoppingmall.notice.domain.Notice;
-import com.example.shoppingmall.common.dto.PageRequest;
+import com.example.shoppingmall.common.dto.PageRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -47,8 +47,8 @@ public class NoticeService {
         return noticeDao.increaseViewCount(noticeId);
     }
     //페이징 목록 조회
-    public List<Notice> getPage(PageRequest pageRequest){
-        return noticeDao.findPage(pageRequest);
+    public List<Notice> getPage(PageRequestDto pageRequestDto){
+        return noticeDao.findPage(pageRequestDto);
     }
     public int getTotalCount(){
         return noticeDao.count();
