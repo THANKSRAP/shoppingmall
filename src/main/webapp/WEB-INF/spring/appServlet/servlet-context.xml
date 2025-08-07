@@ -44,9 +44,7 @@
     </beans:bean>
 
     <!-- Component Scan -->
-    <context:component-scan base-package="com.example.shoppingmall"/>
+    <context:component-scan base-package="com.example.shoppingmall, com.example.shoppingmall.admin.controller, com.example.shoppingmall.cart.controller, com.example.shoppingmall.item.controller, com.example.shoppingmall.itemquestion.controller, com.example.shoppingmall.notice.controller, com.example.shoppingmall.order.controller, com.example.shoppingmall.review.controller, com.example.shoppingmall.user.controller"/>
 
-    <!-- Properties 파일 로더 추가 -->
-    <context:property-placeholder location="classpath:mail.properties"/>
 
 </beans:beans>
