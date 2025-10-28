@@ -12,9 +12,8 @@ import java.util.Map;
 
 @Repository
 public class WishlistDaoImpl implements WishlistDao {
-    // ... 나머지 코드는 동일
     private final SqlSession sqlSession;
-    private static final String NAMESPACE = "WishlistMapper.";
+    private static final String NAMESPACE = "com.example.shoppingmall.user.dao.WishlistDao.";
 
     public WishlistDaoImpl(SqlSession sqlSession) {
         this.sqlSession = sqlSession;
