@@ -24,31 +24,36 @@ public class HomeController {
 
     @GetMapping("/")
     public String home(@RequestParam(required = false) String message,
-                       HttpServletRequest request, // HttpServletRequest 추가
-                       Model model) {// 수정: message 파라미터 추가
+                       HttpServletRequest request,
+                       Model model) {
 
         log.info("==================== HomeController 호출 ====================");
         log.info("요청 IP: {}", request.getRemoteAddr());
         log.info("User-Agent: {}", request.getHeader("User-Agent"));
 
-        List<ItemDto> bestSellers = itemService.getBestSellers();
-        List<ItemDto> newReleases = itemService.getNewItems();
+//        List<ItemDto> bestSellers = itemService.getBestSellers();
+//        List<ItemDto> newReleases = itemService.getNewItems();
 
-        bestSellers.forEach(item -> {
-            ItemDto summary = itemService.getItemWithReviewSummary(item.getItemId());
-            if (summary != null) {
-                item.setAverageRating(summary.getAverageRating());
-                item.setReviewCount(summary.getReviewCount());
-            }
-        });
+        // [수정] N+1 문제가 해결된 서비스 메소드를 직접 호출
+        // (JOIN을 통해 아이템 목록과 리뷰 요약 정보를 한 번의 쿼리로 가져옴)
+        List<ItemDto> bestSellers = itemService.getBestSellersWithReviewSummary();
+        List<ItemDto> newReleases = itemService.getNewItemsWithReviewSummary();
 
-        newReleases.forEach(item -> {
-            ItemDto summary = itemService.getItemWithReviewSummary(item.getItemId());
-            if (summary != null) {
-                item.setAverageRating(summary.getAverageRating());
-                item.setReviewCount(summary.getReviewCount());
-            }
-        });
+//        bestSellers.forEach(item -> {
+//            ItemDto summary = itemService.getItemWithReviewSummary(item.getItemId());
+//            if (summary != null) {
+//                item.setAverageRating(summary.getAverageRating());
+//                item.setReviewCount(summary.getReviewCount());
+//            }
+//        });
+
+//        newReleases.forEach(item -> {
+//            ItemDto summary = itemService.getItemWithReviewSummary(item.getItemId());
+//            if (summary != null) {
+//                item.setAverageRating(summary.getAverageRating());
+//                item.setReviewCount(summary.getReviewCount());
+//            }
+//        });
 
         model.addAttribute("bestSellers", bestSellers);
         model.addAttribute("newReleases", newReleases);
@@ -119,45 +124,3 @@ public class HomeController {
         return "home";
     }
 }
-
-
-
-//        // 추가: 로그인/로그아웃 메시지 처리
-//        if (message != null && !message.trim().isEmpty()) {
-//            model.addAttribute("message", message);
-//        }
-
-//        //  디버깅: 세션 정보 확인
-//        System.out.println("=== HomeController 디버깅 ===");
-//        System.out.println("session.getAttribute('userId'): " + session.getAttribute("userId"));
-//        System.out.println("session.getAttribute('email'): " + session.getAttribute("email"));
-//        System.out.println("session.getAttribute('user'): " + session.getAttribute("user"));
-//
-//        //  모델에 세션 정보 강제로 추가
-//        Long userId = (Long) session.getAttribute("userId");
-//        Object user = session.getAttribute("user");
-//
-//        if (userId != null || user != null) {
-//            model.addAttribute("sessionUserId", userId);
-//            model.addAttribute("sessionUser", user);
-//            model.addAttribute("isLoggedIn", true);
-//            System.out.println("✅ 로그인 상태로 모델에 추가됨");
-//        } else {
-//            model.addAttribute("isLoggedIn", false);
-//            System.out.println("❌ 로그인 상태 아님");
-//        }
-
-
-//        // 세션 정보를 모델에 추가 (header.html에서 사용하기 위해)
-//        Long userId = (Long) session.getAttribute("userId");
-//        String email = (String) session.getAttribute("email");
-//
-//        if (userId != null) {
-//            model.addAttribute("isLoggedIn", true);
-//            model.addAttribute("userEmail", email);
-//            // session.user 방식과 호환되도록 추가
-//            model.addAttribute("userId", userId);
-//        } else {
-//            model.addAttribute("isLoggedIn", false);
-//        }
-

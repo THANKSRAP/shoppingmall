@@ -73,4 +73,14 @@ public class ItemDaoImpl implements ItemDao {
     public ItemDto selectItemWithReviewSummary(Long itemId) {
         return sqlSession.selectOne(NAMESPACE + "selectItemWithReviewSummary", itemId);
     }
+
+    @Override
+    public List<ItemDto> findBestSellersWithReviewSummary() {
+        return sqlSession.selectList(NAMESPACE + "findBestSellersWithReviewSummary");
+    }
+
+    @Override
+    public List<ItemDto> findNewItemsWithReviewSummary() {
+        return sqlSession.selectList(NAMESPACE + "findNewItemsWithReviewSummary");
+    }
 }

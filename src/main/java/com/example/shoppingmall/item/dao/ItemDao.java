@@ -30,4 +30,7 @@ public interface ItemDao {
 
     ItemDto selectItemWithReviewSummary(Long itemId);
 
+    List<ItemDto> findBestSellersWithReviewSummary();
+
+    List<ItemDto> findNewItemsWithReviewSummary();
 }
