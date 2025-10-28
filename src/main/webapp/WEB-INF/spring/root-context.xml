@@ -6,10 +6,14 @@
            http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
            http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
 
+    <!-- ============================= -->
     <!-- 외부 properties 파일 로딩 -->
+    <!-- ============================= -->
     <context:property-placeholder location="classpath:db.properties, classpath:mail.properties"/>
 
+    <!-- ============================= -->
     <!-- DB 연결 설정 -->
+    <!-- ============================= -->
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="${db.driver}"/>
         <property name="url" value="${db.url}"/>
@@ -17,40 +21,71 @@
         <property name="password" value="${db.password}"/>
     </bean>
 
+    <!-- ============================= -->
     <!-- MyBatis SqlSessionFactory 설정 -->
-    <!-- (추후에 property에 따라서 domain 세부 경로 설정 필요, 루트 경로로 하면 성능 저하 발생)-->
+    <!-- ============================= -->
+    <!-- SqlSessionFactoryBean을 통해 MyBatis와 Spring 연동 -->
+    <!-- configLocation: mybatis-config.xml (전역 설정) -->
+    <!-- mapperLocations: 매퍼 XML 파일 경로 지정 -->
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="dataSource"/>
         <property name="configLocation" value="classpath:mybatis-config.xml"/>
         <property name="mapperLocations" value="classpath:/mapper/**/*.xml"/>
     </bean>
 
-    <!-- MyBatis SqlSessionTemplate (선택) -->
+    <!-- ============================= -->
+    <!-- MyBatis SqlSessionTemplate 설정 -->
+    <!-- ============================= -->
+    <!-- SqlSession을 스프링 환경에 맞게 감싼 템플릿 객체 -->
+    <!-- 스레드 세이프, 트랜잭션 연동, 예외 변환 제공 -->
+    <!-- 매퍼 인터페이스만 쓰면 생략 가능하지만, 현재는 SqlSession 직접 호출 DAO가 있어 반드시 필요 -->
     <bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
         <constructor-arg index="0" ref="sqlSessionFactory"/>
     </bean>
 
-    <!-- Mapper 인터페이스 자동 스캔 -->
-    <!-- (추후에 property에 따라서 dao or mapper 세부 경로 설정 필요, 루트 경로로 하면 성능 저하 발생)-->
-    <!-- 루트 경로로 설정했을 때 service를 mapper로 인식하는 오류 발생 -->
-    <!-- Controller가 Mapper로 인식되어서 Binding Exception이 발생함 -> 정확한 Mapper(dao) 설정 필요-->
-    <!-- MapperScannerConfigurer로 직접 등록하는 경우, dao에 @Repository 어노테이션 제거하기 (중복 등록 됨) -->
+    <!-- ============================= -->
+    <!-- Mapper 등록 (컴포넌트 스캔 방식) -->
+    <!-- ============================= -->
+    <!-- @Repository 어노테이션이 붙은 Mapper 인터페이스(DAO) 자동 스캔 -->
+    <!-- Controller는 제외하여 Binding Exception 방지(웹 계층(@Controller)에 대한 설정은 servlet-context.xml에서 담당) -->
+    <!-- MapperScannerConfigurer로 등록하는 경우, dao에 @Repository 어노테이션 제거하기 (중복 등록 됨) -->
     <context:component-scan base-package="com.example.shoppingmall">
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
 
-    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-        <!-- <property name="basePackage" value="com.example.shoppingmall"/> -->
-        <property name="basePackage"
-                  value="com.example.shoppingmall.user.dao, com.example.shoppingmall.review.dao, com.example.shoppingmall.order.dao, com.example.shoppingmall.notice.dao, com.example.shoppingmall.itemquestion.dao, com.example.shoppingmall.item.dao, com.example.shoppingmall.cart.dao, com.example.shoppingmall.admin.dao"/>
-    </bean>
 
+    <!-- ============================= -->
+    <!-- Mapper 등록 (대안: MapperScannerConfigurer) -->
+    <!-- ============================= -->
+    <!-- Mapper 인터페이스 패키지를 명시적으로 지정하는 방식 -->
+    <!-- 이 경우 @Repository 어노테이션 제거 필요 (중복 등록 방지) -->
+    <!--
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage"
+                  value="com.example.shoppingmall.user.dao,
+                         com.example.shoppingmall.review.dao,
+                         com.example.shoppingmall.order.dao,
+                         com.example.shoppingmall.notice.dao,
+                         com.example.shoppingmall.itemquestion.dao,
+                         com.example.shoppingmall.item.dao,
+                         com.example.shoppingmall.cart.dao,
+                         com.example.shoppingmall.admin.dao"/>
+    </bean>
+    -->
+
+
+    <!-- ============================= -->
     <!-- 트랜잭션 매니저 설정 -->
+    <!-- ============================= -->
+    <!-- Spring의 선언적 트랜잭션 처리를 위해 DataSourceTransactionManager 등록 -->
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource"/>
     </bean>
 
-
+    <!-- ============================= -->
+    <!-- 메일 설정 파일 import -->
+    <!-- ============================= -->
+    <!-- 서비스, DAO, 인프라 Bean 등록은 root-context.xml에 등록-->
     <import resource="classpath:mail-config.xml"/>
 
 </beans>

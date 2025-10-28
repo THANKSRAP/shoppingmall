@@ -44,7 +44,9 @@
     </beans:bean>
 
     <!-- Component Scan -->
-    <context:component-scan base-package="com.example.shoppingmall, com.example.shoppingmall.admin.controller, com.example.shoppingmall.cart.controller, com.example.shoppingmall.item.controller, com.example.shoppingmall.itemquestion.controller, com.example.shoppingmall.notice.controller, com.example.shoppingmall.order.controller, com.example.shoppingmall.review.controller, com.example.shoppingmall.user.controller"/>
-
+    <!-- servlet-context.xml은 웹 계층(@Controller, ViewResolver, HandlerMapping)에 대한 설정(Bean 등록) 담당-->
+    <context:component-scan base-package="com.example.shoppingmall" use-default-filters="false">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
 
 </beans:beans>
