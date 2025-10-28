@@ -1,5 +1,6 @@
-package com.example.shoppingmall.user.dao;
+package com.example.shoppingmall.user.dao.impl;
 
+import com.example.shoppingmall.user.dao.DeliveryAddressDao;
 import com.example.shoppingmall.user.domain.DeliveryAddressDto;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.SqlSession;
@@ -13,7 +14,7 @@ public class DeliveryAddressDaoImpl implements DeliveryAddressDao {
 
     @Autowired
     private SqlSession sqlSession;
-    private static final String NAMESPACE = "DeliveryAddressMapper.";
+    private static final String NAMESPACE = "com.example.shoppingmall.user.dao.DeliveryAddressDao.";
 
     @Override
     public List<DeliveryAddressDto> selectActiveAddressesByUserId(Long userId) {
