@@ -11,7 +11,7 @@ import java.util.List;
 public class ItemOptionDaoImpl implements ItemOptionDao {
 
     private final SqlSessionTemplate sqlSession;
-    private static final String NAMESPACE = "ItemOptionMapper.";
+    private static final String NAMESPACE = "com.example.shoppingmall.item.dao.ItemOptionDao.";
 
     public ItemOptionDaoImpl(SqlSessionTemplate sqlSession) {
         this.sqlSession = sqlSession;

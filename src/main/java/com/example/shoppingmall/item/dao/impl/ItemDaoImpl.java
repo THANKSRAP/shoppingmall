@@ -3,7 +3,6 @@ package com.example.shoppingmall.item.dao.impl;
 import com.example.shoppingmall.item.dao.ItemDao;
 import com.example.shoppingmall.item.domain.Item;
 import com.example.shoppingmall.item.domain.dto.ItemDto;
-import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
@@ -15,7 +14,7 @@ import java.util.Map;
 public class ItemDaoImpl implements ItemDao {
 
     private final SqlSession sqlSession;
-    private static final String NAMESPACE = "ItemMapper.";
+    private static final String NAMESPACE = "com.example.shoppingmall.item.dao.ItemDao.";
 
     public ItemDaoImpl(SqlSession sqlSession) {
         this.sqlSession = sqlSession;
@@ -73,5 +72,15 @@ public class ItemDaoImpl implements ItemDao {
     @Override
     public ItemDto selectItemWithReviewSummary(Long itemId) {
         return sqlSession.selectOne(NAMESPACE + "selectItemWithReviewSummary", itemId);
+    }
+
+    @Override
+    public List<ItemDto> findBestSellersWithReviewSummary() {
+        return sqlSession.selectList(NAMESPACE + "findBestSellersWithReviewSummary");
+    }
+
+    @Override
+    public List<ItemDto> findNewItemsWithReviewSummary() {
+        return sqlSession.selectList(NAMESPACE + "findNewItemsWithReviewSummary");
     }
 }

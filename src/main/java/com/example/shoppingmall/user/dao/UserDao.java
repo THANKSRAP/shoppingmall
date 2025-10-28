@@ -1,10 +1,7 @@
 package com.example.shoppingmall.user.dao;
 
 import com.example.shoppingmall.user.domain.User;
-import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-
-// Mapper 어노테이션 제거 (XML 방식 사용)
 
 public interface UserDao {
 

@@ -12,7 +12,7 @@ import java.util.List;
 public class CategoryDaoImpl implements CategoryDao {
 
     private final SqlSession sqlSession;
-    private static final String NAMESPACE = "CategoryMapper.";
+    private static final String NAMESPACE = "com.example.shoppingmall.item.dao.CategoryDao.";
 
     public CategoryDaoImpl(SqlSession sqlSession) {
         this.sqlSession = sqlSession;

@@ -1,5 +1,6 @@
-package com.example.shoppingmall.order.dao;
+package com.example.shoppingmall.order.dao.impl;
 
+import com.example.shoppingmall.order.dao.OrderItemDao;
 import com.example.shoppingmall.order.domain.OrderItemDto;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,7 @@ public class OrderItemDaoImpl implements OrderItemDao {
 
     @Autowired
     private SqlSession sqlSession;
-    private static final String NAMESPACE = "OrderItemMapper.";
+    private static final String NAMESPACE = "com.example.shoppingmall.order.dao.OrderItemDao.";
 
     @Override
     public int insertOrderItem(OrderItemDto orderItemDto) {

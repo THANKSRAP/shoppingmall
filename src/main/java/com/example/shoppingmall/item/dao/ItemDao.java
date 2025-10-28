@@ -27,6 +27,10 @@ public interface ItemDao {
     List<Item> findItemsByCategory(@Param("majorId") Long majorId,
                                    @Param("middleId") Long middleId,
                                    @Param("minorId") Long minorId);
+
     ItemDto selectItemWithReviewSummary(Long itemId);
 
+    List<ItemDto> findBestSellersWithReviewSummary();
+
+    List<ItemDto> findNewItemsWithReviewSummary();
 }

@@ -16,7 +16,7 @@ import java.util.Map;
 public class UserDaoImpl implements UserDao {
 
     private final SqlSession sqlSession;
-    private static final String NAMESPACE = "UserMapper.";
+    private static final String NAMESPACE = "com.example.shoppingmall.user.dao.UserDao.";
 
     public UserDaoImpl(SqlSession sqlSession) {
         this.sqlSession = sqlSession;

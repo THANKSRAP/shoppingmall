@@ -81,4 +81,47 @@
         WHERE i.item_id = #{itemId}
         GROUP BY i.item_id, i.name
     </select>
+
+    <select id="findBestSellersWithReviewSummary" resultType="com.example.shoppingmall.item.domain.dto.ItemDto">
+        SELECT
+            i.item_id AS itemId,
+            i.category_id AS categoryId,
+            i.name, i.image, i.description, i.price, i.status, i.grade,
+            i.manufacture_country AS manufactureCountry,
+            i.is_best_seller AS isBestSeller,
+            i.is_new AS isNew,
+            ROUND(AVG(r.rating), 1) AS averageRating,
+            COUNT(r.review_id) AS reviewCount
+        FROM
+            item i
+                LEFT JOIN
+            review r ON i.item_id = r.item_id
+        WHERE
+            i.is_best_seller = true
+        GROUP BY
+            i.item_id, i.category_id, i.name, i.image, i.description, i.price,
+            i.status, i.grade, i.manufacture_country, i.is_best_seller, i.is_new
+    </select>
+
+    <select id="findNewItemsWithReviewSummary" resultType="com.example.shoppingmall.item.domain.dto.ItemDto">
+        SELECT
+            i.item_id AS itemId,
+            i.category_id AS categoryId,
+            i.name, i.image, i.description, i.price, i.status, i.grade,
+            i.manufacture_country AS manufactureCountry,
+            i.is_best_seller AS isBestSeller,
+            i.is_new AS isNew,
+            ROUND(AVG(r.rating), 1) AS averageRating,
+            COUNT(r.review_id) AS reviewCount
+        FROM
+            item i
+                LEFT JOIN
+            review r ON i.item_id = r.item_id
+        WHERE
+            i.is_new = true
+        GROUP BY
+            i.item_id, i.category_id, i.name, i.image, i.description, i.price,
+            i.status, i.grade, i.manufacture_country, i.is_best_seller, i.is_new
+    </select>
+
 </mapper>
