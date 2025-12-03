@@ -1,9 +1,6 @@
 # 🛍️ 땡스랩 쇼핑몰 (ThanksLab Shopping Mall)
 
-Spring Framework 기반 웹 애플리케이션 프로젝트입니다. Spring을 통해 레거시 구조를 경험해보고자 했습니다. Spring Boot의 자동 설정 기능을 사용하지 않고 직접 설정을 해보며 Spring과 Servlet, Tomcat 등의 연결이 어떻게 이루어지는지 이해해보고자 했습니다.  
-
-DB 모델링 부터 진행하여 Backend를 구현했습니다. Spring Boot의 자동 설정을 사용하지 않고, XML 기반으로 DispatcherServlet, web.xml 등을 설정할 예정입니다. 기본적인 Spring MVC 설정부터, 브랜치별로 기능을 확장해나가며 진행했습니다. Thymleaf를 사용해 View를 구현할 예정입니다.
-
+Spring Boot의 자동 설정에 의존하지 않고, XML 기반으로 DispatcherServlet 및 Bean을 등록 등을 직접 설정하며 Spring Framework의 핵심 동작 원리를 탐구한 레거시 쇼핑몰 프로젝트입니다.
 
 
 ---
@@ -19,7 +16,7 @@ DB 모델링 부터 진행하여 Backend를 구현했습니다. Spring Boot의 �
 
 ## ⚙️ 사용 기술 스택
 
-Spring을 통해 레거시 구조를 경험해보고자 했습니다. Spring Boot의 자동 설정 기능을 사용하지 않고 직접 설정을 해보며 Spring과 Servlet, Tomcat 등의 연결이 어떻게 이루어지는지 이해해보고자 했습니다. 
+Spring Boot의 자동 설정 기능을 사용하지 않고, XML 기반으로 DispatcherServlet과 Bean 등록 등을 직접 설정하며 Spring과 Servlet, Tomcat 등의 연결이 어떻게 이루어지는지 이해해보고자 했습니다.
 
 JPA와 같이 자동화된 ORM 대신 MyBatis를 사용해 복잡한 SQL 쿼리를 직접 작성하고 최적화해보고자 했습니다. DAO에 대한 이해도를 높이고자 했습니다.  
 
