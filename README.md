@@ -1,6 +1,6 @@
 # 🛍️ 땡스랩 쇼핑몰 (ThanksLab Shopping Mall)
 
-Spring Boot의 자동 설정에 의존하지 않고, XML 기반으로 DispatcherServlet 및 Bean을 등록 등을 직접 설정하며 Spring Framework의 핵심 동작 원리를 탐구한 레거시 쇼핑몰 프로젝트입니다.
+Spring Boot의 자동 설정에 의존하지 않고, XML 기반으로 DispatcherServlet 및 Bean을 등록 등을 직접 설정하며 Spring Framework의 핵심 동작 원리를 탐구한 Legacy 구조의 쇼핑몰 프로젝트입니다.
 
 
 ---
